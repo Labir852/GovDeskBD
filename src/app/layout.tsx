@@ -27,9 +27,9 @@ export default function RootLayout({
             <SidebarContent />
           </Sidebar>
           <SidebarInset>
-            <header className="flex h-14 items-center gap-4 border-b bg-background px-6">
+            <header className="flex h-16 items-center gap-4 border-b bg-background px-6">
               <SidebarTrigger />
-              <h1 className="text-lg font-semibold">GovDesk BD</h1>
+              <h1 className="text-xl font-semibold">GovDesk BD</h1>
             </header>
             <main className="flex-1 p-6">{children}</main>
           </SidebarInset>

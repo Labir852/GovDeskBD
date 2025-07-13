@@ -25,14 +25,14 @@ export default function Sidebar() {
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 256 256"
-            className="h-6 w-6 text-primary"
+            className="h-7 w-7 text-primary"
             fill="currentColor"
           >
             <path d="M144,16H48A16,16,0,0,0,32,32V224a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V80Z" opacity="0.2" />
-            <path d="M208,72H152a8,8,0,0,1-8-8V8a8,8,0,0,0-8-8H48A24,24,0,0,0,24,32V224a24,24,0,0,0,24,24H208a24,24,0,0,0,24-24V80a8,8,0,0,0-8-8ZM48,32H136V64h28.7L189.3,88.7,164.7,113.3,189.3,138l-24.6,24.6L189.3,187.3,164.7,212l24.6-24.7L213.9,212,216,210.1V224H48Z" />
-            <path d="M208,72h-56V16l56,56Z" />
+            <path d="M208,72H152a8,8,0,0,1-8-8V8a8,8,0,0,0-8-8H48A24,24,0,0,0,24,32V224a24,24,0,0,0,24,24H208a24,24,0,0,0,24-24V80a8,8,0,0,0-8-8ZM160,224H48a8,8,0,0,1-8-8V32a8,8,0,0,1,8-8h88V72a16,16,0,0,0,16,16h40V216A8,8,0,0,1,208,224Z" />
+            <path d="M208,72h-56V16Z" opacity="0.2" />
           </svg>
-          <span className="text-lg font-semibold">GovDesk BD</span>
+          <span className="text-xl font-semibold">GovDesk BD</span>
         </div>
       </SidebarHeader>
       <SidebarContent className="flex-grow">
