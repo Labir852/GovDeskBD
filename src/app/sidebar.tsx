@@ -8,6 +8,7 @@ import {
   SidebarFooter,
 } from '@/components/ui/sidebar';
 import {Home, Settings, LifeBuoy, SquareUser} from 'lucide-react';
+import Link from 'next/link';
 import {usePathname} from 'next/navigation';
 
 export default function Sidebar() {
@@ -37,32 +38,48 @@ export default function Sidebar() {
       <SidebarContent className="flex-grow">
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton href="/" isActive={isActive('/')} tooltip="Dashboard">
-              <Home />
-              <span>Dashboard</span>
-            </SidebarMenuButton>
+            <Link href="/" passHref legacyBehavior>
+              <SidebarMenuButton asChild isActive={isActive('/')} tooltip="Dashboard">
+                <a>
+                  <Home />
+                  <span>Dashboard</span>
+                </a>
+              </SidebarMenuButton>
+            </Link>
           </SidebarMenuItem>
           <SidebarMenuItem>
-            <SidebarMenuButton href="/settings" isActive={isActive('/settings')} tooltip="Settings">
-              <Settings />
-              <span>Settings</span>
-            </SidebarMenuButton>
+            <Link href="/settings" passHref legacyBehavior>
+              <SidebarMenuButton asChild isActive={isActive('/settings')} tooltip="Settings">
+                <a>
+                  <Settings />
+                  <span>Settings</span>
+                </a>
+              </SidebarMenuButton>
+            </Link>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarContent>
       <SidebarFooter>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton href="/help" isActive={isActive('/help')}>
-              <LifeBuoy />
-              <span>Help & Support</span>
-            </SidebarMenuButton>
+            <Link href="/help" passHref legacyBehavior>
+              <SidebarMenuButton asChild isActive={isActive('/help')}>
+                <a>
+                  <LifeBuoy />
+                  <span>Help & Support</span>
+                </a>
+              </SidebarMenuButton>
+            </Link>
           </SidebarMenuItem>
           <SidebarMenuItem>
-            <SidebarMenuButton href="/profile" isActive={isActive('/profile')}>
-              <SquareUser />
-              <span>Profile</span>
-            </SidebarMenuButton>
+            <Link href="/profile" passHref legacyBehavior>
+              <SidebarMenuButton asChild isActive={isActive('/profile')}>
+                <a>
+                  <SquareUser />
+                  <span>Profile</span>
+                </a>
+              </SidebarMenuButton>
+            </Link>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarFooter>
