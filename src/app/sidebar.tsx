@@ -10,6 +10,7 @@ import {
 import {Home, Settings, LifeBuoy, SquareUser} from 'lucide-react';
 import Link from 'next/link';
 import {usePathname} from 'next/navigation';
+import Image from 'next/image';
 
 export default function Sidebar() {
   const pathname = usePathname();
@@ -22,24 +23,12 @@ export default function Sidebar() {
     <>
       <SidebarHeader>
         <div className="flex items-center gap-2">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="h-7 w-7 text-primary"
-          >
-            <path d="M12 2L2 7l10 5 10-5-10-5z" />
-            <path d="M2 7v10l10 5 10-5V7" />
-            <path d="M12 22V12" />
-            <path d="M22 7l-10 5" />
-            <path d="M2 7l10 5" />
-            <path d="M17 4.5l-10 5" />
-            <path d="M7 19.5l10-5" />
-          </svg>
+        <Image
+      src="/govdesk-bd-logo-transparent crop.png"
+      width={50}
+      height={50}
+      alt="Picture of the author"
+    />
           <span className="text-xl font-semibold">GovDesk BD</span>
         </div>
       </SidebarHeader>
