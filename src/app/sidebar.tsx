@@ -32,12 +32,13 @@ export default function Sidebar() {
             strokeLinejoin="round"
             className="h-7 w-7 text-primary"
           >
-            <path d="M12 2L2 7V17L12 22L22 17V7L12 2Z" />
-            <path d="M2 7L12 12" />
-            <path d="M22 7L12 12" />
+            <path d="M12 2L2 7l10 5 10-5-10-5z" />
+            <path d="M2 7v10l10 5 10-5V7" />
             <path d="M12 22V12" />
-            <path d="M17 4.5L7 9.5" />
-            <path d="M7 14.5L17 19.5" />
+            <path d="M22 7l-10 5" />
+            <path d="M2 7l10 5" />
+            <path d="M17 4.5l-10 5" />
+            <path d="M7 19.5l10-5" />
           </svg>
           <span className="text-xl font-semibold">GovDesk BD</span>
         </div>
