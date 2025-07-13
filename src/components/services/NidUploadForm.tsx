@@ -65,7 +65,7 @@ export default function NidUploadForm() {
     console.log('Uploading file:', file.name, 'for phone number:', phoneNumber);
     toast({
       title: 'আপলোড সফল হয়েছে',
-      description: `ফাইল '${file.name}' সফলভাবে আপলোড করা হয়েছে।`,
+      description: `ফাইল '${file.name}' সফলভাবে আপলোড করা হয়েছে। খুব শীঘ্রই আমাদের একজন প্রতিনিধি আপনার সাথে যোগাযোগ করবেন । `,
     });
   };
 
