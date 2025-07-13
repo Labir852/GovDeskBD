@@ -1,31 +1,32 @@
-import {Button} from '@/components/ui/button';
-import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from '@/components/ui/card';
-import {ArrowRight, FileText, Landmark, Newspaper, ShieldCheck} from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { ArrowRight, FileText, Landmark, Newspaper, ShieldCheck } from 'lucide-react';
+import Link from 'next/link';
 
 const services = [
   {
     title: 'Birth Certificate',
     description: 'Apply for a new birth certificate or request a correction.',
     icon: <FileText className="size-8 text-primary" />,
-    link: '#',
+    link: '/services/birth-certificate',
   },
   {
     title: 'Passport Services',
     description: 'Renew your passport or apply for a new one online.',
     icon: <Newspaper className="size-8 text-primary" />,
-    link: '#',
+    link: '/services/passport',
   },
   {
     title: 'National ID',
     description: 'Access your NID information and download a digital copy.',
     icon: <ShieldCheck className="size-8 text-primary" />,
-    link: '#',
+    link: '/services/national-id',
   },
   {
     title: 'Tax Payment',
     description: 'Pay your income tax and view your payment history.',
     icon: <Landmark className="size-8 text-primary" />,
-    link: '#',
+    link: '/services/tax-payment',
   },
 ];
 
@@ -50,9 +51,9 @@ export default function Home() {
             </CardContent>
             <CardFooter>
               <Button asChild variant="outline">
-                <a href={service.link}>
+                <Link href={service.link}>
                   Go to Service <ArrowRight className="ml-2 size-4" />
-                </a>
+                </Link>
               </Button>
             </CardFooter>
           </Card>
