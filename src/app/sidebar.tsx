@@ -24,13 +24,20 @@ export default function Sidebar() {
         <div className="flex items-center gap-2">
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 256 256"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
             className="h-7 w-7 text-primary"
-            fill="currentColor"
           >
-            <path d="M144,16H48A16,16,0,0,0,32,32V224a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V80Z" opacity="0.2" />
-            <path d="M208,72H152a8,8,0,0,1-8-8V8a8,8,0,0,0-8-8H48A24,24,0,0,0,24,32V224a24,24,0,0,0,24,24H208a24,24,0,0,0,24-24V80a8,8,0,0,0-8-8ZM160,224H48a8,8,0,0,1-8-8V32a8,8,0,0,1,8-8h88V72a16,16,0,0,0,16,16h40V216A8,8,0,0,1,208,224Z" />
-            <path d="M208,72h-56V16Z" opacity="0.2" />
+            <path d="M12 2L2 7V17L12 22L22 17V7L12 2Z" />
+            <path d="M2 7L12 12" />
+            <path d="M22 7L12 12" />
+            <path d="M12 22V12" />
+            <path d="M17 4.5L7 9.5" />
+            <path d="M7 14.5L17 19.5" />
           </svg>
           <span className="text-xl font-semibold">GovDesk BD</span>
         </div>
