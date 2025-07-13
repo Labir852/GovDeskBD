@@ -1,32 +1,44 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowRight, FileText, Landmark, Newspaper, ShieldCheck } from 'lucide-react';
+import { ArrowRight, Briefcase, FileText, Landmark, Ship, Plane, Receipt } from 'lucide-react';
 import Link from 'next/link';
 
 const services = [
   {
-    title: 'Birth Certificate',
-    description: 'Apply for a new birth certificate or request a correction.',
+    title: 'ই-ট্রেড লাইসেন্স',
+    description: 'আপনার ই-ট্রেড লাইসেন্সের জন্য আবেদন করুন বা নবায়ন করুন।',
+    icon: <Briefcase className="size-8 text-primary" />,
+    link: '/services/e-trade-license',
+  },
+  {
+    title: 'টিন সার্টিফিকেট',
+    description: 'আপনার করদাতা শনাক্তকরণ নম্বর (TIN) সার্টিফিকেট পান।',
     icon: <FileText className="size-8 text-primary" />,
-    link: '/services/birth-certificate',
+    link: '/services/tin-certificate',
   },
   {
-    title: 'Passport Services',
-    description: 'Renew your passport or apply for a new one online.',
-    icon: <Newspaper className="size-8 text-primary" />,
-    link: '/services/passport',
+    title: 'বিআইএন সার্টিফিকেট',
+    description: 'আপনার ব্যবসা শনাক্তকরণ নম্বর (BIN) সার্টিফিকেট পান।',
+    icon: <FileText className="size-8 text-primary" />,
+    link: '/services/bin-certificate',
   },
   {
-    title: 'National ID',
-    description: 'Access your NID information and download a digital copy.',
-    icon: <ShieldCheck className="size-8 text-primary" />,
-    link: '/services/national-id',
+    title: 'আইআরসি',
+    description: 'আমদানি নিবন্ধন সার্টিফিকেট (IRC) এর জন্য আবেদন করুন।',
+    icon: <Ship className="size-8 text-primary" />,
+    link: '/services/irc',
   },
   {
-    title: 'Tax Payment',
-    description: 'Pay your income tax and view your payment history.',
+    title: 'ইআরসি',
+    description: 'রপ্তানি নিবন্ধন সার্টিফিকেট (ERC) এর জন্য আবেদন করুন।',
+    icon: <Plane className="size-8 text-primary" />,
+    link: '/services/erc',
+  },
+  {
+    title: 'অনলাইন ট্যাক্স রিটার্ন',
+    description: 'অনলাইনে আপনার আয়কর রিটার্ন দাখিল করুন।',
     icon: <Landmark className="size-8 text-primary" />,
-    link: '/services/tax-payment',
+    link: '/services/online-tax-return',
   },
 ];
 
@@ -34,8 +46,8 @@ export default function Home() {
   return (
     <div className="flex flex-col gap-8">
       <div>
-        <h2 className="text-3xl font-bold tracking-tight">Welcome to your Dashboard</h2>
-        <p className="text-muted-foreground">Select a service below to get started.</p>
+        <h2 className="text-3xl font-bold tracking-tight">আপনার ড্যাশবোর্ডে স্বাগতম</h2>
+        <p className="text-muted-foreground">শুরু করতে নীচের একটি পরিষেবা নির্বাচন করুন।</p>
       </div>
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
         {services.map((service) => (
@@ -52,7 +64,7 @@ export default function Home() {
             <CardFooter>
               <Button asChild variant="outline">
                 <Link href={service.link}>
-                  Go to Service <ArrowRight className="ml-2 size-4" />
+                  পরিষেবাতে যান <ArrowRight className="ml-2 size-4" />
                 </Link>
               </Button>
             </CardFooter>
