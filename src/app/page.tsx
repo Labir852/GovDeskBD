@@ -65,40 +65,9 @@ export default function Home() {
               />
          </div>
       </div>
+
       
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {services.map((service) => (
-          <Link href={service.link} key={service.title} className="flex">
-          <Card className="flex flex-col w-full">
-            <CardHeader>
-              <div className="flex items-center gap-4">
-                {service.icon}
-                <CardTitle>{service.title}</CardTitle>
-              </div>
-            </CardHeader>
-            <CardContent className="flex-grow flex items-center justify-center">
-            <Image
-                src={service.bgImg}
-                width={250}
-                height={250}
-                alt={service.title}
-                className="object-contain"
-              />
-
-            </CardContent>
-            <CardFooter>
-              <Button asChild variant="outline" className="w-full">
-              <Link href={service.link}>
-                  পরিষেবাতে যান <ArrowRight className="ml-2 size-4" />
-                </Link>
-              </Button>
-            </CardFooter>
-          </Card>
-          </Link>
-        ))}
-      </div>
-
-       <Card>
+      <Card>
         <CardHeader>
           <CardTitle>যোগাযোগ করুন</CardTitle>
           <CardDescription>যেকোনো প্রয়োজনে আমাদের সাথে যোগাযোগ করুন।</CardDescription>
@@ -133,6 +102,39 @@ export default function Home() {
           </div>
         </CardContent>
       </Card>
+      
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+        {services.map((service) => (
+          <Link href={service.link} key={service.title} className="flex">
+          <Card className="flex flex-col w-full">
+            <CardHeader>
+              <div className="flex items-center gap-4">
+                {service.icon}
+                <CardTitle>{service.title}</CardTitle>
+              </div>
+            </CardHeader>
+            <CardContent className="flex-grow flex items-center justify-center">
+            <Image
+                src={service.bgImg}
+                width={250}
+                height={250}
+                alt={service.title}
+                className="object-contain"
+              />
+
+            </CardContent>
+            <CardFooter>
+              <Button asChild variant="outline" className="w-full">
+              <Link href={service.link}>
+                  পরিষেবাতে যান <ArrowRight className="ml-2 size-4" />
+                </Link>
+              </Button>
+            </CardFooter>
+          </Card>
+          </Link>
+        ))}
+      </div>
+
       
     </div>
   );
