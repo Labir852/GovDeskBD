@@ -9,7 +9,7 @@ export default function ETradeLicensePage() {
       <div>
          <Button asChild variant="outline" className="mb-4">
             <Link href="/">
-                <ArrowLeft className="mr-2 size-4" />
+                <ArrowLeft className="ml-2 size-4" />
                 হোমে ফিরে যান
             </Link>
         </Button>
