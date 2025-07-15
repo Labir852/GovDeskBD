@@ -55,35 +55,39 @@ export default function Home() {
       <div>
         <h2 className="text-3xl font-bold tracking-tight">GovDesk BD তে আপনাকে স্বাগতম !</h2>
         <p className="text-muted-foreground">শুরু করতে নীচের একটি পরিষেবা নির্বাচন করুন।</p>
-        <Image
+         <div className="mt-4 overflow-hidden rounded-lg">
+           <Image
                 src="/govdesk banner.png"
-                width={1000}
+                width={1200}
                 height={400}
-                alt="Picture of the author"
+                alt="GovDesk BD Banner"
+                className="w-full h-auto object-cover"
               />
+         </div>
       </div>
+      
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
         {services.map((service) => (
-          <Link href={service.link}>
-          <Card key={service.title} className="flex flex-col">
+          <Link href={service.link} key={service.title} className="flex">
+          <Card className="flex flex-col w-full">
             <CardHeader>
               <div className="flex items-center gap-4">
                 {service.icon}
                 <CardTitle>{service.title}</CardTitle>
               </div>
             </CardHeader>
-            <CardContent className="flex-grow">
+            <CardContent className="flex-grow flex items-center justify-center">
             <Image
-                style={{width:"100%",height:"100%"}}
                 src={service.bgImg}
-                width={200}
-                height={300}
-                alt="Picture of the author"
+                width={250}
+                height={250}
+                alt={service.title}
+                className="object-contain"
               />
 
             </CardContent>
             <CardFooter>
-              <Button asChild variant="outline">
+              <Button asChild variant="outline" className="w-full">
               <Link href={service.link}>
                   পরিষেবাতে যান <ArrowRight className="ml-2 size-4" />
                 </Link>
@@ -93,32 +97,33 @@ export default function Home() {
           </Link>
         ))}
       </div>
+
        <Card>
         <CardHeader>
           <CardTitle>যোগাযোগ করুন</CardTitle>
           <CardDescription>যেকোনো প্রয়োজনে আমাদের সাথে যোগাযোগ করুন।</CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="grid gap-6 sm:grid-cols-1 md:grid-cols-3">
           <div className="flex items-center gap-4">
-            <Phone className="size-6 text-primary" />
+            <Phone className="size-6 text-primary flex-shrink-0" />
             <div className="flex flex-col">
               <span className="font-semibold">ফোন / হোয়াটসঅ্যাপ</span>
-              <a href="tel:+8801911724386" className="text-muted-foreground hover:underline">
+              <a href="tel:+8801911724386" className="text-muted-foreground break-all hover:underline">
                 01911724386
               </a>
             </div>
           </div>
           <div className="flex items-center gap-4">
-            <Mail className="size-6 text-primary" />
+            <Mail className="size-6 text-primary flex-shrink-0" />
             <div className="flex flex-col">
               <span className="font-semibold">ইমেইল</span>
-              <a href="mailto:govdeskbd@gmail.com" className="text-muted-foreground hover:underline">
+              <a href="mailto:govdeskbd@gmail.com" className="text-muted-foreground break-all hover:underline">
                 govdeskbd@gmail.com
               </a>
             </div>
           </div>
           <div className="flex items-center gap-4">
-            <Facebook className="size-6 text-primary" />
+            <Facebook className="size-6 text-primary flex-shrink-0" />
             <div className="flex flex-col">
               <span className="font-semibold">ফেসবুক</span>
               <a href="https://www.facebook.com/profile.php?id=61578380363827" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:underline">
@@ -128,6 +133,7 @@ export default function Home() {
           </div>
         </CardContent>
       </Card>
+      
     </div>
   );
 }
