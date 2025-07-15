@@ -1,5 +1,7 @@
 import MultiDocUploadForm from "@/components/services/MultiDocUploadForm";
-
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
+import { ArrowLeft, ArrowRight } from 'lucide-react';
 const requiredDocs = [
     { id: 'tin', label: 'টিন সার্টিফিকেট' },
     { id: 'bankStatement', label: 'ব্যাংক স্টেটমেন্ট' },
@@ -13,6 +15,11 @@ export default function BinCertificatePage() {
   return (
     <div className="flex flex-col gap-8">
       <div>
+      <Button asChild variant="outline">
+              <Link href="/">
+                  হোমে ফিরে যান <ArrowLeft className="ml-2 size-4" />
+                </Link>
+              </Button>
         <h1 className="text-3xl font-bold tracking-tight">বিআইএন সার্টিফিকেট পরিষেবা</h1>
         <p className="text-muted-foreground">আপনার ব্যবসা শনাক্তকরণ নম্বর (BIN) সার্টিফিকেট পেতে প্রয়োজনীয় কাগজপত্র আপলোড করুন।</p>
       </div>
