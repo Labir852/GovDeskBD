@@ -21,23 +21,21 @@ import { useToast } from "@/hooks/use-toast"
 import { Separator } from "@/components/ui/separator"
 
 const formSchema = z.object({
-  applicationType: z.enum(["new", "renewal"], {
-    required_error: "আবেদনের ধরণ নির্বাচন করুন।",
-  }),
-  orgNameBangla: z.string().min(1, "প্রতিষ্ঠানের নাম (বাংলা) আবশ্যক।"),
-  orgNameEnglish: z.string().min(1, "প্রতিষ্ঠানের নাম (ইংরেজি) আবশ্যক।"),
-  ownerName: z.string().min(1, "মালিকের নাম আবশ্যক।"),
-  fatherOrHusbandName: z.string().min(1, "পিতা/স্বামীর নাম আবশ্যক।"),
-  motherName: z.string().min(1, "মাতার নাম আবশ্যক।"),
-  nid: z.string().min(10, "একটি বৈধ এনআইডি নম্বর দিন।"),
+  applicationType: z.enum(["new", "renewal"]).optional(),
+  orgNameBangla: z.string().optional(),
+  orgNameEnglish: z.string().optional(),
+  ownerName: z.string().optional(),
+  fatherOrHusbandName: z.string().optional(),
+  motherName: z.string().optional(),
+  nid: z.string().optional(),
   tin: z.string().optional(),
-  presentAddress: z.string().min(1, "বর্তমান ঠিকানা আবশ্যক।"),
-  permanentAddress: z.string().min(1, "স্থায়ী ঠিকানা আবশ্যক।"),
-  businessAddress: z.string().min(1, "ব্যবসার ঠিকানা আবশ্যক।"),
-  businessNature: z.string().min(1, "ব্যবসার ধরণ আবশ্যক।"),
-  businessCapital: z.string().min(1, "ব্যবসার মূলধন আবশ্যক।"),
-  contactNumber: z.string().min(11, "একটি বৈধ ফোন নম্বর দিন।"),
-  signboard: z.string().min(1, "সাইনবোর্ডের বিবরণ আবশ্যক।"),
+  presentAddress: z.string().optional(),
+  permanentAddress: z.string().optional(),
+  businessAddress: z.string().optional(),
+  businessNature: z.string().optional(),
+  businessCapital: z.string().optional(),
+  contactNumber: z.string().optional(),
+  signboard: z.string().optional(),
 });
 
 export default function ETradeLicenseForm() {
@@ -86,7 +84,7 @@ export default function ETradeLicenseForm() {
                             name="applicationType"
                             render={({ field }) => (
                                 <FormItem className="space-y-3">
-                                    <FormLabel>আবেদনপত্রের ধরণ <span className="text-destructive">*</span></FormLabel>
+                                    <FormLabel>আবেদনপত্রের ধরণ</FormLabel>
                                     <FormControl>
                                         <RadioGroup
                                             onValueChange={field.onChange}
@@ -122,7 +120,7 @@ export default function ETradeLicenseForm() {
                                     name="orgNameBangla"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>প্রতিষ্ঠানের নাম (বাংলা) <span className="text-destructive">*</span></FormLabel>
+                                            <FormLabel>প্রতিষ্ঠানের নাম (বাংলা)</FormLabel>
                                             <FormControl>
                                                 <Input placeholder="প্রতিষ্ঠানের নাম বাংলায় লিখুন" {...field} />
                                             </FormControl>
@@ -135,7 +133,7 @@ export default function ETradeLicenseForm() {
                                     name="orgNameEnglish"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>প্রতিষ্ঠানের নাম (ইংরেজি) <span className="text-destructive">*</span></FormLabel>
+                                            <FormLabel>প্রতিষ্ঠানের নাম (ইংরেজি)</FormLabel>
                                             <FormControl>
                                                 <Input placeholder="Enter organization name in English" {...field} />
                                             </FormControl>
@@ -156,7 +154,7 @@ export default function ETradeLicenseForm() {
                                     name="ownerName"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>মালিকের নাম <span className="text-destructive">*</span></FormLabel>
+                                            <FormLabel>মালিকের নাম</FormLabel>
                                             <FormControl>
                                                 <Input placeholder="মালিকের পুরো নাম" {...field} />
                                             </FormControl>
@@ -169,7 +167,7 @@ export default function ETradeLicenseForm() {
                                     name="fatherOrHusbandName"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>পিতা/স্বামীর নাম <span className="text-destructive">*</span></FormLabel>
+                                            <FormLabel>পিতা/স্বামীর নাম</FormLabel>
                                             <FormControl>
                                                 <Input placeholder="পিতা বা স্বামীর নাম" {...field} />
                                             </FormControl>
@@ -182,7 +180,7 @@ export default function ETradeLicenseForm() {
                                     name="motherName"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>মাতার নাম <span className="text-destructive">*</span></FormLabel>
+                                            <FormLabel>মাতার নাম</FormLabel>
                                             <FormControl>
                                                 <Input placeholder="মাতার নাম" {...field} />
                                             </FormControl>
@@ -195,7 +193,7 @@ export default function ETradeLicenseForm() {
                                     name="nid"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>জাতীয় পরিচয়পত্র নম্বর <span className="text-destructive">*</span></FormLabel>
+                                            <FormLabel>জাতীয় পরিচয়পত্র নম্বর</FormLabel>
                                             <FormControl>
                                                 <Input placeholder="এনআইডি নম্বর" {...field} />
                                             </FormControl>
@@ -221,7 +219,7 @@ export default function ETradeLicenseForm() {
                                     name="contactNumber"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>যোগাযোগের নম্বর <span className="text-destructive">*</span></FormLabel>
+                                            <FormLabel>যোগাযোগের নম্বর</FormLabel>
                                             <FormControl>
                                                 <Input placeholder="মোবাইল নম্বর" {...field} />
                                             </FormControl>
@@ -235,7 +233,7 @@ export default function ETradeLicenseForm() {
                                     name="presentAddress"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>বর্তমান ঠিকানা <span className="text-destructive">*</span></FormLabel>
+                                            <FormLabel>বর্তমান ঠিকানা</FormLabel>
                                             <FormControl>
                                                 <Textarea placeholder="আপনার বর্তমান ঠিকানা লিখুন" {...field} />
                                             </FormControl>
@@ -248,7 +246,7 @@ export default function ETradeLicenseForm() {
                                     name="permanentAddress"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>স্থায়ী ঠিকানা <span className="text-destructive">*</span></FormLabel>
+                                            <FormLabel>স্থায়ী ঠিকানা</FormLabel>
                                             <FormControl>
                                                 <Textarea placeholder="আপনার স্থায়ী ঠিকানা লিখুন" {...field} />
                                             </FormControl>
@@ -267,7 +265,7 @@ export default function ETradeLicenseForm() {
                                     name="businessAddress"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>ব্যবসার ঠিকানা <span className="text-destructive">*</span></FormLabel>
+                                            <FormLabel>ব্যবসার ঠিকানা</FormLabel>
                                             <FormControl>
                                                 <Textarea placeholder="আপনার ব্যবসার ঠিকানা লিখুন" {...field} />
                                             </FormControl>
@@ -281,7 +279,7 @@ export default function ETradeLicenseForm() {
                                     name="businessNature"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>ব্যবসার ধরণ <span className="text-destructive">*</span></FormLabel>
+                                            <FormLabel>ব্যবসার ধরণ</FormLabel>
                                             <FormControl>
                                                 <Input placeholder="যেমন: মুদি দোকান, আইটি ফার্ম" {...field} />
                                             </FormControl>
@@ -294,7 +292,7 @@ export default function ETradeLicenseForm() {
                                     name="businessCapital"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>ব্যবসায়িক মূলধন <span className="text-destructive">*</span></FormLabel>
+                                            <FormLabel>ব্যবসায়িক মূলধন</FormLabel>
                                             <FormControl>
                                                 <Input placeholder="মূলধনের পরিমাণ" {...field} />
                                             </FormControl>
@@ -307,7 +305,7 @@ export default function ETradeLicenseForm() {
                                     name="signboard"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>সাইনবোর্ড <span className="text-destructive">*</span></FormLabel>
+                                            <FormLabel>সাইনবোর্ড</FormLabel>
                                             <FormControl>
                                                 <Input placeholder="সাইনবোর্ডের বিবরণ দিন" {...field} />
                                             </FormControl>
