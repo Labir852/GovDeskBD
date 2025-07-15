@@ -1,16 +1,22 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, ArrowRight } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
+import ETradeLicenseForm from '@/components/services/ETradeLicenseForm';
+
 export default function ETradeLicensePage() {
   return (
-    <div>
-      <Button asChild variant="outline">
-              <Link href="/">
-                  হোমে ফিরে যান <ArrowLeft className="ml-2 size-4" />
-                </Link>
-              </Button>
-      <h1 className="text-2xl font-bold">ই-ট্রেড লাইসেন্স পরিষেবা</h1>
-      <p>আপনার ই-ট্রেড লাইসেন্সের জন্য আবেদন বা নবায়ন করুন।</p>
+    <div className="flex flex-col gap-8">
+      <div>
+         <Button asChild variant="outline" className="mb-4">
+            <Link href="/">
+                <ArrowLeft className="mr-2 size-4" />
+                হোমে ফিরে যান
+            </Link>
+        </Button>
+        <h1 className="text-3xl font-bold tracking-tight">ই-ট্রেড লাইসেন্স আবেদন</h1>
+        <p className="text-muted-foreground">আপনার ই-ট্রেড লাইসেন্সের জন্য আবেদন বা নবায়ন করুন।</p>
+      </div>
+      <ETradeLicenseForm />
     </div>
   );
 }

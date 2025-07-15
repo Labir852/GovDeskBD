@@ -1,0 +1,312 @@
+'use client';
+
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useForm } from "react-hook-form"
+import { z } from "zod"
+
+import { Button } from "@/components/ui/button"
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form"
+import { Input } from "@/components/ui/input"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
+import { Textarea } from "@/components/ui/textarea"
+import { useToast } from "@/hooks/use-toast"
+import { Separator } from "@/components/ui/separator"
+
+const formSchema = z.object({
+  applicationType: z.enum(["new", "renewal"], {
+    required_error: "আবেদনের ধরণ নির্বাচন করুন।",
+  }),
+  orgNameBangla: z.string().min(1, "প্রতিষ্ঠানের নাম (বাংলা) আবশ্যক।"),
+  orgNameEnglish: z.string().min(1, "প্রতিষ্ঠানের নাম (ইংরেজি) আবশ্যক।"),
+  ownerName: z.string().min(1, "মালিকের নাম আবশ্যক।"),
+  fatherOrHusbandName: z.string().min(1, "পিতা/স্বামীর নাম আবশ্যক।"),
+  motherName: z.string().min(1, "মাতার নাম আবশ্যক।"),
+  nid: z.string().min(10, "একটি বৈধ এনআইডি নম্বর দিন।"),
+  tin: z.string().optional(),
+  presentAddress: z.string().min(1, "বর্তমান ঠিকানা আবশ্যক।"),
+  permanentAddress: z.string().min(1, "স্থায়ী ঠিকানা আবশ্যক।"),
+  businessAddress: z.string().min(1, "ব্যবসার ঠিকানা আবশ্যক।"),
+  businessNature: z.string().min(1, "ব্যবসার ধরণ আবশ্যক।"),
+  businessCapital: z.string().min(1, "ব্যবসার মূলধন আবশ্যক।"),
+  contactNumber: z.string().min(11, "একটি বৈধ ফোন নম্বর দিন।"),
+});
+
+export default function ETradeLicenseForm() {
+    const { toast } = useToast();
+
+    const form = useForm<z.infer<typeof formSchema>>({
+        resolver: zodResolver(formSchema),
+        defaultValues: {
+            applicationType: "new",
+            orgNameBangla: "",
+            orgNameEnglish: "",
+            ownerName: "",
+            fatherOrHusbandName: "",
+            motherName: "",
+            nid: "",
+            tin: "",
+            presentAddress: "",
+            permanentAddress: "",
+            businessAddress: "",
+            businessNature: "",
+            businessCapital: "",
+            contactNumber: "",
+        },
+    })
+
+    function onSubmit(values: z.infer<typeof formSchema>) {
+        console.log(values)
+        toast({
+            title: "আবেদন জমা দেওয়া হয়েছে",
+            description: "আপনার ই-ট্রেড লাইসেন্স আবেদন সফলভাবে জমা দেওয়া হয়েছে।",
+        })
+    }
+
+    return (
+        <Card>
+            <CardHeader>
+                <CardTitle>আবেদনপত্র</CardTitle>
+                <CardDescription>অনুগ্রহ করে নিচের ফর্মটি পূরণ করুন।</CardDescription>
+            </CardHeader>
+            <CardContent>
+                <Form {...form}>
+                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+                        <FormField
+                            control={form.control}
+                            name="applicationType"
+                            render={({ field }) => (
+                                <FormItem className="space-y-3">
+                                    <FormLabel>আবেদনপত্রের ধরণ <span className="text-destructive">*</span></FormLabel>
+                                    <FormControl>
+                                        <RadioGroup
+                                            onValueChange={field.onChange}
+                                            defaultValue={field.value}
+                                            className="flex flex-col space-y-1"
+                                        >
+                                            <FormItem className="flex items-center space-x-3 space-y-0">
+                                                <FormControl>
+                                                    <RadioGroupItem value="new" />
+                                                </FormControl>
+                                                <FormLabel className="font-normal">নতুন</FormLabel>
+                                            </FormItem>
+                                            <FormItem className="flex items-center space-x-3 space-y-0">
+                                                <FormControl>
+                                                    <RadioGroupItem value="renewal" />
+                                                </FormControl>
+                                                <FormLabel className="font-normal">নবায়ন</FormLabel>
+                                            </FormItem>
+                                        </RadioGroup>
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+
+                        <Separator />
+
+                        <div className="space-y-4">
+                            <h3 className="text-lg font-medium">প্রতিষ্ঠানের তথ্য</h3>
+                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <FormField
+                                    control={form.control}
+                                    name="orgNameBangla"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>প্রতিষ্ঠানের নাম (বাংলা) <span className="text-destructive">*</span></FormLabel>
+                                            <FormControl>
+                                                <Input placeholder="প্রতিষ্ঠানের নাম বাংলায় লিখুন" {...field} />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={form.control}
+                                    name="orgNameEnglish"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>প্রতিষ্ঠানের নাম (ইংরেজি) <span className="text-destructive">*</span></FormLabel>
+                                            <FormControl>
+                                                <Input placeholder="Enter organization name in English" {...field} />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                            </div>
+                        </div>
+
+                        <Separator />
+                        
+                        <div className="space-y-4">
+                             <h3 className="text-lg font-medium">মালিকের তথ্য</h3>
+                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <FormField
+                                    control={form.control}
+                                    name="ownerName"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>মালিকের নাম <span className="text-destructive">*</span></FormLabel>
+                                            <FormControl>
+                                                <Input placeholder="মালিকের পুরো নাম" {...field} />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                 <FormField
+                                    control={form.control}
+                                    name="fatherOrHusbandName"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>পিতা/স্বামীর নাম <span className="text-destructive">*</span></FormLabel>
+                                            <FormControl>
+                                                <Input placeholder="পিতা বা স্বামীর নাম" {...field} />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={form.control}
+                                    name="motherName"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>মাতার নাম <span className="text-destructive">*</span></FormLabel>
+                                            <FormControl>
+                                                <Input placeholder="মাতার নাম" {...field} />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={form.control}
+                                    name="nid"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>জাতীয় পরিচয়পত্র নম্বর <span className="text-destructive">*</span></FormLabel>
+                                            <FormControl>
+                                                <Input placeholder="এনআইডি নম্বর" {...field} />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={form.control}
+                                    name="tin"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>টিন নম্বর (যদি থাকে)</FormLabel>
+                                            <FormControl>
+                                                <Input placeholder="টিন নম্বর" {...field} />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={form.control}
+                                    name="contactNumber"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>যোগাযোগের নম্বর <span className="text-destructive">*</span></FormLabel>
+                                            <FormControl>
+                                                <Input placeholder="মোবাইল নম্বর" {...field} />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                            </div>
+                            <FormField
+                                    control={form.control}
+                                    name="presentAddress"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>বর্তমান ঠিকানা <span className="text-destructive">*</span></FormLabel>
+                                            <FormControl>
+                                                <Textarea placeholder="আপনার বর্তমান ঠিকানা লিখুন" {...field} />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                            <FormField
+                                    control={form.control}
+                                    name="permanentAddress"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>স্থায়ী ঠিকানা <span className="text-destructive">*</span></FormLabel>
+                                            <FormControl>
+                                                <Textarea placeholder="আপনার স্থায়ী ঠিকানা লিখুন" {...field} />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                        </div>
+                        
+                        <Separator />
+
+                        <div className="space-y-4">
+                            <h3 className="text-lg font-medium">ব্যবসার বিবরণ</h3>
+                            <FormField
+                                    control={form.control}
+                                    name="businessAddress"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>ব্যবসার ঠিকানা <span className="text-destructive">*</span></FormLabel>
+                                            <FormControl>
+                                                <Textarea placeholder="আপনার ব্যবসার ঠিকানা লিখুন" {...field} />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <FormField
+                                    control={form.control}
+                                    name="businessNature"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>ব্যবসার ধরণ <span className="text-destructive">*</span></FormLabel>
+                                            <FormControl>
+                                                <Input placeholder="যেমন: মুদি দোকান, আইটি ফার্ম" {...field} />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={form.control}
+                                    name="businessCapital"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>ব্যবসায়িক মূলধন <span className="text-destructive">*</span></FormLabel>
+                                            <FormControl>
+                                                <Input placeholder="মূলধনের পরিমাণ" {...field} />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                            </div>
+                        </div>
+
+                        <Button type="submit">আবেদন জমা দিন</Button>
+                    </form>
+                </Form>
+            </CardContent>
+        </Card>
+    )
+}
