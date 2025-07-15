@@ -95,7 +95,7 @@ export default function Home() {
             <Facebook className="size-6 text-primary flex-shrink-0" />
             <div className="flex flex-col">
               <span className="font-semibold">ফেসবুক</span>
-              <a href="https://www.facebook.com/profile.php?id=61578380363827" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:underline">
+              <a href="https://www.facebook.com/govdeskbd/" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:underline">
                 আমাদের ফেসবুক পেজ
               </a>
             </div>

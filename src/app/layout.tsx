@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   },
   description: 'GovDesk BD simplifies government services in Bangladesh. Get your e-trade license, TIN certificate, BIN, IRC, ERC, and file tax returns online with ease and expert assistance.',
   keywords: ['GovDesk BD', 'Bangladesh government services', 'e-trade license', 'TIN certificate', 'BIN certificate', 'IRC', 'ERC', 'online tax return Bangladesh', 'সরকারি সেবা', 'ই-ট্রেড লাইসেন্স', 'টিন সার্টিফিকেট'],
-  authors: [{ name: 'GovDesk BD', url: 'https://www.facebook.com/profile.php?id=61578380363827' }],
+  authors: [{ name: 'GovDesk BD', url: 'https://www.facebook.com/govdeskbd/' }],
   openGraph: {
     title: 'GovDesk BD - Easy Government Services in Bangladesh',
     description: 'Effortlessly manage your e-trade license, TIN, BIN, and tax returns with GovDesk BD.',
