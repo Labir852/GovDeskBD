@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowRight, Briefcase, FileText, Landmark, Ship, Plane, Receipt } from 'lucide-react';
+import { ArrowRight, Briefcase, FileText, Landmark, Ship, Plane, Receipt, Phone, Mail, Facebook } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 
@@ -93,6 +93,41 @@ export default function Home() {
           </Link>
         ))}
       </div>
+       <Card>
+        <CardHeader>
+          <CardTitle>যোগাযোগ করুন</CardTitle>
+          <CardDescription>যেকোনো প্রয়োজনে আমাদের সাথে যোগাযোগ করুন।</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="flex items-center gap-4">
+            <Phone className="size-6 text-primary" />
+            <div className="flex flex-col">
+              <span className="font-semibold">ফোন / হোয়াটসঅ্যাপ</span>
+              <a href="tel:+8801911724386" className="text-muted-foreground hover:underline">
+                01911724386
+              </a>
+            </div>
+          </div>
+          <div className="flex items-center gap-4">
+            <Mail className="size-6 text-primary" />
+            <div className="flex flex-col">
+              <span className="font-semibold">ইমেইল</span>
+              <a href="mailto:govdeskbd@gmail.com" className="text-muted-foreground hover:underline">
+                govdeskbd@gmail.com
+              </a>
+            </div>
+          </div>
+          <div className="flex items-center gap-4">
+            <Facebook className="size-6 text-primary" />
+            <div className="flex flex-col">
+              <span className="font-semibold">ফেসবুক</span>
+              <a href="https://www.facebook.com/profile.php?id=61578380363827" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:underline">
+                আমাদের ফেসবুক পেজ
+              </a>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }
