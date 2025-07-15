@@ -37,6 +37,7 @@ const formSchema = z.object({
   businessNature: z.string().min(1, "ব্যবসার ধরণ আবশ্যক।"),
   businessCapital: z.string().min(1, "ব্যবসার মূলধন আবশ্যক।"),
   contactNumber: z.string().min(11, "একটি বৈধ ফোন নম্বর দিন।"),
+  signboard: z.string().min(1, "সাইনবোর্ডের বিবরণ আবশ্যক।"),
 });
 
 export default function ETradeLicenseForm() {
@@ -59,6 +60,7 @@ export default function ETradeLicenseForm() {
             businessNature: "",
             businessCapital: "",
             contactNumber: "",
+            signboard: "",
         },
     })
 
@@ -300,8 +302,40 @@ export default function ETradeLicenseForm() {
                                         </FormItem>
                                     )}
                                 />
+                                <FormField
+                                    control={form.control}
+                                    name="signboard"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>সাইনবোর্ড <span className="text-destructive">*</span></FormLabel>
+                                            <FormControl>
+                                                <Input placeholder="সাইনবোর্ডের বিবরণ দিন" {...field} />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
                             </div>
                         </div>
+
+                        <Separator />
+                        
+                        <div className="space-y-4">
+                            <h3 className="text-lg font-medium">সংযুক্ত করতে হবে</h3>
+                            <ul className="list-disc space-y-2 pl-5 text-sm text-muted-foreground">
+                                <li>(ক) মালিকের সত্যায়িত ছবি ০৩ (তিন) কপি।</li>
+                                <li>(খ) অনাপত্তি সনদ (নতুন প্রতিষ্ঠানের ক্ষেত্রে)।</li>
+                                <li>(গ) মূলধন প্রমাণের প্রয়োজনীয় কাগজপত্রাদি (লিমিটেড কোম্পানির ক্ষেত্রে মেমোরেন্ডাম অব আর্টিকেলস)।</li>
+                                <li>(ঘ) মালিকানা প্রমাণের জন্য দলিল/পর্চা (ভাড়াটিয়া হলে ভাড়ার চুক্তিপত্র)।</li>
+                                <li>(ঙ) হালনাগাদ হোল্ডিং ট্যাক্স পরিশোধের রশিদ (প্রযোজ্য ক্ষেত্রে)।</li>
+                                <li>(চ) ফায়ার সার্ভিস ও সিভিল ডিফেন্স কর্তৃক লাইসেন্স এর ফটোকপি (শিল্প কারখানার ক্ষেত্রে)।</li>
+                                <li>(ছ) জাতীয় পরিচয় পত্রের ফটোকপি।</li>
+                            </ul>
+                            <p className="font-semibold">আবেদনকারীর স্বাক্ষর ও নাম</p>
+                            <p>তারিখ: .........................</p>
+                            <p className="text-sm font-bold text-destructive">বিঃদ্রঃ- সংযুক্ত সকল কাগজ পত্র সত্যায়িত হইতে হইবে। (প্রথম শ্রেণীর গেজেটেড কর্মকর্তা / ওয়ার্ড কাউন্সিলর কর্তৃক)</p>
+                        </div>
+
 
                         <Button type="submit">আবেদন জমা দিন</Button>
                     </form>
