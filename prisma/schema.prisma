@@ -1,0 +1,114 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  password  String
+  role      Role     @default(STAFF)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  logs      AuditLog[]
+}
+
+enum Role {
+  ADMIN
+  STAFF
+}
+
+model Client {
+  id                     String   @id @default(uuid())
+  name                   String
+  nid                    String?
+  phone                  String?
+  email                  String?
+  encryptedEmailPassword String?
+  isActive               Boolean  @default(true)
+  notes                  String?
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
+
+  organizations   Organization[]
+  serviceProfiles ServiceProfile[]
+}
+
+model Organization {
+  id              String   @id @default(uuid())
+  clientId        String
+  client          Client   @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  name            String
+  address         String?
+  tradeLicenseNo  String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  serviceProfiles ServiceProfile[]
+}
+
+model Category {
+  id        String   @id @default(uuid())
+  name      String   @unique // e.g., "VAT", "eReturn", "IRC", "ERC", "Trade License"
+  frequency String   // e.g., "Monthly", "Yearly"
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  serviceProfiles ServiceProfile[]
+}
+
+model ServiceProfile {
+  id                           String   @id @default(uuid())
+  clientId                     String?
+  client                       Client?  @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  organizationId               String?
+  organization                 Organization? @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  categoryId                   String
+  category                     Category @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  
+  portalUserId                 String?
+  portalEncryptedPassword      String?
+  portalEmail                  String?
+  portalEncryptedEmailPassword String?
+  
+  miscellaneousData            Json?    // Any extra columns like specific IDs or notes
+
+  createdAt                    DateTime @default(now())
+  updatedAt                    DateTime @updatedAt
+
+  servicePeriods               ServicePeriod[]
+}
+
+model ServicePeriod {
+  id               String   @id @default(uuid())
+  serviceProfileId String
+  serviceProfile   ServiceProfile @relation(fields: [serviceProfileId], references: [id], onDelete: Cascade)
+  
+  period           String   // e.g., "2023-10" or "2023-2024"
+  paymentAmount    Float?   @default(0)
+  isPaid           Boolean  @default(false)
+  serviceCharge    Float?   @default(0)
+  status           String?  // e.g., "Pending", "Submitted", "Completed"
+  
+  periodData       Json?    // e.g., { "NeedPrint": "Yes", "VatStatus": "VAT", "TaxPaidAmount": 5000 }
+
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+model AuditLog {
+  id        String   @id @default(uuid())
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  action    String   // e.g., "CREATE", "UPDATE", "DELETE"
+  entity    String   // e.g., "Client", "ServicePeriod"
+  entityId  String
+  details   Json?    // e.g., { "previousStatus": "Pending", "newStatus": "Submitted" }
+  createdAt DateTime @default(now())
+}

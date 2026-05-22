@@ -1,3 +1,4 @@
+"use client";
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { ArrowRight, Briefcase, FileText, Landmark, Ship, Plane, Receipt, Phone, Mail, Facebook } from 'lucide-react';
@@ -77,27 +78,27 @@ export default function Home() {
             <Phone className="size-6 text-primary flex-shrink-0" />
             <div className="flex flex-col">
               <span className="font-semibold">ফোন / হোয়াটসঅ্যাপ</span>
-              <a href="tel:+8801911724386" className="text-muted-foreground break-all hover:underline">
+              <Link href="tel:+8801911724386" className="text-muted-foreground break-all hover:underline">
                 01911724386
-              </a>
+              </Link>
             </div>
           </div>
           <div className="flex items-center gap-4">
             <Mail className="size-6 text-primary flex-shrink-0" />
             <div className="flex flex-col">
               <span className="font-semibold">ইমেইল</span>
-              <a href="mailto:govdeskbd@gmail.com" className="text-muted-foreground break-all hover:underline">
+              <Link href="mailto:govdeskbd@gmail.com" className="text-muted-foreground break-all hover:underline">
                 govdeskbd@gmail.com
-              </a>
+              </Link>
             </div>
           </div>
           <div className="flex items-center gap-4">
             <Facebook className="size-6 text-primary flex-shrink-0" />
             <div className="flex flex-col">
               <span className="font-semibold">ফেসবুক</span>
-              <a href="https://www.facebook.com/govdeskbd/" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:underline">
+              <Link href="https://www.facebook.com/govdeskbd/" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:underline">
                 আমাদের ফেসবুক পেজ
-              </a>
+              </Link>
             </div>
           </div>
         </CardContent>
@@ -105,33 +106,32 @@ export default function Home() {
       
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
         {services.map((service) => (
-          <Link href={service.link} key={service.title} className="flex">
-          <Card className="flex flex-col w-full">
-            <CardHeader>
-              <div className="flex items-center gap-4">
-                {service.icon}
-                <CardTitle>{service.title}</CardTitle>
-              </div>
-            </CardHeader>
-            <CardContent className="flex-grow flex items-center justify-center">
-            <Image
-                src={service.bgImg}
-                width={250}
-                height={250}
-                alt={service.title}
-                className="object-contain"
-              />
-
-            </CardContent>
-            <CardFooter>
-              <Button asChild variant="outline" className="w-full">
-              <Link href={service.link}>
-                  পরিষেবাতে যান <ArrowRight className="ml-2 size-4" />
-                </Link>
-              </Button>
-            </CardFooter>
-          </Card>
-          </Link>
+          <div key={service.title} className="flex cursor-pointer" onClick={() => window.location.href = service.link}>
+            <Card className="flex flex-col w-full">
+              <CardHeader>
+                <div className="flex items-center gap-4">
+                  {service.icon}
+                  <CardTitle>{service.title}</CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent className="flex-grow flex items-center justify-center">
+                <Image
+                  src={service.bgImg}
+                  width={250}
+                  height={250}
+                  alt={service.title}
+                  className="object-contain"
+                />
+              </CardContent>
+              <CardFooter>
+                <Button asChild variant="outline" className="w-full">
+                  <Link href={service.link}>
+                    পরিষেবাতে যান <ArrowRight className="ml-2 size-4" />
+                  </Link>
+                </Button>
+              </CardFooter>
+            </Card>
+          </div>
         ))}
       </div>
 

@@ -67,18 +67,18 @@ export default function RootLayout({
         <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet" />
       </head>
       <body className="font-body antialiased">
-        <SidebarProvider>
+       {/* <SidebarProvider>
           <Sidebar>
             <SidebarContent />
           </Sidebar>
-          <SidebarInset>
+          <SidebarInset>*/}
             <header className="flex h-16 items-center gap-4 border-b bg-background px-6">
-              <SidebarTrigger />
+              {/* <SidebarTrigger />*/}
               <h1 className="text-xl font-semibold">GovDesk BD</h1>
             </header>
             <main className="flex-1 p-6">{children}</main>
-          </SidebarInset>
-        </SidebarProvider>
+          {/* </SidebarInset>
+       </SidebarProvider>*/}
         <Toaster />
       </body>
     </html>
