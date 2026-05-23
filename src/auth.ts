@@ -24,7 +24,7 @@ export type AuthUser = {
 const credentialSchema = z.object({
   email: z.string().email(),
   password: z.string().min(6),
-  callbackUrl: z.string().url().optional(),
+  callbackUrl: z.string().optional(),
 });
 
 function base64url(value: string | Buffer) {
@@ -80,6 +80,8 @@ export function getUserFromRequest(req: Request) {
 }
 
 export async function validateUserCredentials(email: string, password: string) {
+  console.log('🔐 Validating credentials for:', email);
+  
   const user = await prisma.user.findUnique({
     where: { email },
     select: {
@@ -90,11 +92,22 @@ export async function validateUserCredentials(email: string, password: string) {
       password: true,
     },
   });
-  if (!user) return null;
+  
+  if (!user) {
+    console.log('❌ User not found:', email);
+    return null;
+  }
+  
+  console.log('✅ User found:', user.email);
   const passwordsMatch = await bcrypt.compare(password, user.password);
-  console.log(passwordsMatch)
-  if (!passwordsMatch) return null;
+  console.log('🔍 Password match result:', passwordsMatch);
+  
+  if (!passwordsMatch) {
+    console.log('❌ Password mismatch for user:', email);
+    return null;
+  }
 
+  console.log('✅ Credentials valid for:', email);
   return {
     id: user.id,
     email: user.email,

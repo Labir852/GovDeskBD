@@ -110,7 +110,9 @@ export default function MultiDocUploadForm({ documents }: MultiDocUploadFormProp
             <input
               id={doc.id}
               type="file"
-              ref={(el) => (fileInputRefs.current[doc.id] = el)}
+              ref={(el) => {
+                fileInputRefs.current[doc.id] = el;
+              }}
               className="hidden"
               onChange={(e) => handleFileChange(e, doc.id)}
               accept="image/png, image/jpeg, application/pdf"

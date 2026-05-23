@@ -17,14 +17,18 @@ import { deleteServiceProfile } from './actions';
 
 export type ServiceProfileData = {
   id: string;
-  organizationId: string;
+  organizationId: string | null;
   categoryId: string;
   portalUserId: string | null;
+  client: {
+    id: string;
+    name: string;
+  } | null;
   organization: {
     id: string;
     name: string;
     client: { name: string };
-  };
+  } | null;
   category: {
     id: string;
     name: string;
@@ -32,20 +36,36 @@ export type ServiceProfileData = {
   };
   _count: { servicePeriods: number };
   createdAt: Date;
+  servicePeriods: Array<{ paymentAmount: number | null; isPaid: boolean }>;
 };
+
+const formatAmount = (amount: number | null | undefined) =>
+  new Intl.NumberFormat('en-BD', {
+    maximumFractionDigits: 0,
+    style: 'currency',
+    currency: 'BDT',
+  }).format(amount ?? 0);
 
 export const columns: ColumnDef<ServiceProfileData>[] = [
   {
-    accessorKey: 'organization',
-    header: 'Organization',
-    cell: ({ row }) => (
-      <Link
-        href={`/dashboard/organizations/${row.original.organizationId}`}
-        className="text-primary hover:underline font-semibold"
-      >
-        {row.original.organization.name}
-      </Link>
-    ),
+    id: 'owner',
+    accessorFn: (row) => row.organization?.name || row.client?.name || 'Unassigned',
+    header: 'Client / Organization',
+    cell: ({ row }) => {
+      const profile = row.original;
+      const label = profile.organization?.name || profile.client?.name || 'Unassigned';
+      const href = profile.organizationId
+        ? `/dashboard/organizations/${profile.organizationId}`
+        : profile.client?.id
+          ? `/dashboard/clients/${profile.client.id}`
+          : `/dashboard/services/${profile.id}`;
+
+      return (
+        <Link href={href} className="text-primary hover:underline font-semibold">
+          {label}
+        </Link>
+      );
+    },
   },
   {
     accessorKey: 'category',
@@ -74,6 +94,35 @@ export const columns: ColumnDef<ServiceProfileData>[] = [
     cell: ({ row }) => (
       <Badge variant="secondary">{row.original._count.servicePeriods}</Badge>
     ),
+  },
+  {
+    id: 'revenue',
+    header: 'Payments',
+    cell: ({ row }) => {
+      const totalExpected = row.original.servicePeriods.reduce(
+        (sum, period) => sum + (period.paymentAmount ?? 0),
+        0,
+      );
+      const paid = row.original.servicePeriods.reduce(
+        (sum, period) => sum + (period.isPaid ? period.paymentAmount ?? 0 : 0),
+        0,
+      );
+      const pendingCount = row.original.servicePeriods.filter((period) => !period.isPaid).length;
+
+      return (
+        <div className="space-y-1">
+          <p className="text-sm font-medium">{formatAmount(totalExpected)}</p>
+          <div className="flex flex-wrap gap-2">
+            <Badge variant="outline" className="text-[11px]">
+              {formatAmount(paid)} paid
+            </Badge>
+            <Badge variant="secondary" className="text-[11px]">
+              {pendingCount} pending
+            </Badge>
+          </div>
+        </div>
+      );
+    },
   },
   {
     id: 'actions',

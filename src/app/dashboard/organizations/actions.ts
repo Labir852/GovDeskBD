@@ -9,6 +9,11 @@ export async function getOrganizations() {
       orderBy: { createdAt: 'desc' },
       include: {
         client: { select: { id: true, name: true } },
+        serviceProfiles: {
+          include: {
+            servicePeriods: { select: { paymentAmount: true, isPaid: true } }
+          }
+        },
         _count: { select: { serviceProfiles: true } }
       }
     });
@@ -74,6 +79,7 @@ export async function getOrganizationById(id: string) {
         serviceProfiles: {
           include: {
             category: true,
+            servicePeriods: { select: { paymentAmount: true, isPaid: true } },
           },
         },
         _count: {

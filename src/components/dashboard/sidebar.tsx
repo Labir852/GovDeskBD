@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { LayoutDashboard, Users, Building2, Briefcase, FileText, Settings, LogOut, Tags } from 'lucide-react';
+import { LayoutDashboard, Users, Building2, Briefcase, Calculator, Settings, LogOut, Tags } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 
@@ -13,6 +13,7 @@ const sidebarItems = [
   { title: 'Organizations', href: '/dashboard/organizations', icon: Building2 },
   { title: 'Categories', href: '/dashboard/categories', icon: Tags },
   { title: 'Service Profiles', href: '/dashboard/services', icon: Briefcase },
+  { title: 'Tax Calculator', href: '/dashboard/tax-calculator', icon: Calculator },
   { title: 'Settings', href: '/dashboard/settings', icon: Settings },
 ];
 

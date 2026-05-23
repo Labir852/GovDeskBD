@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getUserFromRequest } from "@/auth";
 
 export default function middleware(req: NextRequest) {
   const { nextUrl } = req;
-  const isLoggedIn = !!getUserFromRequest(req);
+  const COOKIE_NAME = "govdesk_jwt";
+  const isLoggedIn = !!req.cookies.get(COOKIE_NAME)?.value;
 
   const isProtectedRoute = nextUrl.pathname.startsWith('/admin') || nextUrl.pathname.startsWith('/dashboard');
   const isAuthRoute = nextUrl.pathname.startsWith('/login');

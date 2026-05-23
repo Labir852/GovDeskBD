@@ -8,6 +8,20 @@ import Link from 'next/link';
 import { prisma } from '@/lib/db';
 import DeleteOrganizationButton from './delete-button';
 
+const formatAmount = (amount: number | null | undefined) =>
+  new Intl.NumberFormat('en-BD', {
+    maximumFractionDigits: 0,
+    style: 'currency',
+    currency: 'BDT',
+  }).format(amount ?? 0);
+
+const getTotals = (serviceProfiles: Array<{ servicePeriods: Array<{ paymentAmount: number | null; isPaid: boolean }> }>) => {
+  const allPeriods = serviceProfiles.flatMap((profile) => profile.servicePeriods ?? []);
+  const expected = allPeriods.reduce((sum, period) => sum + (period.paymentAmount ?? 0), 0);
+  const paid = allPeriods.reduce((sum, period) => sum + (period.isPaid ? period.paymentAmount ?? 0 : 0), 0);
+  return { expected, paid, outstanding: expected - paid };
+};
+
 export default async function OrganizationDetailsPage({ params }: { params: { id: string } }) {
   const org = await getOrganizationById(params.id);
 
@@ -88,19 +102,76 @@ export default async function OrganizationDetailsPage({ params }: { params: { id
             <CardDescription>Services linked to this organization.</CardDescription>
           </CardHeader>
           <CardContent>
+            <div className="grid gap-3 sm:grid-cols-3 mb-4">
+              {(() => {
+                const totals = getTotals(org.serviceProfiles);
+                return [
+                  {
+                    label: 'Expected',
+                    value: formatAmount(totals.expected),
+                    tone: 'bg-slate-100 text-slate-900',
+                  },
+                  {
+                    label: 'Collected',
+                    value: formatAmount(totals.paid),
+                    tone: 'bg-emerald-100 text-emerald-900',
+                  },
+                  {
+                    label: 'Outstanding',
+                    value: formatAmount(totals.outstanding),
+                    tone: 'bg-amber-100 text-amber-900',
+                  },
+                ].map((item) => (
+                  <div key={item.label} className={`rounded-lg border p-3 ${item.tone}`}>
+                    <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">{item.label}</p>
+                    <p className="mt-1 text-lg font-semibold">{item.value}</p>
+                  </div>
+                ));
+              })()}
+            </div>
             {org.serviceProfiles.length > 0 ? (
               <ul className="space-y-3">
-                {org.serviceProfiles.map((sp) => (
-                  <li key={sp.id} className="flex items-center gap-3 p-2 rounded-lg border bg-card hover:bg-muted/50 transition-colors">
-                    <div className="p-2 bg-primary/10 rounded-full text-primary">
-                      <FileText className="h-4 w-4" />
-                    </div>
-                    <div>
-                      <p className="font-medium text-sm">{sp.category.name}</p>
-                      <p className="text-xs text-muted-foreground">{sp.category.frequency}</p>
-                    </div>
-                  </li>
-                ))}
+                {org.serviceProfiles.map((sp) => {
+                  const serviceTotal = sp.servicePeriods.reduce(
+                    (sum, period) => sum + (period.paymentAmount ?? 0),
+                    0,
+                  );
+                  const servicePaid = sp.servicePeriods.reduce(
+                    (sum, period) => sum + (period.isPaid ? period.paymentAmount ?? 0 : 0),
+                    0,
+                  );
+                  const serviceOutstanding = serviceTotal - servicePaid;
+
+                  return (
+                    <li key={sp.id} className="flex flex-col gap-3 p-3 rounded-lg border bg-card hover:bg-muted/50 transition-colors">
+                      <div className="flex items-center justify-between gap-3">
+                        <div>
+                          <p className="font-medium text-sm">{sp.category.name}</p>
+                          <p className="text-xs text-muted-foreground">{sp.category.frequency}</p>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Badge variant={serviceOutstanding > 0 ? 'secondary' : 'default'}>
+                            {serviceOutstanding > 0 ? 'Pending' : 'All paid'}
+                          </Badge>
+                        </div>
+                      </div>
+                      <div className="grid gap-3 sm:grid-cols-3 text-sm text-muted-foreground">
+                        <div>
+                          <p className="text-xs uppercase tracking-[0.16em]">Total</p>
+                          <p className="font-semibold text-foreground">{formatAmount(serviceTotal)}</p>
+                        </div>
+                        <div>
+                          <p className="text-xs uppercase tracking-[0.16em]">Paid</p>
+                          <p className="font-semibold text-foreground">{formatAmount(servicePaid)}</p>
+                        </div>
+                        <div>
+                          <p className="text-xs uppercase tracking-[0.16em]">Outstanding</p>
+                          <p className="font-semibold text-foreground">{formatAmount(serviceOutstanding)}</p>
+                        </div>
+                      </div>
+                    </li>
+                  );
+                })}
               </ul>
             ) : (
               <p className="text-sm text-muted-foreground text-center py-4">No service profiles found.</p>

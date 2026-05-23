@@ -27,8 +27,8 @@ export default async function ServiceProfilesPage() {
       <DataTable 
         columns={columns} 
         data={profiles} 
-        searchKey="organization.name" 
-        searchPlaceholder="Search by organization or service..." 
+        searchKey="owner" 
+        searchPlaceholder="Search by client, organization, or service..." 
       />
     </div>
   );

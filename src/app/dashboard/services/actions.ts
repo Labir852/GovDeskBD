@@ -10,8 +10,10 @@ export async function getServiceProfiles() {
     return await prisma.serviceProfile.findMany({
       orderBy: { createdAt: 'desc' },
       include: {
+        client: { select: { id: true, name: true } },
         organization: { select: { id: true, name: true, client: { select: { name: true } } } },
         category: { select: { id: true, name: true, frequency: true } },
+        servicePeriods: { select: { paymentAmount: true, isPaid: true } },
         _count: { select: { servicePeriods: true } }
       }
     });
@@ -26,6 +28,7 @@ export async function getServiceProfileById(id: string) {
     return await prisma.serviceProfile.findUnique({
       where: { id },
       include: {
+        client: { select: { id: true, name: true } },
         organization: { select: { id: true, name: true, client: { select: { id: true, name: true } } } },
         category: { select: { id: true, name: true, frequency: true } },
         servicePeriods: { orderBy: { period: 'desc' } },

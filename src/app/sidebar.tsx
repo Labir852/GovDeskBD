@@ -1,37 +1,23 @@
 'use client';
 import {
+  SidebarProvider,
   SidebarContent,
-  SidebarHeader,
+  SidebarFooter,
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
-  SidebarFooter,
 } from '@/components/ui/sidebar';
 import {Home, Settings, LifeBuoy, SquareUser} from 'lucide-react';
 import Link from 'next/link';
 import {usePathname} from 'next/navigation';
-import Image from 'next/image';
 
 export default function Sidebar() {
   const pathname = usePathname();
 
-  const isActive = (path: string) => {
-    return pathname === path;
-  };
+  const isActive = (path: string) => pathname === path;
 
   return (
-    <>
-      <SidebarHeader>
-        <div className="flex items-center gap-2">
-        <Image
-      src="/govdesk-bd-logo-transparent crop.png"
-      width={50}
-      height={50}
-      alt="Picture of the author"
-    />
-          <span className="text-xl font-semibold">GovDesk BD</span>
-        </div>
-      </SidebarHeader>
+    <SidebarProvider>
       <SidebarContent className="flex-grow">
         <SidebarMenu>
           <SidebarMenuItem>
@@ -80,6 +66,6 @@ export default function Sidebar() {
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarFooter>
-    </>
+    </SidebarProvider>
   );
 }

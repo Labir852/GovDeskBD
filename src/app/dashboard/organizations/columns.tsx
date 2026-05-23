@@ -21,7 +21,17 @@ export type OrgData = {
   tradeLicenseNo: string | null;
   client: { id: string; name: string };
   _count: { serviceProfiles: number };
+  serviceProfiles: Array<{
+    servicePeriods: Array<{ paymentAmount: number | null; isPaid: boolean }>;
+  }>;
 };
+
+const formatAmount = (amount: number | null | undefined) =>
+  new Intl.NumberFormat('en-BD', {
+    maximumFractionDigits: 0,
+    style: 'currency',
+    currency: 'BDT',
+  }).format(amount ?? 0);
 
 export const columns: ColumnDef<OrgData>[] = [
   {
@@ -48,6 +58,33 @@ export const columns: ColumnDef<OrgData>[] = [
     cell: ({ row }) => (
       <Badge variant="outline">{row.original._count.serviceProfiles} Services</Badge>
     ),
+  },
+  {
+    id: 'revenue',
+    header: 'Revenue',
+    cell: ({ row }) => {
+      const servicePeriods = row.original.serviceProfiles.flatMap((profile) => profile.servicePeriods ?? []);
+      const totalExpected = servicePeriods.reduce((sum, period) => sum + (period.paymentAmount ?? 0), 0);
+      const totalPaid = servicePeriods.reduce(
+        (sum, period) => sum + (period.isPaid ? period.paymentAmount ?? 0 : 0),
+        0,
+      );
+      const totalPending = totalExpected - totalPaid;
+
+      return (
+        <div className="space-y-1">
+          <p className="text-sm font-medium">{formatAmount(totalExpected)}</p>
+          <div className="flex flex-wrap gap-2">
+            <Badge variant="outline" className="text-[11px]">
+              {formatAmount(totalPaid)} paid
+            </Badge>
+            <Badge variant={totalPending > 0 ? 'secondary' : 'default'} className="text-[11px]">
+              {formatAmount(totalPending)} pending
+            </Badge>
+          </div>
+        </div>
+      );
+    },
   },
   {
     id: 'actions',

@@ -35,8 +35,8 @@ function log(level: LogLevel, message: string, context?: Record<string, any>, er
     timestamp: formatTimestamp(),
     level,
     message,
-    ...(context && { context }),
-    ...(error && { error: formatError(error) }),
+    ...(context ? { context } : {}),
+    ...(error ? { error: formatError(error) } : {}),
   };
 
   // In production, you'd send this to a logging service (e.g., Pino, Winston, Datadog)

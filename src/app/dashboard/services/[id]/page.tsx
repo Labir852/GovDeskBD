@@ -15,6 +15,10 @@ export default async function ServiceProfileDetailPage({ params }: { params: { i
     redirect('/dashboard/services');
   }
 
+  const ownerName = profile.organization?.name || profile.client?.name || 'Unassigned profile';
+  const ownerType = profile.organization ? 'Organization' : 'Client';
+  const clientName = profile.organization?.client.name || profile.client?.name || 'No client linked';
+
   return (
     <div className="flex flex-col gap-6">
       <Button variant="outline" asChild className="w-fit">
@@ -30,9 +34,9 @@ export default async function ServiceProfileDetailPage({ params }: { params: { i
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
-              <p className="text-sm font-medium text-muted-foreground">Organization</p>
-              <p className="text-lg font-semibold">{profile.organization.name}</p>
-              <p className="text-sm text-muted-foreground">Client: {profile.organization.client.name}</p>
+              <p className="text-sm font-medium text-muted-foreground">{ownerType}</p>
+              <p className="text-lg font-semibold">{ownerName}</p>
+              <p className="text-sm text-muted-foreground">Client: {clientName}</p>
             </div>
             <div>
               <p className="text-sm font-medium text-muted-foreground">Service Category</p>

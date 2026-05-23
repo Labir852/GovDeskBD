@@ -102,6 +102,34 @@ model ServicePeriod {
   updatedAt        DateTime @updatedAt
 }
 
+model TaxFiscalYear {
+  id          String    @id @default(uuid())
+  year        String    @unique
+  label       String
+  description String?
+  isActive    Boolean   @default(true)
+  strategy    Json?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  slabs       TaxSlab[]
+}
+
+model TaxSlab {
+  id            String        @id @default(uuid())
+  fiscalYearId  String
+  fiscalYear    TaxFiscalYear @relation(fields: [fiscalYearId], references: [id], onDelete: Cascade)
+  sequence      Int
+  limitAmount   Float?
+  rate          Float
+  label         String?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  @@unique([fiscalYearId, sequence])
+  @@index([fiscalYearId])
+}
+
 model AuditLog {
   id        String   @id @default(uuid())
   userId    String?
