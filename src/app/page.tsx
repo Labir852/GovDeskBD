@@ -39,37 +39,43 @@ const services = [
     requirements: [
       'NID কপি',
       'আবেদনকারীর মোবাইল নম্বর',
+      'ইমেইল ঠিকানা (যদি থাকে)',
       'ব্যবসার নাম ও ঠিকানা',
-      'ব্যবসার ধরন / কার্যক্রম',
-      'হোল্ডিং ট্যাক্স বা ভাড়ার চুক্তি, যদি থাকে',
+      'ব্যবসার ধরন ',
+      'ভাড়ার চুক্তিপত্র (যদি ভাড়া করা জায়গায় ব্যবসা হয়)',
+      'বর্তমান ঠিকানা ',
+      'স্থায়ী ঠিকানা',
+      'পাসপোর্ট সাইজের ছবি',
     ],
   },
   {
-    title: 'টিন সার্টিফিকেট',
+    title: 'TIN সার্টিফিকেট',
     whatsappLabel: 'TIN Certificate',
     description: 'ব্যক্তি বা প্রতিষ্ঠানের TIN প্রস্তুত ও যাচাই।',
     icon: FileText,
     image: '/tin.png',
     accent: 'bg-sky-50 text-sky-700 border-sky-200',
-    requirements: ['NID কপি', 'মোবাইল নম্বর', 'ইমেইল ঠিকানা (যদি থাকে)', 'সংস্থার ব্যবসার বিবরণ'],
+    requirements: ['NID কপি', 'মোবাইল নম্বর', 'ইমেইল ঠিকানা', 'ব্যবসার বিবরণ (যদি বাবসার জন্য হয়)'],
   },
   {
-    title: 'বিআইএন সার্টিফিকেট',
+    title: 'BIN সার্টিফিকেট ',
     whatsappLabel: 'BIN Certificate',
     description: 'VAT/BIN নিবন্ধন ও প্রয়োজনীয় ডকুমেন্ট সহায়তা।',
     icon: ReceiptText,
     image: '/BIN.png',
     accent: 'bg-amber-50 text-amber-700 border-amber-200',
     requirements: [
+      'মোবাইল নম্বর',
+      'ইমেইল ঠিকানা',
       'ট্রেড লাইসেন্স',
       'TIN সার্টিফিকেট',
-      'NID কপি',
-      'ব্যবসার ঠিকানার প্রমাণ',
-      'ব্যাংক অ্যাকাউন্টের তথ্য (যদি থাকে)',
+      'NID কপি (১৭ ডিজিটের জাতীয় পরিচয়পত্র নম্বর) / ',
+      'ভাড়ার চুক্তিপত্র (যদি ভাড়া করা জায়গায় ব্যবসা হয়)',
+      'ব্যাংক অ্যাকাউন্টের সল্ভেন্সি সার্টিফিকেট',
     ],
   },
   {
-    title: 'আইআরসি',
+    title: 'আইআরসি (IRC)',
     whatsappLabel: 'IRC',
     description: 'আমদানি নিবন্ধন সনদের আবেদন ও নবায়ন।',
     icon: Ship,
@@ -80,11 +86,16 @@ const services = [
       'TIN সার্টিফিকেট',
       'BIN সার্টিফিকেট (যদি থাকে)',
       'ব্যাংক সলভেন্সি সার্টিফিকেট',
-      'সংস্থার মালিক/পরিচালকের NID',
+      'ট্যাক্স রিটার্নের কপি',
+      'NID কপি',
+      'বর্তমান ঠিকানা ',
+      'স্থায়ী ঠিকানা',
+      'পাসপোর্ট সাইজের ছবি',
+      'মেম্বারশিপ সার্টিফিকেট',
     ],
   },
   {
-    title: 'ইআরসি',
+    title: 'ইআরসি (ERC)',
     whatsappLabel: 'ERC',
     description: 'রপ্তানি নিবন্ধন সনদের আবেদন ও নবায়ন।',
     icon: Plane,
@@ -95,20 +106,25 @@ const services = [
       'TIN সার্টিফিকেট',
       'BIN সার্টিফিকেট (যদি থাকে)',
       'ব্যাংক সলভেন্সি সার্টিফিকেট',
-      'সংস্থার মালিক/পরিচালকের NID',
+      'ট্যাক্স রিটার্নের কপি',
+      'NID কপি',
+      'বর্তমান ঠিকানা ',
+      'স্থায়ী ঠিকানা',
+      'পাসপোর্ট সাইজের ছবি',
+      'মেম্বারশিপ সার্টিফিকেট',
     ],
   },
   {
     title: 'অনলাইন ট্যাক্স রিটার্ন',
     whatsappLabel: 'Online Tax Return',
-    description: 'ই-রিটার্ন, অ্যাকনলেজমেন্ট ও কর পরামর্শ।',
+    description: 'ই-রিটার্ন (E-Return)',
     icon: Landmark,
     image: '/tax acknowledge.png',
     accent: 'bg-rose-50 text-rose-700 border-rose-200',
     requirements: [
       'E-TIN নম্বর',
       'E-রিটার্ন পাসওয়ার্ড (যদি ইতিমধ্যে রেজিস্টার করা থাকে)',
-      'NID কপি',
+      'NID দ্বারা নিবন্ধিত মোবাইল নম্বর',
       'আয় ও বেতনের বিবরণ',
       'ব্যাংক স্টেটমেন্ট / বিনিয়োগের বিবরণ (যদি প্রযোজ্য)',
     ],
@@ -262,7 +278,8 @@ export default function Home() {
                     <div className="rounded-lg border p-4">
                       <p className="font-semibold text-slate-950">সরাসরি যোগাযোগ</p>
                       <p className="mt-1 text-sm text-slate-600">
-                        হোয়াটসঅ্যাপ বার্তায় থাকবে: Website - {service.whatsappLabel}
+                        {/* হোয়াটসঅ্যাপ বার্তায় থাকবে: Website - {service.whatsappLabel} */}
+                          এই সেবা সম্পর্কে বিস্তারিত জানতে বা সরাসরি যোগাযোগ করতে নিচের বাটনগুলো ব্যবহার করুন।
                       </p>
                       <p className="mt-2 text-sm font-medium text-slate-900">ফোন / হোয়াটসঅ্যাপ: {phoneNumber}</p>
                     </div>
@@ -318,18 +335,18 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="mx-auto grid max-w-7xl gap-6 px-6 py-10 md:grid-cols-[1fr_auto] md:items-center md:px-10">
+      <section className="text-center mx-auto grid max-w-7xl gap-6 px-6 py-10 md:grid-cols-[1fr_auto] md:items-center md:px-10">
         <div>
-          <h2 className="text-2xl font-bold tracking-normal">নিয়মিত VAT, tax return ও renewal কাজ আরও পরিষ্কারভাবে চালান</h2>
-          <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">
-            মাসিক ও বার্ষিক কাজের জন্য পেমেন্ট, সাবমিশন স্ট্যাটাস, প্রিন্টিং ও অতিরিক্ত তথ্য আলাদা করে সংরক্ষণের ব্যবস্থা করা যায়।
+          <h2 className="text-2xl font-bold tracking-normal">নিয়মিত Trade License, VAT Submission, Vat Return, Tax Return, IRC/ERC Registration, Renewal সার্ভিস আমরা দিয়ে থাকি</h2>
+          <p className=" mt-2  text-sm leading-6 text-slate-600">
+            স্বচ্ছ দামে নির্ভরযোগ্য সেবা পেতে আজই যোগাযোগ করুন।
           </p>
         </div>
-        <Button asChild>
+        {/* <Button asChild>
           <Link href="/login">
             Admin login <ArrowRight className="ml-2 h-4 w-4" />
           </Link>
-        </Button>
+        </Button> */}
       </section>
     </div>
   );

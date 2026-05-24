@@ -10,6 +10,8 @@ import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { createTaxFiscalYear, getAllTaxFiscalYears } from '@/app/dashboard/tax-calculator/actions';
 import TaxSlabEditor from '@/components/TaxSlabEditor';
+import { Key, ReactElement, JSXElementConstructor, ReactNode, ReactPortal, AwaitedReactNode } from 'react';
+import { Select } from '@/components/ui/select';
 
 export const metadata = {
   title: 'Settings | GovDesk Admin',
@@ -554,7 +556,7 @@ export async function SettingsContent({ basePath, searchParams }: SettingsConten
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
-                {fiscalYears.map((year) => (
+                {fiscalYears.map((year: { id: Key | null | undefined; year: string | number | bigint | boolean | ReactElement<any, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode> | null | undefined; label: string | number | bigint | boolean | ReactElement<any, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode> | null | undefined; isActive: any; }) => (
                   <tr key={year.id} className="hover:bg-muted/50">
                     <td className="px-4 py-3">{year.year}</td>
                     <td className="px-4 py-3">{year.label}</td>
