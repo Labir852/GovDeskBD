@@ -57,6 +57,7 @@ model Category {
   id        String   @id @default(uuid())
   name      String   @unique // e.g., "VAT", "eReturn", "IRC", "ERC", "Trade License"
   frequency String   // e.g., "Monthly", "Yearly"
+  portalUrl String?  // Portal login URL for services in this category
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 

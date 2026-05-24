@@ -7,15 +7,17 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { use, useEffect, useState } from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ArrowLeft, Loader2 } from 'lucide-react';
+import { ArrowLeft, Loader2, Eye, EyeOff } from 'lucide-react';
 import Link from 'next/link';
+import { CopyButton } from '@/components/ui/copy-button';
 
 type Organization = { id: string; name: string };
 type Category = { id: string; name: string; frequency: string };
 
-export default function EditServiceProfilePage({ params }: { params: { id: string } }) {
+export default function EditServiceProfilePage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = use(params);
   const { toast } = useToast();
   const router = useRouter();
   const [loading, setLoading] = useState(true);
@@ -23,10 +25,15 @@ export default function EditServiceProfilePage({ params }: { params: { id: strin
   const [organizations, setOrganizations] = useState<Organization[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [profile, setProfile] = useState<any>(null);
+  const [organizationId, setOrganizationId] = useState('');
+  const [categoryId, setCategoryId] = useState('');
+  const [portalUserId, setPortalUserId] = useState('');
+  const [portalPassword, setPortalPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
     async function load() {
-      const prof = await getServiceProfileById(params.id);
+      const prof = await getServiceProfileById(id);
       const orgs = await getOrganizationsForSelect();
       const cats = await getCategoriesForSelect();
 
@@ -36,26 +43,30 @@ export default function EditServiceProfilePage({ params }: { params: { id: strin
       }
 
       setProfile(prof);
+      setOrganizationId(prof.organizationId ?? '');
+      setCategoryId(prof.categoryId);
+      setPortalUserId(prof.portalUserId ?? '');
+      setPortalPassword(prof.portalDecryptedPassword ?? '');
       setOrganizations(orgs);
       setCategories(cats);
       setLoading(false);
     }
     load();
-  }, [params.id, router]);
+  }, [id, router]);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setSubmitting(true);
 
     const formData = new FormData(e.currentTarget);
-    const result = await updateServiceProfile(params.id, formData);
+    const result = await updateServiceProfile(id, formData);
 
     if (result.success) {
       toast({
         title: 'Service profile updated',
         description: 'The service profile has been updated successfully.',
       });
-      router.push(`/dashboard/services/${params.id}`);
+      router.push(`/dashboard/services/${id}`);
     } else {
       toast({
         variant: 'destructive',
@@ -77,7 +88,7 @@ export default function EditServiceProfilePage({ params }: { params: { id: strin
   return (
     <div className="flex flex-col gap-6 max-w-2xl">
       <Button variant="outline" asChild className="w-fit">
-        <Link href={`/dashboard/services/${params.id}`}>
+        <Link href={`/dashboard/services/${id}`}>
           <ArrowLeft className="mr-2 h-4 w-4" /> Back to Profile
         </Link>
       </Button>
@@ -91,9 +102,9 @@ export default function EditServiceProfilePage({ params }: { params: { id: strin
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="organizationId">Organization *</Label>
-              <Select defaultValue={profile?.organizationId} name="organizationId" required>
+              <Select value={organizationId} onValueChange={setOrganizationId} name="organizationId" required>
                 <SelectTrigger id="organizationId">
-                  <SelectValue />
+                  <SelectValue placeholder="Select an organization" />
                 </SelectTrigger>
                 <SelectContent>
                   {organizations.map((org) => (
@@ -107,9 +118,9 @@ export default function EditServiceProfilePage({ params }: { params: { id: strin
 
             <div className="space-y-2">
               <Label htmlFor="categoryId">Service Category *</Label>
-              <Select defaultValue={profile?.categoryId} name="categoryId" required>
+              <Select value={categoryId} onValueChange={setCategoryId} name="categoryId" required>
                 <SelectTrigger id="categoryId">
-                  <SelectValue />
+                  <SelectValue placeholder="Select a category" />
                 </SelectTrigger>
                 <SelectContent>
                   {categories.map((cat) => (
@@ -123,23 +134,44 @@ export default function EditServiceProfilePage({ params }: { params: { id: strin
 
             <div className="space-y-2">
               <Label htmlFor="portalUserId">Portal Account ID</Label>
-              <Input
-                id="portalUserId"
-                name="portalUserId"
-                defaultValue={profile?.portalUserId || ''}
-                placeholder="e.g., user@portal.gov.bd"
-                type="text"
-              />
+              <div className="flex gap-2">
+                <Input
+                  id="portalUserId"
+                  name="portalUserId"
+                  value={portalUserId}
+                  onChange={(event) => setPortalUserId(event.target.value)}
+                  placeholder="e.g., user@portal.gov.bd"
+                  type="text"
+                  className="font-mono flex-1"
+                />
+                <CopyButton value={portalUserId} label="User ID" variant="outline" className="h-10 w-10" />
+              </div>
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="portalPassword">Portal Password</Label>
-              <Input
-                id="portalPassword"
-                name="portalPassword"
-                placeholder="Leave blank to keep existing password"
-                type="password"
-              />
+              <div className="flex gap-2">
+                <Input
+                  id="portalPassword"
+                  name="portalPassword"
+                  value={portalPassword}
+                  onChange={(event) => setPortalPassword(event.target.value)}
+                  placeholder="Leave blank to keep existing password"
+                  type={showPassword ? 'text' : 'password'}
+                  className="font-mono flex-1"
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="icon"
+                  onClick={() => setShowPassword(!showPassword)}
+                  title={showPassword ? 'Hide Password' : 'Show Password'}
+                  className="h-10 w-10 flex-shrink-0"
+                >
+                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                </Button>
+                <CopyButton value={portalPassword} label="Password" variant="outline" className="h-10 w-10" />
+              </div>
               <p className="text-xs text-muted-foreground">Passwords are stored securely with AES-256 encryption.</p>
             </div>
 

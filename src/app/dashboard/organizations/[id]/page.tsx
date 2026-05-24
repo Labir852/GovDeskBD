@@ -22,8 +22,9 @@ const getTotals = (serviceProfiles: Array<{ servicePeriods: Array<{ paymentAmoun
   return { expected, paid, outstanding: expected - paid };
 };
 
-export default async function OrganizationDetailsPage({ params }: { params: { id: string } }) {
-  const org = await getOrganizationById(params.id);
+export default async function OrganizationDetailsPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const org = await getOrganizationById(id);
 
   if (!org) {
     notFound();

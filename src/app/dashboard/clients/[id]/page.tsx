@@ -7,8 +7,9 @@ import { ArrowLeft, Building2, Edit } from 'lucide-react';
 import Link from 'next/link';
 import { prisma } from '@/lib/db';
 
-export default async function ClientDetailsPage({ params }: { params: { id: string } }) {
-  const client = await getClientById(params.id);
+export default async function ClientDetailsPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const client = await getClientById(id);
 
   if (!client) {
     notFound();

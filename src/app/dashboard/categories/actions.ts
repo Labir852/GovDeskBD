@@ -38,12 +38,14 @@ export async function getCategoryById(id: string) {
 export async function createCategory(formData: FormData) {
   const name = formData.get('name') as string;
   const frequency = formData.get('frequency') as string;
+  const portalUrl = formData.get('portalUrl') as string | null;
 
   try {
     const newCategory = await prisma.category.create({
       data: {
         name,
         frequency,
+        portalUrl: portalUrl || null,
       },
     });
 
@@ -53,7 +55,7 @@ export async function createCategory(formData: FormData) {
         action: 'CREATE',
         entity: 'Category',
         entityId: newCategory.id,
-        details: { name: newCategory.name, frequency: newCategory.frequency },
+        details: { name: newCategory.name, frequency: newCategory.frequency, portalUrl: newCategory.portalUrl },
       },
     });
 
@@ -68,6 +70,7 @@ export async function createCategory(formData: FormData) {
 export async function updateCategory(id: string, formData: FormData) {
   const name = formData.get('name') as string;
   const frequency = formData.get('frequency') as string;
+  const portalUrl = formData.get('portalUrl') as string | null;
 
   try {
     const updatedCategory = await prisma.category.update({
@@ -75,6 +78,7 @@ export async function updateCategory(id: string, formData: FormData) {
       data: {
         name,
         frequency,
+        portalUrl: portalUrl || null,
       },
     });
 
@@ -84,7 +88,7 @@ export async function updateCategory(id: string, formData: FormData) {
         action: 'UPDATE',
         entity: 'Category',
         entityId: updatedCategory.id,
-        details: { name: updatedCategory.name, frequency: updatedCategory.frequency },
+        details: { name: updatedCategory.name, frequency: updatedCategory.frequency, portalUrl: updatedCategory.portalUrl },
       },
     });
 

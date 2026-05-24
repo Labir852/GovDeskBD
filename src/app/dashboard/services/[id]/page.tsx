@@ -5,11 +5,34 @@ import { Badge } from '@/components/ui/badge';
 import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
+import { decrypt } from '@/lib/encryption';
+import { CopyButton } from '@/components/ui/copy-button';
 
 export const metadata = { title: 'Service Profile | GovDesk Admin' };
 
-export default async function ServiceProfileDetailPage({ params }: { params: { id: string } }) {
-  const profile = await getServiceProfileById(params.id);
+function buildPortalLink(url: string, userId?: string | null, password?: string) {
+  try {
+    const parsed = new URL(url);
+    if (userId) parsed.searchParams.set('username', userId);
+    if (password) parsed.searchParams.set('password', password);
+    return parsed.toString();
+  } catch {
+    return url;
+  }
+}
+
+function CopyableCredential({ value, label }: { value: string; label: string }) {
+  return (
+    <div className="flex items-center gap-2 bg-muted p-3 rounded-lg">
+      <p className="text-sm font-mono flex-1 break-all">{value}</p>
+      <CopyButton value={value} label={label} showText={true} />
+    </div>
+  );
+}
+
+export default async function ServiceProfileDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const profile = await getServiceProfileById(id);
 
   if (!profile) {
     redirect('/dashboard/services');
@@ -18,11 +41,17 @@ export default async function ServiceProfileDetailPage({ params }: { params: { i
   const ownerName = profile.organization?.name || profile.client?.name || 'Unassigned profile';
   const ownerType = profile.organization ? 'Organization' : 'Client';
   const clientName = profile.organization?.client.name || profile.client?.name || 'No client linked';
+  const portalUrl = profile.category.portalUrl?.trim();
+  const decryptedPassword = profile.portalEncryptedPassword ? decrypt(profile.portalEncryptedPassword) : '';
+  const portalPassword = decryptedPassword && decryptedPassword !== 'Decryption failed' ? decryptedPassword : '';
+  const portalLink = portalUrl
+    ? buildPortalLink(portalUrl, profile.portalUserId, portalPassword)
+    : undefined;
 
   return (
     <div className="flex flex-col gap-6">
       <Button variant="outline" asChild className="w-fit">
-        <Link href="/dashboard/services">
+        <Link href={`/dashboard/services/`}>
           <ArrowLeft className="mr-2 h-4 w-4" /> Back to Services
         </Link>
       </Button>
@@ -47,9 +76,32 @@ export default async function ServiceProfileDetailPage({ params }: { params: { i
             </div>
             <div>
               <p className="text-sm font-medium text-muted-foreground">Portal Account ID</p>
-              <p className="text-lg font-mono font-semibold">
-                {profile.portalUserId ? `●●●●●●${profile.portalUserId.slice(-2)}` : 'Not Set'}
-              </p>
+              {profile.portalUserId ? (
+                <CopyableCredential value={profile.portalUserId} label="User ID" />
+              ) : (
+                <p className="text-sm text-muted-foreground">Not Set</p>
+              )}
+            </div>
+            {portalPassword && (
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">Portal Password</p>
+                <CopyableCredential value={portalPassword} label="Password" />
+              </div>
+            )}
+            <div>
+              <p className="text-sm font-medium text-muted-foreground">Portal URL</p>
+              {portalUrl ? (
+                <div className="space-y-2">
+                  <p className="text-sm break-all text-slate-700">{portalUrl}</p>
+                  <Button asChild className="w-full">
+                    <Link href={portalLink ?? portalUrl} target="_blank" rel="noopener noreferrer">
+                      Open Portal
+                    </Link>
+                  </Button>
+                </div>
+              ) : (
+                <p className="text-sm text-muted-foreground">No portal URL configured for this category.</p>
+              )}
             </div>
             <div className="pt-4">
               <Button asChild className="w-full">

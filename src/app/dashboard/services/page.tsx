@@ -1,8 +1,7 @@
 import { getServiceProfiles } from './actions';
-import { DataTable } from '@/components/ui/data-table';
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
-import { columns } from './columns';
+import { ServicesTabs } from './services-tabs';
 import Link from 'next/link';
 
 export const metadata = { title: 'Service Profiles | GovDesk Admin' };
@@ -24,12 +23,7 @@ export default async function ServiceProfilesPage() {
         </Button>
       </div>
 
-      <DataTable 
-        columns={columns} 
-        data={profiles} 
-        searchKey="owner" 
-        searchPlaceholder="Search by client, organization, or service..." 
-      />
+      <ServicesTabs profiles={profiles} />
     </div>
   );
 }

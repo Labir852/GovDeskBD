@@ -17,6 +17,7 @@ interface EditCategoryFormProps {
     id: string;
     name: string;
     frequency: string;
+    portalUrl?: string | null;
   };
   hasProfiles: boolean;
 }
@@ -25,6 +26,7 @@ export function EditCategoryForm({ category, hasProfiles }: EditCategoryFormProp
   const router = useRouter();
   const [name, setName] = useState(category.name);
   const [frequency, setFrequency] = useState(category.frequency);
+  const [portalUrl, setPortalUrl] = useState(category.portalUrl ?? '');
   const [isSaving, setIsSaving] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
@@ -34,6 +36,7 @@ export function EditCategoryForm({ category, hasProfiles }: EditCategoryFormProp
 
     const formData = new FormData(event.currentTarget);
     formData.set('frequency', frequency);
+    formData.set('portalUrl', portalUrl);
 
     const result = await updateCategory(category.id, formData);
     setIsSaving(false);
@@ -105,6 +108,18 @@ export function EditCategoryForm({ category, hasProfiles }: EditCategoryFormProp
                 </SelectContent>
               </Select>
             </div>
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="portalUrl">Portal URL</Label>
+            <Input
+              id="portalUrl"
+              name="portalUrl"
+              type="url"
+              value={portalUrl}
+              onChange={(event) => setPortalUrl(event.target.value)}
+              placeholder="https://portal.example.gov.bd/login"
+            />
+            <p className="text-xs text-muted-foreground">Optional portal login URL for this category.</p>
           </div>
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex gap-2">

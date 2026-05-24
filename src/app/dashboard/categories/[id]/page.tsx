@@ -8,8 +8,9 @@ import Link from 'next/link';
 import { prisma } from '@/lib/db';
 import { EditCategoryForm } from './edit-form';
 
-export default async function CategoryDetailPage({ params }: { params: { id: string } }) {
-  const category = await getCategoryById(params.id);
+export default async function CategoryDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const category = await getCategoryById(id);
 
   if (!category) {
     notFound();
@@ -46,6 +47,7 @@ export default async function CategoryDetailPage({ params }: { params: { id: str
               id: category.id,
               name: category.name,
               frequency: category.frequency,
+              portalUrl: category.portalUrl,
             }}
             hasProfiles={hasProfiles}
           />

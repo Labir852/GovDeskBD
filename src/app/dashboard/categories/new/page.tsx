@@ -24,12 +24,14 @@ export default function NewCategoryPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [frequency, setFrequency] = useState('');
+  const [portalUrl, setPortalUrl] = useState('');
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setLoading(true);
     const formData = new FormData(event.currentTarget);
     formData.set('frequency', frequency);
+    formData.set('portalUrl', portalUrl);
     const result = await createCategory(formData);
 
     if (result.success) {
@@ -88,6 +90,18 @@ export default function NewCategoryPage() {
                   </SelectContent>
                 </Select>
               </div>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="portalUrl">Portal URL</Label>
+              <Input
+                id="portalUrl"
+                name="portalUrl"
+                type="url"
+                value={portalUrl}
+                onChange={(event) => setPortalUrl(event.target.value)}
+                placeholder="https://portal.example.gov.bd/login"
+              />
+              <p className="text-xs text-muted-foreground">Optional portal login URL for this category.</p>
             </div>
 
             <div className="flex justify-end gap-4">
