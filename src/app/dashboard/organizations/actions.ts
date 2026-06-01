@@ -30,6 +30,9 @@ export async function createOrganization(formData: FormData) {
   const tradeLicenseNo = formData.get('tradeLicenseNo') as string | null;
 
   try {
+    if (!clientId) {
+      return { success: false, error: 'Missing clientId' };
+    }
     const newOrg = await prisma.organization.create({
       data: {
         clientId,
@@ -71,6 +74,7 @@ export async function getClientsForSelect() {
 }
 
 export async function getOrganizationById(id: string) {
+  if (!id || id === 'undefined' || id === 'null') return null;
   try {
     return await prisma.organization.findUnique({
       where: { id },
@@ -100,6 +104,9 @@ export async function updateOrganization(id: string, formData: FormData) {
   const tradeLicenseNo = formData.get('tradeLicenseNo') as string | null;
 
   try {
+    if (!clientId) {
+      return { success: false, error: 'Missing clientId' };
+    }
     const updatedOrg = await prisma.organization.update({
       where: { id },
       data: {

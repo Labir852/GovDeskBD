@@ -50,7 +50,7 @@ export default async function OrganizationDetailsPage({ params }: { params: Prom
         <Badge variant="outline" className="text-sm px-4 py-1">
           {org._count.serviceProfiles} Services
         </Badge>
-        <Button variant="outline" asChild>
+        <Button variant="outline" asChild className="w-fit cursor-pointer">
           <Link href={`/dashboard/organizations/${org.id}/edit`}>
             <Edit className="mr-2 h-4 w-4" /> Edit
           </Link>

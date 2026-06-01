@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import { ColumnDef } from '@tanstack/react-table';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -44,7 +44,6 @@ export type ServiceProfileData = {
     id: string;
     name: string;
     frequency: string;
-    portalUrl: string | null;
   };
   _count: { servicePeriods: number };
   createdAt: Date;
@@ -57,6 +56,10 @@ export type ServiceProfileData = {
     periodData: any;
   }>;
 };
+
+// Memoized period sorting helper
+const getPeriodsSorted = (periods: ServiceProfileData['servicePeriods']) =>
+  [...periods].sort((a, b) => b.period.localeCompare(a.period));
 
 const formatAmount = (amount: number | null | undefined) =>
   new Intl.NumberFormat('en-BD', {
@@ -340,40 +343,40 @@ export const columns: ColumnDef<ServiceProfileData>[] = [
   {
     id: 'needPrint',
     header: 'Need Print',
-    accessorFn: (row) => {
-      const sortedPeriods = [...row.servicePeriods].sort((a, b) => b.period.localeCompare(a.period));
+    cell: ({ row }) => {
+      const profile = row.original;
+      const sortedPeriods = useMemo(
+        () => getPeriodsSorted(profile.servicePeriods),
+        [profile.servicePeriods]
+      );
       const latestPeriod = sortedPeriods[0] || null;
-      const periodData = (latestPeriod?.periodData as Record<string, any>) || {};
-      return periodData.needPrint || 'NO';
+
+      if (!latestPeriod) return <span className="text-xs text-muted-foreground">No Periods</span>;
+
+      const periodData = (latestPeriod.periodData as Record<string, any>) || {};
+      const currentNeedPrint = periodData.needPrint || 'NO';
+
+      return (
+        <GenericPeriodDropdown
+          key={`needPrint-${latestPeriod.id}`}
+          periodId={latestPeriod.id}
+          fieldName="needPrint"
+          currentValue={currentNeedPrint}
+          options={needPrintOptions}
+          colorMap={needPrintColors}
+        />
+      );
     },
-    // cell: ({ row }) => {
-    //   const profile = row.original;
-    //   const sortedPeriods = [...profile.servicePeriods].sort((a, b) => b.period.localeCompare(a.period));
-    //   const latestPeriod = sortedPeriods[0] || null;
-
-    //   if (!latestPeriod) return <span className="text-xs text-muted-foreground">No Periods</span>;
-
-    //   const periodData = (latestPeriod.periodData as Record<string, any>) || {};
-    //   const currentNeedPrint = periodData.needPrint || 'NO';
-
-    //   return (
-    //     <GenericPeriodDropdown
-    //       key={`needPrint-${latestPeriod.id}`}
-    //       periodId={latestPeriod.id}
-    //       fieldName="needPrint"
-    //       currentValue={currentNeedPrint}
-    //       options={needPrintOptions}
-    //       colorMap={needPrintColors}
-    //     />
-    //   );
-    // },
   },
   {
     id: 'vatStatus',
     header: 'VAT Status',
     cell: ({ row }) => {
       const profile = row.original;
-      const sortedPeriods = [...profile.servicePeriods].sort((a, b) => b.period.localeCompare(a.period));
+      const sortedPeriods = useMemo(
+        () => getPeriodsSorted(profile.servicePeriods),
+        [profile.servicePeriods]
+      );
       const latestPeriod = sortedPeriods[0] || null;
 
       if (!latestPeriod) return <span className="text-xs text-muted-foreground">No Periods</span>;
@@ -398,7 +401,10 @@ export const columns: ColumnDef<ServiceProfileData>[] = [
     header: 'Submit Status',
     cell: ({ row }) => {
       const profile = row.original;
-      const sortedPeriods = [...profile.servicePeriods].sort((a, b) => b.period.localeCompare(a.period));
+      const sortedPeriods = useMemo(
+        () => getPeriodsSorted(profile.servicePeriods),
+        [profile.servicePeriods]
+      );
       const latestPeriod = sortedPeriods[0] || null;
 
       if (!latestPeriod) return <span className="text-xs text-muted-foreground">No Periods</span>;
@@ -420,7 +426,10 @@ export const columns: ColumnDef<ServiceProfileData>[] = [
     header: 'Last Month Status',
     cell: ({ row }) => {
       const profile = row.original;
-      const sortedPeriods = [...profile.servicePeriods].sort((a, b) => b.period.localeCompare(a.period));
+      const sortedPeriods = useMemo(
+        () => getPeriodsSorted(profile.servicePeriods),
+        [profile.servicePeriods]
+      );
       const previousPeriod = sortedPeriods[1] || null;
 
       if (!previousPeriod) return <span className="text-xs text-muted-foreground">No History</span>;

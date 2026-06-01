@@ -54,6 +54,18 @@ export async function createServicePeriod(formData: FormData) {
   }
 }
 
+export async function getServicePeriodById(periodId: string) {
+  try {
+    return await prisma.servicePeriod.findUnique({
+      where: { id: periodId },
+      include: { serviceProfile: true },
+    });
+  } catch (error) {
+    logger.error('Failed to fetch service period', error);
+    throw new Error('Failed to fetch service period');
+  }
+}
+
 export async function updateServicePeriod(id: string, formData: FormData) {
   const period = formData.get('period') as string;
   const paymentAmount = parseFloat(formData.get('paymentAmount') as string) || 0;

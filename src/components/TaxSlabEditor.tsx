@@ -6,12 +6,12 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
-function createRow(id: string) {
-  return { id, limitAmount: '', rate: '', label: '' };
+function createRow(index: number) {
+  return { id: `slab-${index}`, limitAmount: '', rate: '', label: '' };
 }
 
 export default function TaxSlabEditor() {
-  const [rows, setRows] = useState(() => [createRow(crypto.randomUUID())]);
+  const [rows, setRows] = useState(() => [createRow(0)]);
 
   const canRemove = rows.length > 1;
   const rowCountLabel = useMemo(
@@ -19,10 +19,17 @@ export default function TaxSlabEditor() {
     [rows.length],
   );
 
-  const addRow = () => setRows((current) => [...current, createRow(crypto.randomUUID())]);
+  const addRow = () => {
+    setRows((current) => [...current, createRow(current.length)]);
+  };
+  
   const removeRow = (id: string) => {
     if (!canRemove) return;
-    setRows((current) => current.filter((row) => row.id !== id));
+    setRows((current) => {
+      const filtered = current.filter((row) => row.id !== id);
+      // Re-index the rows to keep IDs consistent
+      return filtered.map((row, index) => ({ ...row, id: `slab-${index}` }));
+    });
   };
 
   return (
@@ -41,7 +48,7 @@ export default function TaxSlabEditor() {
       </div>
 
       <div className="space-y-3">
-        {rows.map((row, index) => (
+        {rows.map((row) => (
           <div key={row.id} className="grid gap-3 rounded-lg border bg-white p-4 sm:grid-cols-[1.2fr_1fr_1.6fr_auto]">
             <div className="space-y-2">
               <Label htmlFor={`slabLimitAmount-${row.id}`}>Upper limit</Label>

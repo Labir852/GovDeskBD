@@ -285,24 +285,39 @@ export default async function DashboardPage() {
               {data.recentPeriods.length === 0 ? (
                 <p className="py-8 text-center text-sm text-muted-foreground">No service periods have been recorded yet.</p>
               ) : (
-                data.recentPeriods.map((period) => (
-                  <Link
-                    key={period.id}
-                    href={`/dashboard/services/${period.serviceProfileId}`}
-                    className="grid gap-2 py-4 transition-colors hover:bg-muted/40 sm:grid-cols-[1fr_auto]"
-                  >
-                    <div>
-                      <p className="font-medium">{getProfileName(period)}</p>
-                      <p className="text-sm text-muted-foreground">
-                        {getClientName(period)} · {period.serviceProfile.category.name} · {period.period}
-                      </p>
+                data.recentPeriods.map((period) => {
+                  const content = (
+                    <>
+                      <div>
+                        <p className="font-medium">{getProfileName(period)}</p>
+                        <p className="text-sm text-muted-foreground">
+                          {getClientName(period)} · {period.serviceProfile.category.name} · {period.period}
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-2 sm:justify-end">
+                        <Badge variant={period.isPaid ? 'default' : 'outline'}>{period.isPaid ? 'Paid' : 'Unpaid'}</Badge>
+                        <span className="text-sm font-medium">{formatAmount(period.paymentAmount)}</span>
+                      </div>
+                    </>
+                  );
+
+                  return period.serviceProfileId ? (
+                    <Link
+                      key={period.id}
+                      href={`/dashboard/services/${period.serviceProfileId}`}
+                      className="grid gap-2 py-4 transition-colors hover:bg-muted/40 sm:grid-cols-[1fr_auto]"
+                    >
+                      {content}
+                    </Link>
+                  ) : (
+                    <div
+                      key={period.id}
+                      className="grid gap-2 py-4 text-muted-foreground sm:grid-cols-[1fr_auto]"
+                    >
+                      {content}
                     </div>
-                    <div className="flex items-center gap-2 sm:justify-end">
-                      <Badge variant={period.isPaid ? 'default' : 'outline'}>{period.isPaid ? 'Paid' : 'Unpaid'}</Badge>
-                      <span className="text-sm font-medium">{formatAmount(period.paymentAmount)}</span>
-                    </div>
-                  </Link>
-                ))
+                  );
+                })
               )}
             </div>
           </CardContent>

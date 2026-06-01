@@ -32,6 +32,10 @@ function CopyableCredential({ value, label }: { value: string; label: string }) 
 
 export default async function ServiceProfileDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
+  if (!id || id === 'undefined') {
+    redirect('/dashboard/services');
+  }
+
   const profile = await getServiceProfileById(id);
 
   if (!profile) {
@@ -132,9 +136,14 @@ export default async function ServiceProfileDetailPage({ params }: { params: Pro
                       <p className="font-medium">{period.period}</p>
                       <p className="text-sm text-muted-foreground">${period.paymentAmount}</p>
                     </div>
-                    <Badge variant={period.isPaid ? 'default' : 'secondary'}>
-                      {period.isPaid ? 'Paid' : 'Pending'}
-                    </Badge>
+                    <div className="flex items-center gap-2">
+                      <Badge variant={period.isPaid ? 'default' : 'secondary'}>
+                        {period.isPaid ? 'Paid' : 'Pending'}
+                      </Badge>
+                      <Button variant="outline" size="sm" asChild>
+                        <Link href={`/dashboard/services/${profile.id}/periods/${period.id}/edit`}>Edit</Link>
+                      </Button>
+                    </div>
                   </div>
                 ))}
               </div>

@@ -100,7 +100,9 @@ export const columns: ColumnDef<OrgData>[] = [
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem>Edit Organization</DropdownMenuItem>
+            <DropdownMenuItem>
+              <Link href={`/dashboard/organizations/${org.id}/edit`}>Edit Organization</Link>
+            </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
               <Link href={`/dashboard/services/new?orgId=${org.id}`}>Add Service</Link>

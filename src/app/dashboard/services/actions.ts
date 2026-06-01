@@ -12,8 +12,12 @@ export async function getServiceProfiles() {
       include: {
         client: { select: { id: true, name: true } },
         organization: { select: { id: true, name: true, client: { select: { name: true } } } },
-        category: { select: { id: true, name: true, frequency: true, portalUrl: true } },
-        servicePeriods: { select: { id: true, period: true, paymentAmount: true, isPaid: true, status: true, periodData: true } },
+        category: { select: { id: true, name: true, frequency: true } },
+        servicePeriods: { 
+          select: { id: true, period: true, paymentAmount: true, isPaid: true, status: true, periodData: true },
+          orderBy: { period: 'desc' },
+          take: 2 // Only load last 2 periods for current and previous month
+        },
         _count: { select: { servicePeriods: true } }
       }
     });
@@ -34,13 +38,17 @@ export async function getServiceProfiles() {
 }
 
 export async function getServiceProfileById(id: string) {
+  if (!id || id === 'undefined' || id === 'null') {
+    return null;
+  }
+
   try {
     const profile = await prisma.serviceProfile.findUnique({
       where: { id },
       include: {
         client: { select: { id: true, name: true } },
         organization: { select: { id: true, name: true, client: { select: { id: true, name: true } } } },
-        category: { select: { id: true, name: true, frequency: true, portalUrl: true } },
+        category: { select: { id: true, name: true, frequency: true } },
         servicePeriods: { orderBy: { period: 'desc' } },
       },
     });
@@ -58,7 +66,7 @@ export async function getServiceProfileById(id: string) {
     };
   } catch (error) {
     logger.error('Failed to fetch service profile', error);
-    throw new Error('Failed to fetch service profile');
+    return null;
   }
 }
 
@@ -169,9 +177,10 @@ export async function deleteServiceProfile(id: string) {
   }
 }
 
-export async function getOrganizationsForSelect() {
+export async function getOrganizationsForSelect(clientId?: string) {
   try {
     return await prisma.organization.findMany({
+      where: clientId ? { clientId } : undefined,
       select: { id: true, name: true },
       orderBy: { name: 'asc' },
     });

@@ -35,7 +35,11 @@ export default async function ClientDetailsPage({ params }: { params: Promise<{ 
         <Badge variant={client.isActive ? 'default' : 'destructive'} className="text-sm px-4 py-1">
           {client.isActive ? 'Active' : 'Inactive'}
         </Badge>
-        <Button variant="outline"><Edit className="mr-2 h-4 w-4" /> Edit</Button>
+        <Button variant="outline" asChild>
+          <Link href={`/dashboard/clients/${client.id}/edit`}>
+            <Edit className="mr-2 h-4 w-4" /> Edit
+          </Link>
+        </Button>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -86,13 +90,33 @@ export default async function ClientDetailsPage({ params }: { params: Promise<{ 
                       <p className="font-medium text-sm">{org.name}</p>
                       <p className="text-xs text-muted-foreground">{org.tradeLicenseNo || 'No Trade License'}</p>
                     </div>
+                    <Button variant="secondary" size="sm" asChild>
+                      <Link href={`/dashboard/services/new?orgId=${org.id}`}>Add Service</Link>
+                    </Button>
                   </li>
                 ))}
               </ul>
             ) : (
               <p className="text-sm text-muted-foreground text-center py-4">No organizations found.</p>
             )}
-            <Button variant="outline" className="w-full mt-4" size="sm">Add Organization</Button>
+            <Button variant="outline" className="w-full mt-4" size="sm" asChild>
+              <Link href={`/dashboard/clients/${client.id}/new-org`}>Add Organization</Link>
+            </Button>
+          </CardContent>
+        </Card>
+
+        <Card className="md:col-span-3">
+          <CardHeader>
+            <CardTitle>Service Profiles ({client._count.serviceProfiles})</CardTitle>
+            <CardDescription>Services assigned to organizations owned by this client.</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm text-muted-foreground mb-4">
+              Services are organized by their parent organizations. Create new services through the services dashboard or add them directly to an organization.
+            </p>
+            <Button asChild>
+              <Link href={`/dashboard/services/new?orgId=${client.organizations[0]?.id || ''}`}>Add Service</Link>
+            </Button>
           </CardContent>
         </Card>
 

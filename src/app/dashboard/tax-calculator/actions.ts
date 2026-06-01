@@ -5,51 +5,82 @@ import { prisma } from '@/lib/db';
 import { defaultTaxFiscalYears, defaultTaxStrategy } from '@/lib/tax-calculator';
 
 export async function ensureDefaultTaxRules() {
-  const count = await prisma.taxFiscalYear.count();
+  try {
+    // Check if model exists and count records
+    if (!prisma.taxFiscalYear) {
+      console.warn('TaxFiscalYear model not available in Prisma client');
+      return;
+    }
 
-  if (count > 0) return;
+    const count = await prisma.taxFiscalYear.count();
 
-  for (const fiscalYear of defaultTaxFiscalYears) {
-    await prisma.taxFiscalYear.create({
-      data: {
-        year: fiscalYear.year,
-        label: fiscalYear.label,
-        description: fiscalYear.description,
-        strategy: fiscalYear.strategy,
-        slabs: {
-          create: fiscalYear.slabs.map((slab, index) => ({
-            sequence: index + 1,
-            limitAmount: slab.limitAmount,
-            rate: slab.rate,
-            label: slab.label,
-          })),
+    if (count > 0) return;
+
+    for (const fiscalYear of defaultTaxFiscalYears) {
+      await prisma.taxFiscalYear.create({
+        data: {
+          year: fiscalYear.year,
+          label: fiscalYear.label,
+          description: fiscalYear.description,
+          strategy: fiscalYear.strategy,
+          slabs: {
+            create: fiscalYear.slabs.map((slab, index) => ({
+              sequence: index + 1,
+              limitAmount: slab.limitAmount,
+              rate: slab.rate,
+              label: slab.label,
+            })),
+          },
         },
-      },
-    });
+      });
+    }
+  } catch (error) {
+    console.error('Error ensuring default tax rules:', error);
+    // Silently fail - the model may not be migrated yet
   }
 }
 
 export async function getTaxFiscalYears() {
-  await ensureDefaultTaxRules();
+  try {
+    await ensureDefaultTaxRules();
 
-  return prisma.taxFiscalYear.findMany({
-    where: { isActive: true },
-    orderBy: { year: 'desc' },
-    include: {
-      slabs: { orderBy: { sequence: 'asc' } },
-    },
-  });
+    if (!prisma.taxFiscalYear) {
+      console.warn('TaxFiscalYear model not available');
+      return [];
+    }
+
+    return await prisma.taxFiscalYear.findMany({
+      where: { isActive: true },
+      orderBy: { year: 'desc' },
+      include: {
+        slabs: { orderBy: { sequence: 'asc' } },
+      },
+    });
+  } catch (error) {
+    console.error('Error fetching tax fiscal years:', error);
+    return [];
+  }
 }
 
 export async function getAllTaxFiscalYears() {
-  await ensureDefaultTaxRules();
+  try {
+    await ensureDefaultTaxRules();
 
-  return prisma.taxFiscalYear.findMany({
-    orderBy: { year: 'desc' },
-    include: {
-      slabs: { orderBy: { sequence: 'asc' } },
-    },
-  });
+    if (!prisma.taxFiscalYear) {
+      console.warn('TaxFiscalYear model not available');
+      return [];
+    }
+
+    return await prisma.taxFiscalYear.findMany({
+      orderBy: { year: 'desc' },
+      include: {
+        slabs: { orderBy: { sequence: 'asc' } },
+      },
+    });
+  } catch (error) {
+    console.error('Error fetching all tax fiscal years:', error);
+    return [];
+  }
 }
 
 function parseSlabs(raw: string | FormData) {
@@ -132,6 +163,10 @@ function parseStrategy(raw: string) {
 
 export async function createTaxFiscalYear(formData: FormData) {
   try {
+    if (!prisma.taxFiscalYear) {
+      return { success: false, error: 'TaxFiscalYear model not available.' };
+    }
+
     const year = String(formData.get('year') || '').trim();
     const label = String(formData.get('label') || '').trim();
     const description = String(formData.get('description') || '').trim();
@@ -176,6 +211,10 @@ export async function createTaxFiscalYear(formData: FormData) {
 
 export async function updateTaxFiscalYear(id: string, formData: FormData) {
   try {
+    if (!prisma.taxFiscalYear) {
+      return { success: false, error: 'TaxFiscalYear model not available.' };
+    }
+
     const year = String(formData.get('year') || '').trim();
     const label = String(formData.get('label') || '').trim();
     const description = String(formData.get('description') || '').trim();
