@@ -49,6 +49,69 @@ const services = [
     ],
   },
   {
+    title: 'RJSC নিবন্ধন ও ফাইলিং',
+    whatsappLabel: 'RJSC Registration & Filing',
+    description: 'RJSC-এ কোম্পানি নিবন্ধন, বার্ষিক রিটার্ন ফাইলিং এবং অন্যান্য সংশ্লিষ্ট সেবা।',
+    icon: Briefcase,
+    image: '/trade.png',
+    accent: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+    requirements: [
+      'NID কপি',
+      'মোবাইল নম্বর',
+      'ইমেইল ঠিকানা (যদি থাকে)',
+      'কোম্পানির নাম ও প্রস্তাবিত কার্যক্রম',
+      'শেয়ারহোল্ডারদের তথ্য',
+      'পরিচালকদের তথ্য',
+      'নিবন্ধিত অফিসের ঠিকানা',
+      'ভাড়ার চুক্তিপত্র (যদি ভাড়া করা জায়গায় অফিস হয়)',
+      'বর্তমান ঠিকানা ',
+      'স্থায়ী ঠিকানা',
+      'পাসপোর্ট সাইজের ছবি',
+    ],
+  },
+  {
+    title: 'Memorandum ও Articles of Association',
+    whatsappLabel: 'Memorandum & Articles of Association',
+    description: 'কোম্পানির Memorandum ও Articles of Association প্রস্তুত ও সংশোধন।',
+    icon: Briefcase,
+    image: '/trade.png',
+    accent: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+    requirements: [
+      'NID কপি',
+      'মোবাইল নম্বর',
+      'ইমেইল ঠিকানা (যদি থাকে)',
+      'কোম্পানির নাম ও প্রস্তাবিত কার্যক্রম',
+      'শেয়ারহোল্ডারদের তথ্য',
+      'পরিচালকদের তথ্য',
+      'নিবন্ধিত অফিসের ঠিকানা',
+      'ভাড়ার চুক্তিপত্র (যদি ভাড়া করা জায়গায় অফিস হয়)',
+      'বর্তমান ঠিকানা ',
+      'স্থায়ী ঠিকানা',
+      'পাসপোর্ট সাইজের ছবি',
+    ],
+  },
+  {
+    title: 'Form XII',
+    whatsappLabel: 'Form XII',
+    description: 'কোম্পানির বার্ষিক রিটার্ন ফাইলিংয়ের জন্য Form XII প্রস্তুত ও জমা।',
+    icon: Briefcase,
+    image: '/trade.png',
+    accent: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+    requirements: [
+      'NID কপি',
+      'মোবাইল নম্বর',
+      'ইমেইল ঠিকানা (যদি থাকে)',
+      'কোম্পানির নাম ও প্রস্তাবিত কার্যক্রম',
+      'শেয়ারহোল্ডারদের তথ্য',
+      'পরিচালকদের তথ্য',
+      'নিবন্ধিত অফিসের ঠিকানা',
+      'ভাড়ার চুক্তিপত্র (যদি ভাড়া করা জায়গায় অফিস হয়)',
+      'বর্তমান ঠিকানা ',
+      'স্থায়ী ঠিকানা',
+      'পাসপোর্ট সাইজের ছবি',
+    ],
+  },
+  {
     title: 'TIN সার্টিফিকেট',
     whatsappLabel: 'TIN Certificate',
     description: 'ব্যক্তি বা প্রতিষ্ঠানের TIN প্রস্তুত ও যাচাই।',
@@ -171,7 +234,7 @@ export default function Home() {
               GovDesk BD
             </h1>
             <p className="mt-5 max-w-2xl text-base leading-7 text-white/90 md:text-lg">
-              ট্রেড লাইসেন্স, TIN, BIN, IRC, ERC, VAT ও অনলাইন ট্যাক্স রিটার্ন সেবাকে দ্রুত, পরিষ্কার এবং নির্ভরযোগ্যভাবে সম্পন্ন করুন।
+              ট্রেড লাইসেন্স, RJSC, Memorandum, Form XII, TIN, BIN, IRC, ERC, VAT ও অনলাইন ট্যাক্স রিটার্ন সেবাকে দ্রুত, পরিষ্কার এবং নির্ভরযোগ্যভাবে সম্পন্ন করুন।
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Button size="lg" asChild className="bg-white text-slate-950 hover:bg-white/90">
@@ -237,11 +300,11 @@ export default function Home() {
                       <Image src={service.image} alt={service.title} fill className="object-contain p-2" sizes="96px" />
                     </div>
                     <div className="min-w-0">
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-start gap-2">
                         <span className={`rounded-md border p-2 ${service.accent}`}>
                           <service.icon className="h-4 w-4" />
                         </span>
-                        <h3 className="truncate text-lg font-semibold">{service.title}</h3>
+                        <h3 className="min-w-0 flex-1 break-words text-lg font-semibold leading-snug">{service.title}</h3>
                       </div>
                       <p className="mt-2 line-clamp-2 text-sm leading-6 text-slate-600">{service.description}</p>
                       <span className="mt-3 inline-flex items-center text-sm font-medium text-slate-900">
