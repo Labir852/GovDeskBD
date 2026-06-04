@@ -17,7 +17,11 @@ const sidebarItems = [
   { title: 'Settings', href: '/dashboard/settings', icon: Settings },
 ];
 
-export function Sidebar() {
+type SidebarProps = {
+  onNavigate?: () => void;
+};
+
+export function Sidebar({ onNavigate }: SidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
 
@@ -39,7 +43,7 @@ export function Sidebar() {
           {sidebarItems.map((item) => {
             const isActive = pathname === item.href || pathname.startsWith(`${item.href}/`);
             return (
-              <Link key={item.href} href={item.href}>
+              <Link key={item.href} href={item.href} onClick={onNavigate}>
                 <span className="relative flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors hover:text-primary">
                   {isActive && (
                     <motion.div
@@ -64,7 +68,7 @@ export function Sidebar() {
         <Button 
           type="button"
           variant="ghost" 
-          className="w-full justify-start text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+          className="w-full justify-start text-muted-foreground hover:text-destructive hover:bg-destructive/10 "
           onClick={handleLogout}
         >
           <LogOut className="mr-2 h-5 w-5" />

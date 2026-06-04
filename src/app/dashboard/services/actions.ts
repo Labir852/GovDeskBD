@@ -12,7 +12,7 @@ export async function getServiceProfiles() {
       include: {
         client: { select: { id: true, name: true } },
         organization: { select: { id: true, name: true, client: { select: { name: true } } } },
-        category: { select: { id: true, name: true, frequency: true } },
+        category: { select: { id: true, name: true, frequency: true, portalUrl: true } },
         servicePeriods: { 
           select: { id: true, period: true, paymentAmount: true, isPaid: true, status: true, periodData: true },
           orderBy: { period: 'desc' },
@@ -48,7 +48,7 @@ export async function getServiceProfileById(id: string) {
       include: {
         client: { select: { id: true, name: true } },
         organization: { select: { id: true, name: true, client: { select: { id: true, name: true } } } },
-        category: { select: { id: true, name: true, frequency: true } },
+        category: { select: { id: true, name: true, frequency: true, portalUrl: true } },
         servicePeriods: { orderBy: { period: 'desc' } },
       },
     });
@@ -193,7 +193,7 @@ export async function getOrganizationsForSelect(clientId?: string) {
 export async function getCategoriesForSelect() {
   try {
     return await prisma.category.findMany({
-      select: { id: true, name: true, frequency: true },
+      select: { id: true, name: true, frequency: true, portalUrl: true },
       orderBy: { name: 'asc' },
     });
   } catch (error) {

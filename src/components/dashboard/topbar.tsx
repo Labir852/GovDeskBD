@@ -4,14 +4,18 @@ import { Bell, Menu, Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { SidebarTrigger } from '@/components/ui/sidebar';
 
-export function Topbar() {
+type TopbarProps = {
+  onMenuClick?: () => void;
+};
+
+export function Topbar({ onMenuClick }: TopbarProps) {
   return (
     <header className="sticky top-0 z-30 flex h-16 items-center gap-4 border-b bg-background/80 px-6 backdrop-blur-md">
-      <SidebarTrigger className="md:hidden">
+      <Button type="button" variant="ghost" size="icon" onClick={onMenuClick}>
         <Menu className="h-5 w-5" />
-      </SidebarTrigger>
+        <span className="sr-only">Toggle sidebar</span>
+      </Button>
       
       <div className="flex flex-1 items-center gap-4 md:ml-auto md:gap-2 lg:gap-4">
         <form className="ml-auto flex-1 sm:flex-initial">

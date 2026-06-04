@@ -6,8 +6,11 @@ import { motion } from 'framer-motion';
 import {
   ArrowRight,
   Briefcase,
+  ClipboardList,
   Facebook,
   FileText,
+  Hotel,
+  IdCard,
   Landmark,
   Mail,
   Phone,
@@ -15,6 +18,7 @@ import {
   ReceiptText,
   Ship,
   Sparkles,
+  
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -52,9 +56,9 @@ const services = [
     title: 'RJSC নিবন্ধন ও ফাইলিং',
     whatsappLabel: 'RJSC Registration & Filing',
     description: 'RJSC-এ কোম্পানি নিবন্ধন, বার্ষিক রিটার্ন ফাইলিং এবং অন্যান্য সংশ্লিষ্ট সেবা।',
-    icon: Briefcase,
+    icon: Hotel,
     image: '/trade.png',
-    accent: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+    accent: 'bg-amber-50 text-amber-700 border-amber-200',
     requirements: [
       'NID কপি',
       'মোবাইল নম্বর',
@@ -73,9 +77,9 @@ const services = [
     title: 'Memorandum ও Articles of Association',
     whatsappLabel: 'Memorandum & Articles of Association',
     description: 'কোম্পানির Memorandum ও Articles of Association প্রস্তুত ও সংশোধন।',
-    icon: Briefcase,
+    icon: IdCard,
     image: '/trade.png',
-    accent: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+    accent: 'bg-indigo-50 text-indigo-700 border-indigo-200',
     requirements: [
       'NID কপি',
       'মোবাইল নম্বর',
@@ -94,9 +98,9 @@ const services = [
     title: 'Form XII',
     whatsappLabel: 'Form XII',
     description: 'কোম্পানির বার্ষিক রিটার্ন ফাইলিংয়ের জন্য Form XII প্রস্তুত ও জমা।',
-    icon: Briefcase,
+    icon: ClipboardList,
     image: '/trade.png',
-    accent: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+    accent: 'bg-amber-50 text-amber-700 border-amber-200',
     requirements: [
       'NID কপি',
       'মোবাইল নম্বর',
@@ -117,7 +121,7 @@ const services = [
     description: 'ব্যক্তি বা প্রতিষ্ঠানের TIN প্রস্তুত ও যাচাই।',
     icon: FileText,
     image: '/tin.png',
-    accent: 'bg-sky-50 text-sky-700 border-sky-200',
+    accent: 'bg-rose-50 text-rose-700 border-rose-200',
     requirements: ['NID কপি', 'মোবাইল নম্বর', 'ইমেইল ঠিকানা', 'ব্যবসার বিবরণ (যদি বাবসার জন্য হয়)'],
   },
   {
@@ -143,7 +147,7 @@ const services = [
     description: 'আমদানি নিবন্ধন সনদের আবেদন ও নবায়ন।',
     icon: Ship,
     image: '/irc-erc.png',
-    accent: 'bg-cyan-50 text-cyan-700 border-cyan-200',
+    accent: 'bg-red-50 text-red-700 border-red-200',
     requirements: [
       'ট্রেড লাইসেন্স',
       'TIN সার্টিফিকেট',

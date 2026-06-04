@@ -21,7 +21,7 @@ type Params = {
 };
 
 export default function EditServicePeriodPage({ params }: Params) {
-  const { id, periodId } = use(params as any);
+  const { id, periodId } = use(params);
   const router = useRouter();
   const { toast } = useToast();
   const [loading, setLoading] = useState(true);

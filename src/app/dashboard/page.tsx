@@ -184,7 +184,7 @@ export default async function DashboardPage() {
 
   return (
     <div className="space-y-8">
-      <section className="overflow-hidden rounded-lg border bg-background">
+      {/* <section className="overflow-hidden rounded-lg border bg-background">
         <div className="grid gap-6 p-6 lg:grid-cols-[1fr_320px] lg:p-8">
           <div className="space-y-5">
             <Badge variant="outline" className="w-fit gap-2">
@@ -225,7 +225,7 @@ export default async function DashboardPage() {
             </div>
           </div>
         </div>
-      </section>
+      </section> */}
 
       <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         {statCards.map((stat) => (
