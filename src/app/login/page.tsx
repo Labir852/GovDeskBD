@@ -134,8 +134,7 @@ export default function LoginPage() {
                 <Input 
                   id="email" 
                   name="email" 
-                  type="email" 
-                  placeholder="admin@govdeskbd.com" 
+                  type="email"
                   required 
                   disabled={loading}
                   className="disabled:opacity-50"

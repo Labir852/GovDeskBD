@@ -133,28 +133,28 @@ export default async function DashboardPage() {
       value: data.activeClients,
       helper: `${data.totalClients} total records`,
       icon: Users,
-      tone: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+      tone: 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/20 dark:text-emerald-400 dark:border-emerald-900/40',
     },
     {
       label: 'Organizations',
       value: data.totalOrganizations,
       helper: 'Linked to client owners',
       icon: Building2,
-      tone: 'bg-sky-50 text-sky-700 border-sky-200',
+      tone: 'bg-sky-50 text-sky-700 border-sky-200 dark:bg-sky-950/20 dark:text-sky-400 dark:border-sky-900/40',
     },
     {
       label: 'Service profiles',
       value: data.totalServiceProfiles,
       helper: `${data.totalCategories} editable categories`,
       icon: BriefcaseBusiness,
-      tone: 'bg-amber-50 text-amber-700 border-amber-200',
+      tone: 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/20 dark:text-amber-400 dark:border-amber-900/40',
     },
     {
       label: 'Needs attention',
       value: data.pendingPeriods + data.unpaidThisMonth,
       helper: `${data.unpaidThisMonth} unpaid in ${data.currentMonth}`,
       icon: AlertCircle,
-      tone: 'bg-rose-50 text-rose-700 border-rose-200',
+      tone: 'bg-rose-50 text-rose-700 border-rose-200 dark:bg-rose-950/20 dark:text-rose-400 dark:border-rose-900/40',
     },
   ];
 
@@ -164,21 +164,21 @@ export default async function DashboardPage() {
       value: formatAmount(data.totalRevenueExpected),
       helper: 'All payment terms total value',
       icon: Wallet,
-      tone: 'bg-slate-50 text-slate-700 border-slate-200',
+      tone: 'bg-slate-50 text-slate-700 border-slate-200 dark:bg-slate-900/20 dark:text-slate-400 dark:border-slate-800/40',
     },
     {
       label: 'Collected revenue',
       value: formatAmount(data.totalRevenueCollected),
       helper: 'Amount already marked paid',
       icon: TrendingUp,
-      tone: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+      tone: 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/20 dark:text-emerald-400 dark:border-emerald-900/40',
     },
     {
       label: 'Outstanding revenue',
       value: formatAmount(data.totalRevenueOutstanding),
       helper: 'Pending payments across all terms',
       icon: AlertCircle,
-      tone: 'bg-amber-50 text-amber-700 border-amber-200',
+      tone: 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/20 dark:text-amber-400 dark:border-amber-900/40',
     },
   ];
 
@@ -229,7 +229,7 @@ export default async function DashboardPage() {
 
       <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         {statCards.map((stat) => (
-          <Card key={stat.label}>
+          <Card key={stat.label} className="transition-all duration-300 hover:-translate-y-1 hover:shadow-md border-border bg-card">
             <CardContent className="flex items-center justify-between gap-4 p-5">
               <div>
                 <p className="text-sm text-muted-foreground">{stat.label}</p>
@@ -256,7 +256,7 @@ export default async function DashboardPage() {
         </div>
         <div className="grid gap-4 xl:grid-cols-3">
           {revenueCards.map((card) => (
-            <Card key={card.label}>
+            <Card key={card.label} className="transition-all duration-300 hover:-translate-y-1 hover:shadow-md border-border bg-card">
               <CardContent className="flex items-center justify-between gap-4 p-5">
                 <div>
                   <p className="text-sm text-muted-foreground">{card.label}</p>
@@ -273,7 +273,7 @@ export default async function DashboardPage() {
       </section>
 
       <section className="grid gap-6 xl:grid-cols-[1fr_360px]">
-        <Card>
+        <Card className="transition-all duration-300 hover:shadow-md border-border bg-card">
           <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle>Recent service activity</CardTitle>
             <Button variant="ghost" size="sm" asChild>
@@ -324,7 +324,7 @@ export default async function DashboardPage() {
         </Card>
 
         <div className="grid gap-6">
-          <Card>
+          <Card className="transition-all duration-300 hover:shadow-md border-border bg-card">
             <CardHeader>
               <CardTitle>Service mix</CardTitle>
             </CardHeader>
@@ -333,7 +333,7 @@ export default async function DashboardPage() {
                 <p className="text-sm text-muted-foreground">Add categories to start tracking service groups.</p>
               ) : (
                 data.categoryMix.map((category) => (
-                  <div key={category.id} className="flex items-center justify-between rounded-lg border p-3">
+                  <div key={category.id} className="flex items-center justify-between rounded-lg border p-3 bg-muted/10">
                     <div>
                       <p className="text-sm font-medium">{category.name}</p>
                       <p className="text-xs text-muted-foreground">{category.frequency}</p>
@@ -345,7 +345,7 @@ export default async function DashboardPage() {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="transition-all duration-300 hover:shadow-md border-border bg-card">
             <CardHeader>
               <CardTitle>New clients</CardTitle>
             </CardHeader>

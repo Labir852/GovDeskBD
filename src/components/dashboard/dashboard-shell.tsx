@@ -23,7 +23,7 @@ export function DashboardShell({ children }: DashboardShellProps) {
   }
 
   return (
-    <div className="flex h-screen w-full overflow-hidden bg-muted/20">
+    <div className="flex h-screen w-full overflow-hidden bg-background">
       <aside
         className={`hidden shrink-0 overflow-hidden border-r bg-card transition-[width] duration-300 ease-in-out md:block ${
           desktopSidebarOpen ? 'w-64' : 'w-0 border-r-0'

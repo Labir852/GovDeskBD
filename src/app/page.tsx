@@ -39,7 +39,7 @@ const services = [
     description: 'আবেদন, সংশোধন ও নবায়ন সহ সম্পূর্ণ সহায়তা।',
     icon: Briefcase,
     image: '/trade.png',
-    accent: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+    accent: 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/20 dark:text-emerald-400 dark:border-emerald-900/40',
     requirements: [
       'NID কপি',
       'আবেদনকারীর মোবাইল নম্বর',
@@ -58,7 +58,7 @@ const services = [
     description: 'RJSC-এ কোম্পানি নিবন্ধন, বার্ষিক রিটার্ন ফাইলিং এবং অন্যান্য সংশ্লিষ্ট সেবা।',
     icon: Hotel,
     image: '/trade.png',
-    accent: 'bg-amber-50 text-amber-700 border-amber-200',
+    accent: 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/20 dark:text-amber-400 dark:border-amber-900/40',
     requirements: [
       'NID কপি',
       'মোবাইল নম্বর',
@@ -79,7 +79,7 @@ const services = [
     description: 'কোম্পানির Memorandum ও Articles of Association প্রস্তুত ও সংশোধন।',
     icon: IdCard,
     image: '/trade.png',
-    accent: 'bg-indigo-50 text-indigo-700 border-indigo-200',
+    accent: 'bg-indigo-50 text-indigo-700 border-indigo-200 dark:bg-indigo-950/20 dark:text-indigo-400 dark:border-indigo-900/40',
     requirements: [
       'NID কপি',
       'মোবাইল নম্বর',
@@ -100,7 +100,7 @@ const services = [
     description: 'কোম্পানির বার্ষিক রিটার্ন ফাইলিংয়ের জন্য Form XII প্রস্তুত ও জমা।',
     icon: ClipboardList,
     image: '/trade.png',
-    accent: 'bg-amber-50 text-amber-700 border-amber-200',
+    accent: 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/20 dark:text-amber-400 dark:border-amber-900/40',
     requirements: [
       'NID কপি',
       'মোবাইল নম্বর',
@@ -121,7 +121,7 @@ const services = [
     description: 'ব্যক্তি বা প্রতিষ্ঠানের TIN প্রস্তুত ও যাচাই।',
     icon: FileText,
     image: '/tin.png',
-    accent: 'bg-rose-50 text-rose-700 border-rose-200',
+    accent: 'bg-rose-50 text-rose-700 border-rose-200 dark:bg-rose-950/20 dark:text-rose-400 dark:border-rose-900/40',
     requirements: ['NID কপি', 'মোবাইল নম্বর', 'ইমেইল ঠিকানা', 'ব্যবসার বিবরণ (যদি বাবসার জন্য হয়)'],
   },
   {
@@ -130,7 +130,7 @@ const services = [
     description: 'VAT/BIN নিবন্ধন ও প্রয়োজনীয় ডকুমেন্ট সহায়তা।',
     icon: ReceiptText,
     image: '/BIN.png',
-    accent: 'bg-amber-50 text-amber-700 border-amber-200',
+    accent: 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/20 dark:text-amber-400 dark:border-amber-900/40',
     requirements: [
       'মোবাইল নম্বর',
       'ইমেইল ঠিকানা',
@@ -147,7 +147,7 @@ const services = [
     description: 'আমদানি নিবন্ধন সনদের আবেদন ও নবায়ন।',
     icon: Ship,
     image: '/irc-erc.png',
-    accent: 'bg-red-50 text-red-700 border-red-200',
+    accent: 'bg-red-50 text-red-700 border-red-200 dark:bg-red-950/20 dark:text-red-400 dark:border-red-900/40',
     requirements: [
       'ট্রেড লাইসেন্স',
       'TIN সার্টিফিকেট',
@@ -167,7 +167,7 @@ const services = [
     description: 'রপ্তানি নিবন্ধন সনদের আবেদন ও নবায়ন।',
     icon: Plane,
     image: '/irc-erc.png',
-    accent: 'bg-indigo-50 text-indigo-700 border-indigo-200',
+    accent: 'bg-indigo-50 text-indigo-700 border-indigo-200 dark:bg-indigo-950/20 dark:text-indigo-400 dark:border-indigo-900/40',
     requirements: [
       'ট্রেড লাইসেন্স',
       'TIN সার্টিফিকেট',
@@ -187,7 +187,7 @@ const services = [
     description: 'ই-রিটার্ন (E-Return)',
     icon: Landmark,
     image: '/tax acknowledge.png',
-    accent: 'bg-rose-50 text-rose-700 border-rose-200',
+    accent: 'bg-rose-50 text-rose-700 border-rose-200 dark:bg-rose-950/20 dark:text-rose-400 dark:border-rose-900/40',
     requirements: [
       'E-TIN নম্বর',
       'E-রিটার্ন পাসওয়ার্ড (যদি ইতিমধ্যে রেজিস্টার করা থাকে)',
@@ -210,7 +210,7 @@ const getWhatsappLink = (service: (typeof services)[number]) => {
 
 export default function Home() {
   return (
-    <div className="-m-6 bg-white text-slate-950">
+    <div className="-m-6 bg-background text-foreground transition-colors duration-300 min-h-screen">
       <section className="relative isolate overflow-hidden">
         <Image
           src="/govdesk banner.png"
@@ -221,7 +221,7 @@ export default function Home() {
           sizes="100vw"
         />
         <div className="absolute inset-0 bg-slate-950/70" />
-        <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-white to-transparent" />
+        <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-background to-transparent" />
 
         <div className="relative mx-auto grid min-h-[calc(100svh-12rem)] max-w-7xl content-center gap-10 px-6 py-16 md:px-10 lg:grid-cols-[1fr_360px]">
           <motion.div
@@ -241,7 +241,7 @@ export default function Home() {
               ট্রেড লাইসেন্স, RJSC, Memorandum, Form XII, TIN, BIN, IRC, ERC, VAT ও অনলাইন ট্যাক্স রিটার্ন সেবাকে দ্রুত, পরিষ্কার এবং নির্ভরযোগ্যভাবে সম্পন্ন করুন।
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
-              <Button size="lg" asChild className="bg-white text-slate-950 hover:bg-white/90">
+              <Button size="lg" asChild className="bg-white text-slate-950 hover:bg-white/90 animate-shimmer">
                 <Link href="#services">
                   শুরু করুন <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
@@ -258,11 +258,11 @@ export default function Home() {
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.12, duration: 0.55, ease: 'easeOut' }}
-            className="self-end rounded-lg border border-white/20 bg-white/12 p-4 text-white shadow-2xl backdrop-blur-md"
+            className="self-end rounded-xl border border-white/20 bg-white/12 p-4 text-white shadow-2xl backdrop-blur-md"
           >
             <div className="grid gap-3">
               {steps.map((step, index) => (
-                <div key={step} className="flex items-center gap-3 rounded-md bg-white/10 p-3">
+                <div key={step} className="flex items-center gap-3 rounded-lg bg-white/10 p-3">
                   <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-white text-sm font-bold text-slate-950">
                     {index + 1}
                   </span>
@@ -274,13 +274,13 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="services" className="mx-auto max-w-7xl scroll-mt-8 px-6 pb-12 pt-8 md:px-10">
+      <section id="services" className="mx-auto max-w-7xl scroll-mt-8 px-6 pb-12 pt-8 md:px-10 animate-fade-in">
         <div className="mb-6 flex flex-col justify-between gap-3 md:flex-row md:items-end">
           <div>
-            <p className="text-sm font-semibold uppercase tracking-normal text-emerald-700">Services</p>
+            <p className="text-sm font-semibold uppercase tracking-normal text-primary">Services</p>
             <h2 className="mt-2 text-3xl font-bold tracking-normal">এক জায়গায় আপনার প্রয়োজনীয় সেবা</h2>
           </div>
-          <p className="max-w-xl text-sm leading-6 text-slate-600">
+          <p className="max-w-xl text-sm leading-6 text-muted-foreground">
             প্রতিটি সেবার জন্য প্রয়োজনীয় তথ্য, ডকুমেন্ট ও স্ট্যাটাস আমরা গুছিয়ে রাখি।
           </p>
         </div>
@@ -298,9 +298,9 @@ export default function Home() {
                 <DialogTrigger asChild>
                   <button
                     type="button"
-                    className="group grid h-full w-full grid-cols-[96px_1fr] gap-4 rounded-lg border bg-white p-4 text-left shadow-sm transition hover:-translate-y-1 hover:border-slate-300 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-slate-900 focus:ring-offset-2"
+                    className="group grid h-full w-full grid-cols-[96px_1fr] gap-4 rounded-xl border bg-card p-4 text-left shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-primary/40 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
                   >
-                    <div className="relative h-24 overflow-hidden rounded-md bg-slate-50">
+                    <div className="relative h-24 overflow-hidden rounded-lg bg-muted/60 dark:bg-muted/30">
                       <Image src={service.image} alt={service.title} fill className="object-contain p-2" sizes="96px" />
                     </div>
                     <div className="min-w-0">
@@ -310,8 +310,8 @@ export default function Home() {
                         </span>
                         <h3 className="min-w-0 flex-1 break-words text-lg font-semibold leading-snug">{service.title}</h3>
                       </div>
-                      <p className="mt-2 line-clamp-2 text-sm leading-6 text-slate-600">{service.description}</p>
-                      <span className="mt-3 inline-flex items-center text-sm font-medium text-slate-900">
+                      <p className="mt-2 line-clamp-2 text-sm leading-6 text-muted-foreground">{service.description}</p>
+                      <span className="mt-3 inline-flex items-center text-sm font-medium text-foreground group-hover:text-primary transition-colors">
                         প্রয়োজনীয় তথ্য <ArrowRight className="ml-1 h-4 w-4 transition group-hover:translate-x-1" />
                       </span>
                     </div>
@@ -330,12 +330,12 @@ export default function Home() {
                   </DialogHeader>
 
                   <div className="space-y-4">
-                    <div className="rounded-lg border bg-slate-50 p-4">
-                      <p className="font-semibold text-slate-950">প্রয়োজনীয় তথ্য</p>
-                      <ul className="mt-3 space-y-2 text-sm text-slate-700">
+                    <div className="rounded-lg border bg-muted/30 p-4">
+                      <p className="font-semibold text-foreground">প্রয়োজনীয় তথ্য</p>
+                      <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
                         {service.requirements.map((item) => (
                           <li key={item} className="flex gap-2">
-                            <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-600" />
+                            <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
                             <span>{item}</span>
                           </li>
                         ))}
@@ -343,12 +343,11 @@ export default function Home() {
                     </div>
 
                     <div className="rounded-lg border p-4">
-                      <p className="font-semibold text-slate-950">সরাসরি যোগাযোগ</p>
-                      <p className="mt-1 text-sm text-slate-600">
-                        {/* হোয়াটসঅ্যাপ বার্তায় থাকবে: Website - {service.whatsappLabel} */}
+                      <p className="font-semibold text-foreground">সরাসরি যোগাযোগ</p>
+                      <p className="mt-1 text-sm text-muted-foreground">
                           এই সেবা সম্পর্কে বিস্তারিত জানতে বা সরাসরি যোগাযোগ করতে নিচের বাটনগুলো ব্যবহার করুন।
                       </p>
-                      <p className="mt-2 text-sm font-medium text-slate-900">ফোন / হোয়াটসঅ্যাপ: {phoneNumber}</p>
+                      <p className="mt-2 text-sm font-medium text-foreground">ফোন / হোয়াটসঅ্যাপ: {phoneNumber}</p>
                     </div>
                   </div>
 
@@ -358,7 +357,7 @@ export default function Home() {
                         <Phone className="mr-2 h-4 w-4" /> Call
                       </Link>
                     </Button>
-                    <Button asChild className="bg-emerald-600 hover:bg-emerald-700">
+                    <Button asChild className="bg-primary text-primary-foreground hover:bg-primary/95">
                       <Link href={getWhatsappLink(service)} target="_blank" rel="noopener noreferrer">
                         Contact on WhatsApp <ArrowRight className="ml-2 h-4 w-4" />
                       </Link>
@@ -371,32 +370,32 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="border-y bg-slate-50">
+      <section className="border-y bg-muted/20">
         <div className="mx-auto grid max-w-7xl gap-4 px-6 py-8 md:grid-cols-3 md:px-10">
-          <Link href={`https://wa.me/${whatsappNumber}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 rounded-lg border bg-white p-4 transition hover:border-emerald-300">
-            <Phone className="h-5 w-5 text-emerald-700" />
+          <Link href={`https://wa.me/${whatsappNumber}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 rounded-lg border bg-card p-4 transition hover:border-primary/45">
+            <Phone className="h-5 w-5 text-primary animate-bounce" />
             <div>
               <p className="text-sm font-semibold">ফোন / হোয়াটসঅ্যাপ</p>
-              <p className="text-sm text-slate-600">{phoneNumber}</p>
+              <p className="text-sm text-muted-foreground">{phoneNumber}</p>
             </div>
           </Link>
-          <Link href="mailto:govdeskbd@gmail.com" className="flex items-center gap-3 rounded-lg border bg-white p-4 transition hover:border-sky-300">
-            <Mail className="h-5 w-5 text-sky-700" />
+          <Link href="mailto:govdeskbd@gmail.com" className="flex items-center gap-3 rounded-lg border bg-card p-4 transition hover:border-primary/45">
+            <Mail className="h-5 w-5 text-primary" />
             <div>
               <p className="text-sm font-semibold">ইমেইল</p>
-              <p className="break-all text-sm text-slate-600">govdeskbd@gmail.com</p>
+              <p className="break-all text-sm text-muted-foreground">govdeskbd@gmail.com</p>
             </div>
           </Link>
           <Link
             href="https://www.facebook.com/govdeskbd/"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-3 rounded-lg border bg-white p-4 transition hover:border-indigo-300"
+            className="flex items-center gap-3 rounded-lg border bg-card p-4 transition hover:border-primary/45"
           >
-            <Facebook className="h-5 w-5 text-indigo-700" />
+            <Facebook className="h-5 w-5 text-primary" />
             <div>
               <p className="text-sm font-semibold">ফেসবুক</p>
-              <p className="text-sm text-slate-600">GovDesk BD পেজ</p>
+              <p className="text-sm text-muted-foreground">GovDesk BD পেজ</p>
             </div>
           </Link>
         </div>
@@ -404,16 +403,11 @@ export default function Home() {
 
       <section className="text-center mx-auto grid max-w-7xl gap-6 px-6 py-10 md:grid-cols-[1fr_auto] md:items-center md:px-10">
         <div>
-          <h2 className="text-2xl font-bold tracking-normal">নিয়মিত Trade License, VAT Submission, Vat Return, Tax Return, IRC/ERC Registration, Renewal সার্ভিস আমরা দিয়ে থাকি</h2>
-          <p className=" mt-2  text-sm leading-6 text-slate-600">
+          <h2 className="text-2xl font-bold tracking-normal text-foreground">নিয়মিত Trade License, VAT Submission, Vat Return, Tax Return, IRC/ERC Registration, Renewal সার্ভিস আমরা দিয়ে থাকি</h2>
+          <p className=" mt-2  text-sm leading-6 text-muted-foreground">
             স্বচ্ছ দামে নির্ভরযোগ্য সেবা পেতে আজই যোগাযোগ করুন।
           </p>
         </div>
-        {/* <Button asChild>
-          <Link href="/login">
-            Admin login <ArrowRight className="ml-2 h-4 w-4" />
-          </Link>
-        </Button> */}
       </section>
     </div>
   );

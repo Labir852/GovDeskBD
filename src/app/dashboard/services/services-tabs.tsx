@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { motion, AnimatePresence } from 'framer-motion';
 import { DataTable } from '@/components/ui/data-table';
 import { columns } from './columns';
 import type { ServiceProfileData } from './columns';
@@ -11,7 +11,6 @@ interface ServiceTabsProps {
 }
 
 export function ServicesTabs({ profiles }: ServiceTabsProps) {
-  // Group profiles by category
   const categoriesByName = new Map<string, { id: string; name: string; frequency: string }>();
   const profilesByCategory = new Map<string, ServiceProfileData[]>();
 
@@ -28,37 +27,63 @@ export function ServicesTabs({ profiles }: ServiceTabsProps) {
     a.name.localeCompare(b.name)
   );
 
-  // Set the first category as default tab
   const defaultCategory = categories[0]?.name || '';
   const [selectedCategory, setSelectedCategory] = useState(defaultCategory);
 
-  const currentProfiles = profilesByCategory.get(selectedCategory) || [];
-
   return (
-    <Tabs value={selectedCategory} onValueChange={setSelectedCategory} className="w-full">
-      <TabsList className="grid gap-2 mb-4" style={{ gridTemplateColumns: `repeat(auto-fit, minmax(150px, 1fr))` }}>
-        {categories.map((category) => (
-          <TabsTrigger key={category.id} value={category.name} className="text-xs sm:text-sm">
-            <div className="flex flex-col items-center gap-1">
-              <span>{category.name}</span>
-              <span className="text-[10px] text-muted-foreground">
-                {category.frequency}
+    <div className="w-full space-y-5">
+      {/* Sliding Tab Bar */}
+      <div className="flex flex-wrap gap-1 rounded-xl bg-muted/60 p-1 backdrop-blur-sm border border-border/50">
+        {categories.map((category) => {
+          const isActive = selectedCategory === category.name;
+          const count = profilesByCategory.get(category.name)?.length ?? 0;
+          return (
+            <button
+              key={category.id}
+              type="button"
+              onClick={() => setSelectedCategory(category.name)}
+              className="relative flex-1 min-w-[120px] rounded-lg px-4 py-2.5 text-sm font-medium transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
+            >
+              {isActive && (
+                <motion.div
+                  layoutId="tab-active-bg"
+                  className="absolute inset-0 rounded-lg bg-card shadow-sm border border-border/60"
+                  transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                />
+              )}
+              <span className={`relative z-10 flex flex-col items-center gap-0.5 transition-colors duration-200 ${isActive ? 'text-foreground' : 'text-muted-foreground hover:text-foreground/80'}`}>
+                <span className="flex items-center gap-1.5">
+                  {category.name}
+                  <span className={`inline-flex h-5 min-w-[20px] items-center justify-center rounded-full px-1.5 text-[10px] font-bold transition-colors duration-200 ${isActive ? 'bg-primary/15 text-primary' : 'bg-muted-foreground/10 text-muted-foreground'}`}>
+                    {count}
+                  </span>
+                </span>
+                <span className={`text-[10px] font-normal transition-colors duration-200 ${isActive ? 'text-muted-foreground' : 'text-muted-foreground/60'}`}>
+                  {category.frequency}
+                </span>
               </span>
-            </div>
-          </TabsTrigger>
-        ))}
-      </TabsList>
+            </button>
+          );
+        })}
+      </div>
 
-      {categories.map((category) => (
-        <TabsContent key={category.id} value={category.name} className="m-0">
+      {/* Animated Table Content */}
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={selectedCategory}
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -8 }}
+          transition={{ duration: 0.2, ease: 'easeOut' }}
+        >
           <DataTable
             columns={columns}
-            data={profilesByCategory.get(category.name) || []}
+            data={profilesByCategory.get(selectedCategory) || []}
             searchKey="owner"
-            searchPlaceholder={`Search ${category.name} service profiles...`}
+            searchPlaceholder={`Search ${selectedCategory} service profiles...`}
           />
-        </TabsContent>
-      ))}
-    </Tabs>
+        </motion.div>
+      </AnimatePresence>
+    </div>
   );
 }

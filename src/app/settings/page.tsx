@@ -12,6 +12,7 @@ import { createTaxFiscalYear, getAllTaxFiscalYears } from '@/app/dashboard/tax-c
 import TaxSlabEditor from '@/components/TaxSlabEditor';
 import { Key, ReactElement, JSXElementConstructor, ReactNode, ReactPortal, AwaitedReactNode } from 'react';
 import { Select } from '@/components/ui/select';
+import { ThemeComboSelector } from '@/components/theme-combo-selector';
 
 export const metadata = {
   title: 'Settings | GovDesk Admin',
@@ -425,6 +426,8 @@ export async function SettingsContent({ basePath, searchParams }: SettingsConten
           ) : null}
         </div>
       )}
+
+      <ThemeComboSelector />
 
       <Card>
         <CardHeader>

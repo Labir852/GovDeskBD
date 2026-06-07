@@ -31,9 +31,9 @@ export function Sidebar({ onNavigate }: SidebarProps) {
   }
 
   return (
-    <div className="flex h-full w-64 flex-col bg-card border-r shadow-sm">
-      <div className="flex h-16 items-center border-b px-6">
-        <h1 className="text-xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+    <div className="flex h-full w-64 flex-col bg-sidebar border-r border-sidebar-border shadow-sm">
+      <div className="flex h-16 items-center border-b border-sidebar-border px-6">
+        <h1 className="text-xl font-bold bg-gradient-to-r from-sidebar-primary to-sidebar-primary/60 bg-clip-text text-transparent">
           GovDesk Admin
         </h1>
       </div>
@@ -44,17 +44,24 @@ export function Sidebar({ onNavigate }: SidebarProps) {
             const isActive = pathname === item.href || pathname.startsWith(`${item.href}/`);
             return (
               <Link key={item.href} href={item.href} onClick={onNavigate}>
-                <span className="relative flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors hover:text-primary">
+                <span className="relative flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors hover:text-sidebar-primary">
                   {isActive && (
-                    <motion.div
-                      layoutId="sidebar-active"
-                      className="absolute inset-0 rounded-lg bg-primary/10"
-                      initial={false}
-                      transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-                    />
+                    <>
+                      <motion.div
+                        layoutId="sidebar-active"
+                        className="absolute inset-0 rounded-lg bg-sidebar-primary/10"
+                        initial={false}
+                        transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+                      />
+                      <motion.span
+                        layoutId="active-indicator"
+                        className="absolute left-0 top-2 bottom-2 w-1 rounded-r-md bg-sidebar-primary"
+                        transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+                      />
+                    </>
                   )}
-                  <item.icon className={cn("z-10 h-5 w-5", isActive ? "text-primary" : "text-muted-foreground")} />
-                  <span className={cn("z-10", isActive ? "text-primary" : "text-muted-foreground")}>
+                  <item.icon className={cn("z-10 h-5 w-5", isActive ? "text-sidebar-primary" : "text-sidebar-foreground/70 hover:text-sidebar-foreground")} />
+                  <span className={cn("z-10", isActive ? "text-sidebar-primary" : "text-sidebar-foreground/70 hover:text-sidebar-foreground")}>
                     {item.title}
                   </span>
                 </span>

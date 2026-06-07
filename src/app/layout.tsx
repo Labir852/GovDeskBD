@@ -64,6 +64,24 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet" />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              try {
+                if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                  document.documentElement.classList.add('dark');
+                } else {
+                  document.documentElement.classList.remove('dark');
+                }
+                var combo = localStorage.theme_combo || 'national';
+                document.documentElement.classList.remove('theme-national', 'theme-indigo', 'theme-blue', 'theme-teal', 'theme-charcoal');
+                if (combo !== 'national') {
+                  document.documentElement.classList.add('theme-' + combo);
+                }
+              } catch (_) {}
+            `,
+          }}
+        />
       </head>
       <body className="font-body antialiased">
         <main className="flex-1 p-6">{children}</main>
