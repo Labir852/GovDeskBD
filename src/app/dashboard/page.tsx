@@ -184,17 +184,16 @@ export default async function DashboardPage() {
 
   return (
     <div className="space-y-8">
-      {/* <section className="overflow-hidden rounded-lg border bg-background">
-        <div className="grid gap-6 p-6 lg:grid-cols-[1fr_320px] lg:p-8">
-          <div className="space-y-5">
-            <Badge variant="outline" className="w-fit gap-2">
-              <Clock3 className="h-3.5 w-3.5" />
-              {data.currentMonth} operations
+      <section className="animate-fade-in-up overflow-hidden rounded-[2rem] border border-border bg-card/90 p-8 shadow-sm backdrop-blur-xl transition-all duration-300">
+        <div className="grid gap-6 lg:grid-cols-[1.4fr_0.9fr] lg:items-center">
+          <div className="space-y-4">
+            <Badge variant="secondary" className="rounded-full bg-muted px-3 py-1 text-xs uppercase tracking-[0.32em] text-muted-foreground">
+              {data.currentMonth} snapshot
             </Badge>
-            <div className="space-y-2">
-              <h1 className="text-3xl font-bold tracking-tight md:text-4xl">GovDesk command center</h1>
-              <p className="max-w-2xl text-muted-foreground">
-                Track clients, organizations, monthly VAT work, annual returns, renewals, and payments from one place.
+            <div>
+              <h1 className="text-4xl font-semibold tracking-tight text-foreground">A cleaner command center for GovDesk</h1>
+              <p className="mt-3 max-w-2xl text-sm leading-7 text-muted-foreground">
+                Surface your client pipeline, service profile activity, and revenue outlook in a calm, modern dashboard.
               </p>
             </div>
             <div className="flex flex-wrap gap-3">
@@ -204,39 +203,36 @@ export default async function DashboardPage() {
                 </Link>
               </Button>
               <Button variant="outline" asChild>
-                <Link href="/dashboard/services/new">Create service profile</Link>
+                <Link href="/dashboard/services/new">New service profile</Link>
               </Button>
             </div>
           </div>
-          <div className="grid gap-3 rounded-lg border bg-muted/30 p-4">
-            <div className="flex items-center gap-3">
-              <CheckCircle2 className="h-5 w-5 text-emerald-600" />
-              <div>
-                <p className="text-sm font-medium">Relationship model is ready</p>
-                <p className="text-xs text-muted-foreground">One client can own multiple organizations and services.</p>
-              </div>
+
+          <div className="rounded-[1.75rem] border border-white/10 bg-slate-950/95 p-6 text-white shadow-lg shadow-slate-950/20">
+            <div className="flex items-center justify-between text-sm uppercase tracking-[0.3em] text-slate-300">
+              <span>Active clients</span>
+              <span>{data.activeClients}</span>
             </div>
-            <div className="flex items-center gap-3">
-              <Tags className="h-5 w-5 text-sky-600" />
-              <div>
-                <p className="text-sm font-medium">Categories stay flexible</p>
-                <p className="text-xs text-muted-foreground">VAT, eReturn, ERC, IRC, Trade License, and more.</p>
-              </div>
+            <div className="mt-4 h-2 overflow-hidden rounded-full bg-white/10">
+              <div className="h-full w-3/5 rounded-full bg-gradient-to-r from-sky-400 via-fuchsia-400 to-emerald-400 animate-[pulse_3s_ease-in-out_infinite]" />
             </div>
+            <p className="mt-5 text-sm leading-6 text-slate-400">
+              Focus on the most important metrics without clutter. Your latest revenue targets and pending items are just ahead.
+            </p>
           </div>
         </div>
-      </section> */}
+      </section>
 
       <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         {statCards.map((stat) => (
-          <Card key={stat.label} className="transition-all duration-300 hover:-translate-y-1 hover:shadow-md border-border bg-card">
+          <Card key={stat.label} className="animate-fade-in-up transition-all duration-300 hover:-translate-y-1 hover:shadow-xl border-border bg-card">
             <CardContent className="flex items-center justify-between gap-4 p-5">
               <div>
                 <p className="text-sm text-muted-foreground">{stat.label}</p>
-                <p className="mt-1 text-3xl font-bold tracking-tight">{stat.value}</p>
+                <p className="mt-1 text-3xl font-bold tracking-tight text-foreground">{stat.value}</p>
                 <p className="mt-1 text-xs text-muted-foreground">{stat.helper}</p>
               </div>
-              <div className={`rounded-lg border p-3 ${stat.tone}`}>
+              <div className={`rounded-2xl border p-3 ${stat.tone}`}>
                 <stat.icon className="h-5 w-5" />
               </div>
             </CardContent>
@@ -248,7 +244,7 @@ export default async function DashboardPage() {
         <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <p className="text-sm font-medium text-muted-foreground">Revenue overview</p>
-            <h2 className="text-2xl font-bold tracking-tight">Expected vs. collected</h2>
+            <h2 className="text-2xl font-bold tracking-tight text-foreground">Expected vs. collected</h2>
           </div>
           <p className="max-w-xl text-sm text-muted-foreground">
             Review total projected revenue, collected amounts, and outstanding payment terms for your service portfolio.
@@ -256,14 +252,14 @@ export default async function DashboardPage() {
         </div>
         <div className="grid gap-4 xl:grid-cols-3">
           {revenueCards.map((card) => (
-            <Card key={card.label} className="transition-all duration-300 hover:-translate-y-1 hover:shadow-md border-border bg-card">
+            <Card key={card.label} className="animate-fade-in-up transition-all duration-300 hover:-translate-y-1 hover:shadow-xl border-border bg-card">
               <CardContent className="flex items-center justify-between gap-4 p-5">
                 <div>
                   <p className="text-sm text-muted-foreground">{card.label}</p>
-                  <p className="mt-1 text-3xl font-bold tracking-tight">{card.value}</p>
+                  <p className="mt-1 text-3xl font-bold tracking-tight text-foreground">{card.value}</p>
                   <p className="mt-1 text-xs text-muted-foreground">{card.helper}</p>
                 </div>
-                <div className={`rounded-lg border p-3 ${card.tone}`}>
+                <div className={`rounded-2xl border p-3 ${card.tone}`}>
                   <card.icon className="h-5 w-5" />
                 </div>
               </CardContent>
@@ -273,7 +269,7 @@ export default async function DashboardPage() {
       </section>
 
       <section className="grid gap-6 xl:grid-cols-[1fr_360px]">
-        <Card className="transition-all duration-300 hover:shadow-md border-border bg-card">
+        <Card className="animate-fade-in-up transition-all duration-300 hover:shadow-xl border-border bg-card">
           <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle>Recent service activity</CardTitle>
             <Button variant="ghost" size="sm" asChild>
@@ -281,7 +277,7 @@ export default async function DashboardPage() {
             </Button>
           </CardHeader>
           <CardContent>
-            <div className="divide-y">
+            <div className="divide-y divide-border">
               {data.recentPeriods.length === 0 ? (
                 <p className="py-8 text-center text-sm text-muted-foreground">No service periods have been recorded yet.</p>
               ) : (
@@ -289,14 +285,14 @@ export default async function DashboardPage() {
                   const content = (
                     <>
                       <div>
-                        <p className="font-medium">{getProfileName(period)}</p>
+                        <p className="font-medium text-foreground">{getProfileName(period)}</p>
                         <p className="text-sm text-muted-foreground">
                           {getClientName(period)} · {period.serviceProfile.category.name} · {period.period}
                         </p>
                       </div>
                       <div className="flex items-center gap-2 sm:justify-end">
                         <Badge variant={period.isPaid ? 'default' : 'outline'}>{period.isPaid ? 'Paid' : 'Unpaid'}</Badge>
-                        <span className="text-sm font-medium">{formatAmount(period.paymentAmount)}</span>
+                        <span className="text-sm font-medium text-foreground">{formatAmount(period.paymentAmount)}</span>
                       </div>
                     </>
                   );
@@ -305,7 +301,7 @@ export default async function DashboardPage() {
                     <Link
                       key={period.id}
                       href={`/dashboard/services/${period.serviceProfileId}`}
-                      className="grid gap-2 py-4 transition-colors hover:bg-muted/40 sm:grid-cols-[1fr_auto]"
+                      className="grid gap-2 py-4 transition-colors hover:bg-muted/50 sm:grid-cols-[1fr_auto]"
                     >
                       {content}
                     </Link>
@@ -324,7 +320,7 @@ export default async function DashboardPage() {
         </Card>
 
         <div className="grid gap-6">
-          <Card className="transition-all duration-300 hover:shadow-md border-border bg-card">
+          <Card className="animate-fade-in-up transition-all duration-300 hover:shadow-xl border-border bg-card">
             <CardHeader>
               <CardTitle>Service mix</CardTitle>
             </CardHeader>
@@ -333,9 +329,9 @@ export default async function DashboardPage() {
                 <p className="text-sm text-muted-foreground">Add categories to start tracking service groups.</p>
               ) : (
                 data.categoryMix.map((category) => (
-                  <div key={category.id} className="flex items-center justify-between rounded-lg border p-3 bg-muted/10">
+                  <div key={category.id} className="flex items-center justify-between rounded-3xl border border-border bg-muted/50 p-4">
                     <div>
-                      <p className="text-sm font-medium">{category.name}</p>
+                      <p className="text-sm font-medium text-foreground">{category.name}</p>
                       <p className="text-xs text-muted-foreground">{category.frequency}</p>
                     </div>
                     <Badge variant="secondary">{category._count.serviceProfiles}</Badge>
@@ -345,7 +341,7 @@ export default async function DashboardPage() {
             </CardContent>
           </Card>
 
-          <Card className="transition-all duration-300 hover:shadow-md border-border bg-card">
+          <Card className="animate-fade-in-up transition-all duration-300 hover:shadow-xl border-border bg-card">
             <CardHeader>
               <CardTitle>New clients</CardTitle>
             </CardHeader>
@@ -355,11 +351,11 @@ export default async function DashboardPage() {
               ) : (
                 data.recentClients.map((client) => (
                   <Link
-                    key={client.id}
-                    href={`/dashboard/clients/${client.id}`}
-                    className="flex items-center justify-between rounded-lg border p-3 transition-colors hover:bg-muted/40"
+                      key={client.id}
+                      href={`/dashboard/clients/${client.id}`}
+                      className="flex items-center justify-between rounded-3xl border border-border p-4 transition-all duration-200 hover:-translate-y-0.5 hover:bg-muted/50"
                   >
-                    <span className="text-sm font-medium">{client.name}</span>
+                    <span className="text-sm font-medium text-foreground">{client.name}</span>
                     <span className="text-xs text-muted-foreground">
                       {client._count.organizations} org · {client._count.serviceProfiles} service
                     </span>

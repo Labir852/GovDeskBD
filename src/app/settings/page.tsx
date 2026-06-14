@@ -398,38 +398,55 @@ export async function SettingsContent({ basePath, searchParams }: SettingsConten
   const seededReset = searchParams?.seeded === 'reset';
 
   return (
-    <div className="space-y-6">
-      <div className="space-y-2">
-        <p className="text-sm font-medium text-muted-foreground">Portal settings</p>
-        <h1 className="text-3xl font-bold tracking-tight">Manage your portal and users</h1>
-        <p className="max-w-2xl text-sm text-muted-foreground">
-          Update account details, create portal users, and seed starter portal data from here.
-        </p>
-      </div>
+    <div className="space-y-6 animate-fade-in-up">
+      <section className="animate-fade-in-up rounded-[2rem] border border-border bg-card/90 p-6 shadow-sm backdrop-blur-xl">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+          <div className="space-y-2">
+            <p className="text-sm uppercase tracking-[0.32em] text-muted-foreground">Portal settings</p>
+            <h1 className="text-3xl font-semibold tracking-tight text-foreground">Manage your portal and users</h1>
+            <p className="max-w-2xl text-sm leading-6 text-muted-foreground">
+              Update account details, create portal users, and seed starter portal data in one polished workspace.
+            </p>
+          </div>
+          <div className="rounded-3xl border border-border bg-muted/50 px-4 py-3 text-sm text-muted-foreground">
+            {users.length} portal user{users.length === 1 ? '' : 's'} • {fiscalYears.length} fiscal year rule{fiscalYears.length === 1 ? '' : 's'}
+          </div>
+        </div>
+      </section>
 
       {(updated || created || seededDefault || seededDemo) && (
         <div className="space-y-2">
           {updated ? (
-            <div className="rounded-lg border bg-emerald-50 p-4 text-emerald-700">Your settings were updated successfully.</div>
+            <div className="rounded-lg border border-emerald-200 bg-emerald-50/90 p-4 text-emerald-700 dark:border-emerald-600/40 dark:bg-emerald-500/10 dark:text-emerald-100">
+              Your settings were updated successfully.
+            </div>
           ) : null}
           {created ? (
-            <div className="rounded-lg border bg-sky-50 p-4 text-sky-700">A new portal account was created successfully.</div>
+            <div className="rounded-lg border border-sky-200 bg-sky-50/90 p-4 text-sky-700 dark:border-sky-600/40 dark:bg-sky-500/10 dark:text-sky-100">
+              A new portal account was created successfully.
+            </div>
           ) : null}
           {seededDefault ? (
-            <div className="rounded-lg border bg-amber-50 p-4 text-amber-700">Default admin account was seeded. Use admin@govdeskbd.com / Admin@123.</div>
+            <div className="rounded-lg border border-amber-200 bg-amber-50/90 p-4 text-amber-700 dark:border-amber-600/40 dark:bg-amber-500/10 dark:text-amber-100">
+              Default admin account was seeded. Use admin@govdeskbd.com / Admin@123.
+            </div>
           ) : null}
           {seededDemo ? (
-            <div className="rounded-lg border bg-amber-50 p-4 text-amber-700">Demo portal data has been seeded.</div>
+            <div className="rounded-lg border border-amber-200 bg-amber-50/90 p-4 text-amber-700 dark:border-amber-600/40 dark:bg-amber-500/10 dark:text-amber-100">
+              Demo portal data has been seeded.
+            </div>
           ) : null}
           {seededReset ? (
-            <div className="rounded-lg border bg-emerald-50 p-4 text-emerald-700">All domain records were cleared and the portal seed data was initialized.</div>
+            <div className="rounded-lg border border-emerald-200 bg-emerald-50/90 p-4 text-emerald-700 dark:border-emerald-600/40 dark:bg-emerald-500/10 dark:text-emerald-100">
+              All domain records were cleared and the portal seed data was initialized.
+            </div>
           ) : null}
         </div>
       )}
 
       <ThemeComboSelector />
 
-      <Card>
+      <Card className="transition-all duration-300 hover:shadow-xl border-border bg-card rounded-[1.25rem]">
         <CardHeader>
           <CardTitle>Profile details</CardTitle>
         </CardHeader>
@@ -465,7 +482,7 @@ export async function SettingsContent({ basePath, searchParams }: SettingsConten
         </CardContent>
       </Card>
 
-      <Card>
+      <Card className="transition-all duration-300 hover:shadow-xl border-border bg-card rounded-[1.25rem]">
         <CardHeader>
           <CardTitle>Portal accounts</CardTitle>
         </CardHeader>
@@ -488,7 +505,7 @@ export async function SettingsContent({ basePath, searchParams }: SettingsConten
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-2">
                   <Label htmlFor="newRole">Role</Label>
-                  <select id="newRole" name="newRole" className="h-11 w-full rounded-md border bg-background px-3 text-sm outline-none transition focus:border-primary focus:ring-1 focus:ring-primary">
+                  <select id="newRole" name="newRole" title="Role" className="h-11 w-full rounded-md border bg-background px-3 text-sm outline-none transition focus:border-primary focus:ring-1 focus:ring-primary">
                     <option value="STAFF">Staff</option>
                     <option value="ADMIN">Admin</option>
                   </select>
@@ -510,7 +527,7 @@ export async function SettingsContent({ basePath, searchParams }: SettingsConten
               </div>
             </form>
           ) : (
-            <div className="rounded-lg border border-amber-200 bg-amber-50 p-4 text-amber-700">
+            <div className="rounded-lg border border-border bg-muted p-4 text-foreground">
               Only admin users can create new portal accounts.
             </div>
           )}
@@ -544,7 +561,7 @@ export async function SettingsContent({ basePath, searchParams }: SettingsConten
         </CardContent>
       </Card>
 
-      <Card>
+      <Card className="transition-all duration-300 hover:shadow-xl border-border bg-card rounded-[1.25rem]">
         <CardHeader>
           <CardTitle>Fiscal year & tax slab rules</CardTitle>
         </CardHeader>
@@ -602,7 +619,7 @@ export async function SettingsContent({ basePath, searchParams }: SettingsConten
         </CardContent>
       </Card>
 
-      <Card>
+      <Card className="transition-all duration-300 hover:shadow-xl border-border bg-card rounded-[1.25rem]">
         <CardHeader>
           <CardTitle>Portal utilities</CardTitle>
         </CardHeader>
@@ -638,7 +655,7 @@ export async function SettingsContent({ basePath, searchParams }: SettingsConten
               </form>
             </div>
           ) : (
-            <div className="rounded-lg border border-amber-200 bg-amber-50 p-4 text-amber-700">
+            <div className="rounded-lg border border-border bg-muted p-4 text-foreground">
               Admin access is required to run portal utility actions.
             </div>
           )}

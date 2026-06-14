@@ -135,7 +135,7 @@ export function TaxCalculatorClient({ fiscalYears }: TaxCalculatorClientProps) {
 
   if (fiscalYears.length === 0) {
     return (
-      <Card>
+      <Card className="border-border bg-card/90">
         <CardContent className="p-8 text-center text-muted-foreground">
           Add a fiscal year rule before using the calculator.
         </CardContent>
@@ -144,9 +144,9 @@ export function TaxCalculatorClient({ fiscalYears }: TaxCalculatorClientProps) {
   }
 
   return (
-    <div className="grid gap-6 xl:grid-cols-[420px_1fr]">
+    <div className="grid gap-6 xl:grid-cols-[420px_1fr] animate-fade-in-up">
       <div className="space-y-6">
-        <Card>
+        <Card className="transition-all duration-300 hover:shadow-xl border-border bg-card/90 rounded-[1.5rem]">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Calculator className="h-5 w-5" />
@@ -197,7 +197,7 @@ export function TaxCalculatorClient({ fiscalYears }: TaxCalculatorClientProps) {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="transition-all duration-300 hover:shadow-xl border-border bg-card/90 rounded-[1.5rem]">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <WalletCards className="h-5 w-5" />
@@ -242,7 +242,7 @@ export function TaxCalculatorClient({ fiscalYears }: TaxCalculatorClientProps) {
                 ['Opening Capital', result.openingCapital],
                 ['Cash In Hand', result.cashInHand],
               ].map(([label, value]) => (
-                <Card key={label as string}>
+                <Card key={label as string} className="transition-all duration-300 hover:shadow-xl border-border bg-card/90 rounded-lg">
                   <CardContent className="p-5">
                     <p className="text-sm text-muted-foreground">{label as string}</p>
                     <p className="mt-2 text-2xl font-bold tracking-tight">{fmtBDT(value as number)}</p>
@@ -251,7 +251,7 @@ export function TaxCalculatorClient({ fiscalYears }: TaxCalculatorClientProps) {
               ))}
             </div>
 
-            <Card>
+            <Card className="transition-all duration-300 hover:shadow-xl border-border bg-card/90 rounded-[1.5rem]">
               <CardHeader className="flex flex-row items-start justify-between">
                 <div>
                   <CardTitle>Tax Breakdown</CardTitle>
@@ -290,7 +290,7 @@ export function TaxCalculatorClient({ fiscalYears }: TaxCalculatorClientProps) {
             </Card>
 
             <div className="grid gap-6 lg:grid-cols-2">
-              <Card>
+              <Card className="transition-all duration-300 hover:shadow-xl border-border bg-card/90 rounded-[1.25rem]">
                 <CardHeader>
                   <CardTitle>Business Calculations</CardTitle>
                 </CardHeader>
@@ -312,7 +312,7 @@ export function TaxCalculatorClient({ fiscalYears }: TaxCalculatorClientProps) {
                 </CardContent>
               </Card>
 
-              <Card>
+              <Card className="transition-all duration-300 hover:shadow-xl border-border bg-card/90 rounded-[1.25rem]">
                 <CardHeader>
                   <CardTitle>Wealth Statement</CardTitle>
                 </CardHeader>
@@ -335,7 +335,7 @@ export function TaxCalculatorClient({ fiscalYears }: TaxCalculatorClientProps) {
             </div>
           </>
         ) : (
-          <Card className="flex min-h-[360px] items-center justify-center">
+          <Card className="border-border bg-card/90 flex min-h-[360px] items-center justify-center">
             <CardContent className="p-8 text-center">
               <Landmark className="mx-auto h-10 w-10 text-muted-foreground" />
               <p className="mt-4 font-medium">Enter {mode === 'profit' ? 'net profit' : 'tax amount'} to calculate.</p>

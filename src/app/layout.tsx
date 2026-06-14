@@ -68,17 +68,19 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{
             __html: `
               try {
-                if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-                  document.documentElement.classList.add('dark');
-                } else {
-                  document.documentElement.classList.remove('dark');
-                }
-                var combo = localStorage.theme_combo || 'national';
+                var mode = localStorage.getItem('theme');
+                var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                var isDark = mode === 'dark' || (!mode && prefersDark);
+                document.documentElement.classList.toggle('dark', isDark);
+
+                var combo = localStorage.getItem('theme_combo') || 'national';
                 document.documentElement.classList.remove('theme-national', 'theme-indigo', 'theme-blue', 'theme-teal', 'theme-charcoal');
                 if (combo !== 'national') {
                   document.documentElement.classList.add('theme-' + combo);
                 }
-              } catch (_) {}
+              } catch (error) {
+                console.warn('Theme initialization failed', error);
+              }
             `,
           }}
         />

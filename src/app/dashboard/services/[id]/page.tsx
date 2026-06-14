@@ -10,6 +10,13 @@ import { CopyButton } from '@/components/ui/copy-button';
 
 export const metadata = { title: 'Service Profile | GovDesk Admin' };
 
+const formatAmount = (amount: number | null | undefined) =>
+  new Intl.NumberFormat('en-BD', {
+    maximumFractionDigits: 0,
+    style: 'currency',
+    currency: 'BDT',
+  }).format(amount ?? 0);
+
 function buildPortalLink(url: string, userId?: string | null, password?: string) {
   try {
     const parsed = new URL(url);
@@ -53,28 +60,30 @@ export default async function ServiceProfileDetailPage({ params }: { params: Pro
     : undefined;
 
   return (
-    <div className="flex flex-col gap-6">
-      <Button variant="outline" asChild className="w-fit">
-        <Link href={`/dashboard/services/`}>
-          <ArrowLeft className="mr-2 h-4 w-4" /> Back to Services
-        </Link>
-      </Button>
+    <div className="space-y-6 animate-fade-in-up">
+      <div className="rounded-[2rem] border border-border bg-card/95 p-6 shadow-sm backdrop-blur-xl">
+        <Button variant="outline" asChild className="w-fit">
+          <Link href={`/dashboard/services/`}>
+            <ArrowLeft className="mr-2 h-4 w-4" /> Back to Services
+          </Link>
+        </Button>
+      </div>
 
       <div className="grid gap-6 md:grid-cols-2">
-        <Card>
+        <Card className="rounded-[1.75rem] border-border bg-card shadow-sm">
           <CardHeader>
             <CardTitle>Service Profile Details</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
               <p className="text-sm font-medium text-muted-foreground">{ownerType}</p>
-              <p className="text-lg font-semibold">{ownerName}</p>
+              <p className="text-lg font-semibold text-foreground">{ownerName}</p>
               <p className="text-sm text-muted-foreground">Client: {clientName}</p>
             </div>
             <div>
               <p className="text-sm font-medium text-muted-foreground">Service Category</p>
-              <div className="flex items-center gap-2">
-                <span className="text-lg font-semibold">{profile.category.name}</span>
+              <div className="mt-2 flex flex-wrap items-center gap-2">
+                <span className="text-lg font-semibold text-foreground">{profile.category.name}</span>
                 <Badge variant="outline">{profile.category.frequency}</Badge>
               </div>
             </div>
@@ -96,7 +105,7 @@ export default async function ServiceProfileDetailPage({ params }: { params: Pro
               <p className="text-sm font-medium text-muted-foreground">Portal URL</p>
               {portalUrl ? (
                 <div className="space-y-2">
-                  <p className="text-sm break-all text-slate-700">{portalUrl}</p>
+                  <p className="text-sm break-all text-foreground/80">{portalUrl}</p>
                   <Button asChild className="w-full">
                     <Link href={portalLink ?? portalUrl} target="_blank" rel="noopener noreferrer">
                       Open Portal
@@ -115,14 +124,14 @@ export default async function ServiceProfileDetailPage({ params }: { params: Pro
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="rounded-[1.75rem] border-border bg-card shadow-sm">
           <CardHeader>
             <CardTitle>Billing Periods</CardTitle>
             <CardDescription>Track payment status and service periods</CardDescription>
           </CardHeader>
           <CardContent>
             {profile.servicePeriods.length === 0 ? (
-              <div className="text-center py-8 text-muted-foreground">
+              <div className="space-y-4 rounded-3xl border border-border bg-muted/50 p-8 text-center text-muted-foreground">
                 <p>No billing periods recorded yet.</p>
                 <Button asChild variant="link" className="mt-2">
                   <Link href={`/dashboard/services/${profile.id}/periods/new`}>Add Period</Link>
@@ -131,12 +140,12 @@ export default async function ServiceProfileDetailPage({ params }: { params: Pro
             ) : (
               <div className="space-y-3">
                 {profile.servicePeriods.map((period) => (
-                  <div key={period.id} className="flex items-center justify-between p-3 border rounded-lg">
+                  <div key={period.id} className="flex flex-col gap-3 rounded-3xl border border-border bg-muted/50 p-4 sm:flex-row sm:items-center sm:justify-between">
                     <div>
-                      <p className="font-medium">{period.period}</p>
-                      <p className="text-sm text-muted-foreground">${period.paymentAmount}</p>
+                      <p className="font-medium text-foreground">{period.period}</p>
+                      <p className="text-sm text-muted-foreground">{formatAmount(period.paymentAmount)}</p>
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex flex-wrap items-center gap-2">
                       <Badge variant={period.isPaid ? 'default' : 'secondary'}>
                         {period.isPaid ? 'Paid' : 'Pending'}
                       </Badge>

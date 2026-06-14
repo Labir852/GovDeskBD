@@ -75,7 +75,7 @@ function RuleForm({ fiscalYear }: { fiscalYear: FiscalYearRule }) {
   }
 
   return (
-    <Card>
+    <Card className="transition-all duration-300 hover:shadow-xl border-border bg-card/90 rounded-[1.25rem]">
       <CardHeader>
         <CardTitle>{fiscalYear.label}</CardTitle>
         <CardDescription>{fiscalYear.year}</CardDescription>
@@ -154,8 +154,8 @@ export function RulesClient({ fiscalYears }: RulesClientProps) {
   }
 
   return (
-    <div className="grid gap-6 xl:grid-cols-[420px_1fr]">
-      <Card className="h-fit">
+    <div className="grid gap-6 xl:grid-cols-[420px_1fr] animate-fade-in-up">
+      <Card className="h-fit transition-all duration-300 hover:shadow-xl border-border bg-card/90 rounded-[1.5rem]">
         <CardHeader>
           <CardTitle>Add Fiscal Year</CardTitle>
           <CardDescription>Add future tax years without touching code.</CardDescription>
@@ -209,7 +209,9 @@ export function RulesClient({ fiscalYears }: RulesClientProps) {
 
       <div className="space-y-6">
         {fiscalYears.map((fiscalYear) => (
-          <RuleForm key={fiscalYear.id} fiscalYear={fiscalYear} />
+          <div key={fiscalYear.id} className="animate-fade-in-up">
+            <RuleForm fiscalYear={fiscalYear} />
+          </div>
         ))}
       </div>
     </div>

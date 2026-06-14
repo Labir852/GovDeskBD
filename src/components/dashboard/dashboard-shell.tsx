@@ -7,9 +7,13 @@ import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '
 
 type DashboardShellProps = {
   children: ReactNode;
+  user: {
+    name: string;
+    email: string;
+  };
 };
 
-export function DashboardShell({ children }: DashboardShellProps) {
+export function DashboardShell({ children, user }: DashboardShellProps) {
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const [desktopSidebarOpen, setDesktopSidebarOpen] = useState(true);
 
@@ -43,7 +47,7 @@ export function DashboardShell({ children }: DashboardShellProps) {
       </Sheet>
 
       <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
-        <Topbar onMenuClick={handleMenuClick} />
+        <Topbar onMenuClick={handleMenuClick} user={user} />
         {children}
       </div>
     </div>

@@ -1,13 +1,25 @@
 'use client';
 
-import { Bell, Menu, Search, Sun, Moon } from 'lucide-react';
+import { Bell, Menu, Search, Sun, Moon, LogOut } from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { useEffect, useState } from 'react';
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+} from '@/components/ui/dropdown-menu';
 
 type TopbarProps = {
   onMenuClick?: () => void;
+  user: {
+    name: string;
+    email: string;
+  };
 };
 
 function ThemeToggle() {
@@ -15,20 +27,18 @@ function ThemeToggle() {
   const [isDark, setIsDark] = useState(false);
 
   useEffect(() => {
-    setIsDark(document.documentElement.classList.contains('dark'));
+    const html = document.documentElement;
+    const currentIsDark = html.classList.contains('dark');
+    setIsDark(currentIsDark);
     setMounted(true);
   }, []);
 
   function toggleTheme() {
-    const nextDark = !isDark;
+    const html = document.documentElement;
+    const nextDark = !html.classList.contains('dark');
+    html.classList.toggle('dark', nextDark);
+    localStorage.setItem('theme', nextDark ? 'dark' : 'light');
     setIsDark(nextDark);
-    if (nextDark) {
-      document.documentElement.classList.add('dark');
-      localStorage.setItem('theme', 'dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-      localStorage.setItem('theme', 'light');
-    }
   }
 
   if (!mounted) {
@@ -49,14 +59,32 @@ function ThemeToggle() {
   );
 }
 
-export function Topbar({ onMenuClick }: TopbarProps) {
+export function Topbar({ onMenuClick, user }: TopbarProps) {
+  const router = useRouter();
+  const initials = useMemo(
+    () =>
+      user.name
+        .split(' ')
+        .filter(Boolean)
+        .map((part) => part[0])
+        .slice(0, 2)
+        .join('')
+        .toUpperCase(),
+    [user.name],
+  );
+
+  async function handleLogout() {
+    await fetch('/api/auth/logout', { method: 'POST' });
+    router.push('/login');
+  }
+
   return (
     <header className="sticky top-0 z-30 flex h-16 items-center gap-4 border-b bg-background/80 px-6 backdrop-blur-md">
       <Button type="button" variant="ghost" size="icon" onClick={onMenuClick}>
         <Menu className="h-5 w-5" />
         <span className="sr-only">Toggle sidebar</span>
       </Button>
-      
+
       <div className="flex flex-1 items-center gap-4 md:ml-auto md:gap-2 lg:gap-4">
         <form className="ml-auto flex-1 sm:flex-initial">
           <div className="relative">
@@ -73,10 +101,27 @@ export function Topbar({ onMenuClick }: TopbarProps) {
           <Bell className="h-5 w-5 text-muted-foreground" />
           <span className="sr-only">Notifications</span>
         </Button>
-        <Avatar className="h-8 w-8 cursor-pointer ring-2 ring-primary/20 transition-all hover:ring-primary/50">
-          <AvatarImage src="/placeholder-user.jpg" alt="Admin" />
-          <AvatarFallback>AD</AvatarFallback>
-        </Avatar>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="icon" className="rounded-full p-0">
+              <Avatar className="h-8 w-8 ring-2 ring-primary/20 transition-all hover:ring-primary/50">
+                <AvatarImage src="/placeholder-user.jpg" alt={user.name} />
+                <AvatarFallback>{initials}</AvatarFallback>
+              </Avatar>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-64">
+            <div className="px-4 py-3">
+              <p className="text-sm font-semibold text-foreground">{user.name}</p>
+              <p className="mt-1 text-xs text-muted-foreground break-words">{user.email}</p>
+            </div>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onSelect={handleLogout} className="cursor-pointer">
+              <LogOut className="mr-2 h-4 w-4" />
+              Logout
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </header>
   );

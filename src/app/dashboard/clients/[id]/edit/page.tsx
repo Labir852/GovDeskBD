@@ -24,20 +24,22 @@ export default async function EditClientPage({ params }: { params: Promise<{ id:
   }
 
   return (
-    <div className="flex flex-col gap-6 max-w-2xl">
-      <Button variant="outline" asChild className="w-fit">
-        <Link href={`/dashboard/clients/${id}`}>
-          <span className="mr-2">←</span> Back to Profile
-        </Link>
-      </Button>
+    <div className="space-y-6 animate-fade-in-up max-w-2xl">
+      <div className="rounded-[2rem] border border-border bg-card/95 p-6 shadow-sm backdrop-blur-xl">
+        <Button variant="outline" asChild className="w-fit">
+          <Link href={`/dashboard/clients/${id}`}>
+            <span className="mr-2">←</span> Back to Profile
+          </Link>
+        </Button>
+      </div>
 
-      <Card>
+      <Card className="rounded-[1.75rem] border-border bg-card shadow-sm">
         <CardHeader>
           <CardTitle>Edit Client</CardTitle>
           <CardDescription>Update the client's personal information and credentials.</CardDescription>
         </CardHeader>
         <CardContent>
-          <form action={handleUpdate} className="space-y-4">
+          <form action={handleUpdate} className="space-y-6">
             <div className="space-y-2">
               <Label htmlFor="name">Full Name *</Label>
               <Input
@@ -49,7 +51,7 @@ export default async function EditClientPage({ params }: { params: Promise<{ id:
               />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <div className="space-y-2">
                 <Label htmlFor="phone">Phone Number</Label>
                 <Input
@@ -89,32 +91,22 @@ export default async function EditClientPage({ params }: { params: Promise<{ id:
                   type="password"
                   placeholder="Leave blank to keep existing password"
                 />
-                <p className="text-xs text-muted-foreground">Passwords are encrypted using AES-256.</p>
+                <p className="text-xs text-slate-500">Passwords are encrypted using AES-256.</p>
               </div>
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="notes">Additional Notes</Label>
-              <Textarea
-                id="notes"
-                name="notes"
-                defaultValue={client.notes ?? ''}
-                placeholder="Any extra information about this client..."
-              />
-            </div>
-
-            <div className="flex items-center gap-2 p-3 border rounded-lg bg-muted/50">
-              <input
-                type="checkbox"
-                id="isActive"
-                name="isActive"
-                defaultChecked={client.isActive}
-                value="true"
-                className="w-4 h-4 rounded cursor-pointer"
-              />
-              <Label htmlFor="isActive" className="font-normal cursor-pointer">
+            <div className="rounded-3xl border border-slate-200/80 bg-slate-50 p-4">
+              <label htmlFor="isActive" className="flex items-center gap-3 text-sm cursor-pointer">
+                <input
+                  type="checkbox"
+                  id="isActive"
+                  name="isActive"
+                  defaultChecked={client.isActive}
+                  value="true"
+                  className="h-4 w-4 rounded border-slate-300 text-slate-900 focus:ring-slate-500"
+                />
                 Mark as Active
-              </Label>
+              </label>
             </div>
 
             <Button type="submit" className="w-full">

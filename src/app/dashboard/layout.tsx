@@ -18,7 +18,7 @@ export default async function DashboardLayout({ children }: { children: ReactNod
   }
 
   return (
-    <DashboardShell>
+    <DashboardShell user={{ name: session.name, email: session.email }}>
       <main className="flex-1 overflow-y-auto p-6 md:p-8">
         <Suspense fallback={<LoadingBar />}>{children}</Suspense>
       </main>

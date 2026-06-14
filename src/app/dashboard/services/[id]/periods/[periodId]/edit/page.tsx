@@ -110,20 +110,22 @@ export default function EditServicePeriodPage({ params }: Params) {
   }
 
   return (
-    <div className="flex flex-col gap-6 max-w-2xl">
-      <Button variant="outline" asChild className="w-fit">
-        <Link href={`/dashboard/services/${id}`}>
-          <ArrowLeft className="mr-2 h-4 w-4" /> Back to Service
-        </Link>
-      </Button>
+    <div className="space-y-6 max-w-2xl mx-auto animate-fade-in-up">
+      <div className="rounded-[2rem] border border-border bg-card/95 p-6 shadow-sm backdrop-blur-xl">
+        <Button variant="outline" asChild className="w-fit">
+          <Link href={`/dashboard/services/${id}`}>
+            <ArrowLeft className="mr-2 h-4 w-4" /> Back to Service
+          </Link>
+        </Button>
+      </div>
 
-      <Card>
+      <Card className="rounded-[1.75rem] border-border bg-card shadow-sm">
         <CardHeader>
           <CardTitle>Edit Billing Period</CardTitle>
           <CardDescription>Update the period, amount, payment status, and JSON metadata.</CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-2">
               <Label htmlFor="period">Billing Period *</Label>
               <Input id="period" name="period" value={period} onChange={(e) => setPeriod(e.target.value)} required />
@@ -158,7 +160,7 @@ export default function EditServicePeriodPage({ params }: Params) {
               </Select>
             </div>
 
-            <div className="flex items-center gap-2 p-3 border rounded-lg bg-muted/50">
+            <div className="flex items-center gap-2 rounded-3xl border border-slate-200 bg-slate-50 p-4">
               <Checkbox
                 id="isPaid"
                 name="isPaid"
@@ -179,7 +181,7 @@ export default function EditServicePeriodPage({ params }: Params) {
                 rows={8}
                 value={periodData}
                 onChange={(e) => setPeriodData(e.target.value)}
-                className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground"
+                className="w-full rounded-3xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 focus:border-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-100"
                 placeholder='{"needPrint":"NO","vatStatus":"Pending"}'
               />
             </div>

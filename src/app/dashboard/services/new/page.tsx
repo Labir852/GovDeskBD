@@ -76,73 +76,83 @@ export default function NewServiceProfilePage() {
   }
 
   return (
-    <div className="flex flex-col gap-6 max-w-2xl">
-      <Button variant="outline" asChild className="w-fit">
-        <Link href="/dashboard/services">
-          <ArrowLeft className="mr-2 h-4 w-4" /> Back to Services
-        </Link>
-      </Button>
+    <div className="space-y-6 max-w-2xl mx-auto animate-fade-in-up">
+      <div className="rounded-[2rem] border border-border bg-card/95 p-6 shadow-sm backdrop-blur-xl">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-center gap-4">
+            <Button variant="ghost" size="icon" asChild>
+              <Link href="/dashboard/services"><ArrowLeft className="h-5 w-5" /></Link>
+            </Button>
+            <div>
+              <h1 className="text-3xl font-semibold tracking-tight text-foreground">Create Service Profile</h1>
+              <p className="text-sm text-muted-foreground">Add a new service profile with portal credentials.</p>
+            </div>
+          </div>
+        </div>
+      </div>
 
-      <Card>
+      <Card className="rounded-[1.75rem] border-border bg-card shadow-sm">
         <CardHeader>
-          <CardTitle>Create Service Profile</CardTitle>
+          <CardTitle>Service Profile Details</CardTitle>
           <CardDescription>Add a new service profile with portal credentials.</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <input type="hidden" name="organizationId" value={selectedOrgId} />
-            <div className="space-y-2">
-              <Label htmlFor="organizationId">Organization *</Label>
-              <Select value={selectedOrgId} onValueChange={setSelectedOrgId} required>
-                <SelectTrigger id="organizationId">
-                  <SelectValue placeholder="Select an organization" />
-                </SelectTrigger>
-                <SelectContent>
-                  {organizations.map((org) => (
-                    <SelectItem key={org.id} value={org.id}>
-                      {org.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="organizationId">Organization *</Label>
+                <Select value={selectedOrgId} onValueChange={setSelectedOrgId} required>
+                  <SelectTrigger id="organizationId">
+                    <SelectValue placeholder="Select an organization" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {organizations.map((org) => (
+                      <SelectItem key={org.id} value={org.id}>
+                        {org.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
 
-            <input type="hidden" name="categoryId" value={selectedCategoryId} />
-            <div className="space-y-2">
-              <Label htmlFor="categoryId">Service Category *</Label>
-              <Select value={selectedCategoryId} onValueChange={setSelectedCategoryId} required>
-                <SelectTrigger id="categoryId">
-                  <SelectValue placeholder="Select a category" />
-                </SelectTrigger>
-                <SelectContent>
-                  {categories.map((cat) => (
-                    <SelectItem key={cat.id} value={cat.id}>
-                      {cat.name} ({cat.frequency})
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+              <div className="space-y-2">
+                <Label htmlFor="categoryId">Service Category *</Label>
+                <input type="hidden" name="categoryId" value={selectedCategoryId} />
+                <Select value={selectedCategoryId} onValueChange={setSelectedCategoryId} required>
+                  <SelectTrigger id="categoryId">
+                    <SelectValue placeholder="Select a category" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {categories.map((cat) => (
+                      <SelectItem key={cat.id} value={cat.id}>
+                        {cat.name} ({cat.frequency})
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="portalUserId">Portal Account ID</Label>
-              <Input
-                id="portalUserId"
-                name="portalUserId"
-                placeholder="e.g., user@portal.gov.bd"
-                type="text"
-              />
-            </div>
+              <div className="space-y-2">
+                <Label htmlFor="portalUserId">Portal Account ID</Label>
+                <Input
+                  id="portalUserId"
+                  name="portalUserId"
+                  placeholder="e.g., user@portal.gov.bd"
+                  type="text"
+                />
+              </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="portalPassword">Portal Password</Label>
-              <Input
-                id="portalPassword"
-                name="portalPassword"
-                placeholder="Enter portal password (will be encrypted)"
-                type="password"
-              />
-              <p className="text-xs text-muted-foreground">Passwords are stored securely with AES-256 encryption.</p>
+              <div className="space-y-2">
+                <Label htmlFor="portalPassword">Portal Password</Label>
+                <Input
+                  id="portalPassword"
+                  name="portalPassword"
+                  placeholder="Enter portal password (will be encrypted)"
+                  type="password"
+                />
+                <p className="text-xs text-slate-500">Passwords are stored securely with AES-256 encryption.</p>
+              </div>
             </div>
 
             <Button type="submit" className="w-full" disabled={loading || !selectedOrgId || !selectedCategoryId}>

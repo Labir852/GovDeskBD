@@ -46,26 +46,30 @@ export default function NewCategoryPage() {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="max-w-2xl mx-auto flex flex-col gap-6"
+      className="space-y-6 max-w-2xl mx-auto animate-fade-in-up"
     >
-      <div className="flex items-center gap-4">
-        <Button variant="ghost" size="icon" asChild>
-          <Link href="/dashboard/categories"><ArrowLeft className="h-5 w-5" /></Link>
-        </Button>
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">Add New Category</h1>
-          <p className="text-muted-foreground">Create a new service category for organizing service profiles.</p>
+      <div className="rounded-[2rem] border border-border bg-card/95 p-6 shadow-sm backdrop-blur-xl">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-center gap-4">
+            <Button variant="ghost" size="icon" asChild>
+              <Link href="/dashboard/categories"><ArrowLeft className="h-5 w-5" /></Link>
+            </Button>
+            <div>
+              <h1 className="text-3xl font-semibold tracking-tight text-foreground">Add New Category</h1>
+              <p className="text-sm text-muted-foreground">Create a new service category for organizing service profiles.</p>
+            </div>
+          </div>
         </div>
       </div>
 
-      <Card>
+      <Card className="rounded-[1.75rem] border-border bg-card shadow-sm">
         <CardHeader>
           <CardTitle>Category Details</CardTitle>
           <CardDescription>Define the category name and its service frequency.</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <div className="space-y-2">
                 <Label htmlFor="name">Category Name *</Label>
                 <Input
@@ -101,10 +105,10 @@ export default function NewCategoryPage() {
                 onChange={(event) => setPortalUrl(event.target.value)}
                 placeholder="https://portal.example.gov.bd/login"
               />
-              <p className="text-xs text-muted-foreground">Optional portal login URL for this category.</p>
+              <p className="text-xs text-slate-500">Optional portal login URL for this category.</p>
             </div>
 
-            <div className="flex justify-end gap-4">
+            <div className="flex flex-col gap-3 sm:flex-row sm:justify-end">
               <Button variant="outline" type="button" asChild>
                 <Link href="/dashboard/categories">Cancel</Link>
               </Button>

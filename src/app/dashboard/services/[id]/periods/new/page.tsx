@@ -86,14 +86,16 @@ export default function NewServicePeriodPage({ params }: { params: Promise<{ id:
     profile?.category?.frequency?.toUpperCase() === 'MONTHLY';
 
   return (
-    <div className="flex flex-col gap-6 max-w-2xl">
-      <Button variant="outline" asChild className="w-fit">
-        <Link href={`/dashboard/services/${id}`}>
-          <ArrowLeft className="mr-2 h-4 w-4" /> Back to Profile
-        </Link>
-      </Button>
+    <div className="space-y-6 max-w-2xl mx-auto animate-fade-in-up">
+      <div className="rounded-[2rem] border border-slate-200/70 bg-white/95 p-6 shadow-[0_24px_80px_-40px_rgba(15,23,42,0.35)] backdrop-blur-xl">
+        <Button variant="outline" asChild className="w-fit">
+          <Link href={`/dashboard/services/${id}`}>
+            <ArrowLeft className="mr-2 h-4 w-4" /> Back to Profile
+          </Link>
+        </Button>
+      </div>
 
-      <Card>
+      <Card className="rounded-[1.75rem] border-slate-200/70 bg-white/90 shadow-sm">
         <CardHeader>
           <CardTitle>Add Billing Period</CardTitle>
           <CardDescription>Record a new billing period for this service.</CardDescription>
@@ -103,8 +105,8 @@ export default function NewServicePeriodPage({ params }: { params: Promise<{ id:
             {isMonthly ? (
               <div className="space-y-2">
                 <Label>Period *</Label>
-                <div className="flex gap-4">
-                  <div className="flex-1">
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div>
                     <Select value={selectedMonth} onValueChange={setSelectedMonth}>
                       <SelectTrigger id="period-month">
                         <SelectValue placeholder="Month" />
@@ -118,7 +120,7 @@ export default function NewServicePeriodPage({ params }: { params: Promise<{ id:
                       </SelectContent>
                     </Select>
                   </div>
-                  <div className="flex-1">
+                  <div>
                     <Select value={selectedYear} onValueChange={setSelectedYear}>
                       <SelectTrigger id="period-year">
                         <SelectValue placeholder="Year" />

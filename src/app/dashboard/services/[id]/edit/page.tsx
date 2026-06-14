@@ -33,27 +33,30 @@ export default async function EditServiceProfilePage({ params }: { params: Promi
   }
 
   return (
-    <div className="flex flex-col gap-6 max-w-2xl">
-      <Button variant="outline" asChild className="w-fit">
-        <Link href={`/dashboard/services/${id}`}>
-          <span className="mr-2">←</span> Back to Profile
-        </Link>
-      </Button>
+    <div className="space-y-6 max-w-2xl animate-fade-in-up">
+      <div className="rounded-[2rem] border border-border bg-card/95 p-6 shadow-sm backdrop-blur-xl">
+        <Button variant="outline" asChild className="w-fit">
+          <Link href={`/dashboard/services/${id}`}>
+            <span className="mr-2">←</span> Back to Profile
+          </Link>
+        </Button>
+      </div>
 
-      <Card>
+      <Card className="rounded-[1.75rem] border-border bg-card shadow-sm">
         <CardHeader>
           <CardTitle>Edit Service Profile</CardTitle>
           <CardDescription>Update portal credentials and settings.</CardDescription>
         </CardHeader>
         <CardContent>
-          <form action={handleUpdate} className="space-y-4">
+          <form action={handleUpdate} className="space-y-6">
             <div className="space-y-2">
               <Label htmlFor="organizationId">Organization *</Label>
               <select 
                 id="organizationId" 
                 name="organizationId" 
+                title="Organization"
                 defaultValue={profile.organizationId ?? ''} 
-                className="w-full rounded border px-3 py-2"
+                className="w-full rounded-3xl border border-border bg-background text-foreground px-4 py-3 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
                 required
               >
                 <option value="">Select an organization</option>
@@ -70,8 +73,9 @@ export default async function EditServiceProfilePage({ params }: { params: Promi
               <select 
                 id="categoryId" 
                 name="categoryId" 
+                title="Service Category"
                 defaultValue={profile.categoryId} 
-                className="w-full rounded border px-3 py-2"
+                className="w-full rounded-3xl border border-slate-200 px-4 py-3 focus:border-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-100"
                 required
               >
                 <option value="">Select a category</option>
@@ -104,7 +108,7 @@ export default async function EditServiceProfilePage({ params }: { params: Promi
                 type="password"
                 className="font-mono"
               />
-              <p className="text-xs text-muted-foreground">Passwords are stored securely with AES-256 encryption.</p>
+              <p className="text-xs text-slate-500">Passwords are stored securely with AES-256 encryption.</p>
             </div>
 
             <Button type="submit" className="w-full">

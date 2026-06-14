@@ -1,11 +1,10 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { LayoutDashboard, Users, Building2, Briefcase, Calculator, Settings, LogOut, Tags } from 'lucide-react';
+import { LayoutDashboard, Users, Building2, Briefcase, Calculator, Settings, Tags } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
 
 const sidebarItems = [
   { title: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
@@ -23,12 +22,6 @@ type SidebarProps = {
 
 export function Sidebar({ onNavigate }: SidebarProps) {
   const pathname = usePathname();
-  const router = useRouter();
-
-  async function handleLogout() {
-    await fetch('/api/auth/logout', { method: 'POST' });
-    router.push('/login');
-  }
 
   return (
     <div className="flex h-full w-64 flex-col bg-sidebar border-r border-sidebar-border shadow-sm">
@@ -69,18 +62,6 @@ export function Sidebar({ onNavigate }: SidebarProps) {
             );
           })}
         </nav>
-      </div>
-
-      <div className="border-t p-4">
-        <Button 
-          type="button"
-          variant="ghost" 
-          className="w-full justify-start text-muted-foreground hover:text-destructive hover:bg-destructive/10 "
-          onClick={handleLogout}
-        >
-          <LogOut className="mr-2 h-5 w-5" />
-          Logout
-        </Button>
       </div>
     </div>
   );

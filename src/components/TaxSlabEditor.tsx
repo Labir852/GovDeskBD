@@ -49,7 +49,7 @@ export default function TaxSlabEditor() {
 
       <div className="space-y-3">
         {rows.map((row) => (
-          <div key={row.id} className="grid gap-3 rounded-lg border bg-white p-4 sm:grid-cols-[1.2fr_1fr_1.6fr_auto]">
+          <div key={row.id} className="grid gap-3 rounded-lg border border-border bg-card p-4 sm:grid-cols-[1.2fr_1fr_1.6fr_auto]">
             <div className="space-y-2">
               <Label htmlFor={`slabLimitAmount-${row.id}`}>Upper limit</Label>
               <Input
