@@ -296,7 +296,7 @@ export const columns: ColumnDef<ServiceProfileData>[] = [
           : `/dashboard/services/${profile.id}`;
 
       return (
-        <Link href={href} className="text-primary hover:underline font-semibold text-sm">
+        <Link href={href} prefetch={true} className="text-primary hover:underline font-semibold text-sm">
           {label}
         </Link>
       );
@@ -563,7 +563,7 @@ export const columns: ColumnDef<ServiceProfileData>[] = [
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem asChild>
               <Link
-                href={`/dashboard/services/${profile.id}`}
+                href={`/dashboard/services/${profile.id}`} prefetch={true}
                 className="cursor-pointer flex items-center justify-between w-full"
               >
                 View <ArrowRight className="h-4 w-4 ml-2" />
@@ -571,7 +571,7 @@ export const columns: ColumnDef<ServiceProfileData>[] = [
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
-              <Link href={`/dashboard/services/${profile.id}/edit`}>Edit Profile</Link>
+              <Link href={`/dashboard/services/${profile.id}/edit`} prefetch={true}>Edit Profile</Link>
             </DropdownMenuItem>
             <DropdownMenuItem
               className="text-destructive focus:text-destructive"

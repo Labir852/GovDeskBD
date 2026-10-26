@@ -27,7 +27,15 @@ export const columns: ColumnDef<ClientData>[] = [
   {
     accessorKey: 'name',
     header: 'Name',
-    cell: ({ row }) => <div className="font-medium">{row.getValue('name')}</div>,
+    cell: ({ row }) => (
+      <Link
+        href={`/dashboard/clients/${row.original.id}`}
+        prefetch={true}
+        className="font-medium hover:text-primary transition-colors hover:underline"
+      >
+        {row.getValue('name')}
+      </Link>
+    ),
   },
   {
     accessorKey: 'phone',
@@ -78,7 +86,11 @@ export const columns: ColumnDef<ClientData>[] = [
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
-              <Link href={`/dashboard/clients/${client.id}`} className="cursor-pointer flex items-center justify-between w-full">
+              <Link
+                href={`/dashboard/clients/${client.id}`}
+                prefetch={true}
+                className="cursor-pointer flex items-center justify-between w-full"
+              >
                 View Details <ArrowRight className="h-4 w-4 ml-2" />
               </Link>
             </DropdownMenuItem>

@@ -33,7 +33,15 @@ export const columns: ColumnDef<CategoryData>[] = [
   {
     accessorKey: 'name',
     header: 'Name',
-    cell: ({ row }) => <div className="font-semibold">{row.getValue('name')}</div>,
+    cell: ({ row }) => (
+      <Link
+        href={`/dashboard/categories/${row.original.id}`}
+        prefetch={true}
+        className="font-semibold hover:text-primary transition-colors hover:underline"
+      >
+        {row.getValue('name')}
+      </Link>
+    ),
   },
   {
     accessorKey: 'frequency',
@@ -76,6 +84,7 @@ export const columns: ColumnDef<CategoryData>[] = [
             <DropdownMenuItem asChild>
               <Link
                 href={`/dashboard/categories/${category.id}`}
+                prefetch={true}
                 className="cursor-pointer flex items-center justify-between w-full"
               >
                 Edit <ArrowRight className="h-4 w-4 ml-2" />

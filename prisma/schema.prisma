@@ -104,16 +104,22 @@ model ServicePeriod {
 }
 
 model TaxFiscalYear {
-  id          String    @id @default(uuid())
-  year        String    @unique
-  label       String
-  description String?
-  isActive    Boolean   @default(true)
-  strategy    Json?
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  id                           String    @id @default(uuid())
+  year                         String    @unique
+  label                        String
+  description                  String?
+  isActive                     Boolean   @default(true)
+  strategy                     Json?
+  femaleSeniorThreshold        Float?
+  thirdGenderDisabledThreshold Float?
+  freedomJulyFighterThreshold  Float?
+  disabledChildAllowance       Float?    @default(50000)
+  minTaxStandard               Float?    @default(5000)
+  minTaxNewTaxpayer            Float?    @default(1000)
+  createdAt                    DateTime  @default(now())
+  updatedAt                    DateTime  @updatedAt
 
-  slabs       TaxSlab[]
+  slabs                        TaxSlab[]
 }
 
 model TaxSlab {

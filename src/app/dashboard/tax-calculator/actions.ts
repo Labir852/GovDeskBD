@@ -6,7 +6,6 @@ import { defaultTaxFiscalYears, defaultTaxStrategy } from '@/lib/tax-calculator'
 
 export async function ensureDefaultTaxRules() {
   try {
-    // Check if model exists and count records
     if (!prisma.taxFiscalYear) {
       console.warn('TaxFiscalYear model not available in Prisma client');
       return;
@@ -22,7 +21,13 @@ export async function ensureDefaultTaxRules() {
           year: fiscalYear.year,
           label: fiscalYear.label,
           description: fiscalYear.description,
-          strategy: fiscalYear.strategy,
+          strategy: fiscalYear.strategy ? (fiscalYear.strategy as any) : undefined,
+          femaleSeniorThreshold: fiscalYear.femaleSeniorThreshold,
+          thirdGenderDisabledThreshold: fiscalYear.thirdGenderDisabledThreshold,
+          freedomJulyFighterThreshold: fiscalYear.freedomJulyFighterThreshold,
+          disabledChildAllowance: fiscalYear.disabledChildAllowance ?? 50000,
+          minTaxStandard: fiscalYear.minTaxStandard ?? 5000,
+          minTaxNewTaxpayer: fiscalYear.minTaxNewTaxpayer ?? 1000,
           slabs: {
             create: fiscalYear.slabs.map((slab, index) => ({
               sequence: index + 1,
@@ -36,7 +41,6 @@ export async function ensureDefaultTaxRules() {
     }
   } catch (error) {
     console.error('Error ensuring default tax rules:', error);
-    // Silently fail - the model may not be migrated yet
   }
 }
 
@@ -146,19 +150,50 @@ function parseSlabs(raw: string | FormData) {
   });
 }
 
-function parseStrategy(raw: string) {
+function parseStrategy(raw: string | FormData) {
+  if (raw instanceof FormData) {
+    const rawJson = raw.get('strategy')?.toString()?.trim();
+    if (rawJson) {
+      try {
+        const parsed = JSON.parse(rawJson);
+        return {
+          ...defaultTaxStrategy,
+          ...parsed,
+          assetFields: Array.isArray(parsed.assetFields) ? parsed.assetFields : defaultTaxStrategy.assetFields,
+          liabilityFields: Array.isArray(parsed.liabilityFields)
+            ? parsed.liabilityFields
+            : defaultTaxStrategy.liabilityFields,
+        };
+      } catch {}
+    }
+
+    const expenseDivisor = raw.get('expenseDivisor') ? Number(raw.get('expenseDivisor')) : defaultTaxStrategy.expenseDivisor;
+    const salesGrossProfitRatePercent = raw.get('salesGrossProfitRatePercent') ? Number(raw.get('salesGrossProfitRatePercent')) : defaultTaxStrategy.salesGrossProfitRatePercent;
+    const openingCapitalMultiplier = raw.get('openingCapitalMultiplier') ? Number(raw.get('openingCapitalMultiplier')) : defaultTaxStrategy.openingCapitalMultiplier;
+
+    return {
+      ...defaultTaxStrategy,
+      expenseDivisor: Number.isFinite(expenseDivisor) && expenseDivisor > 0 ? expenseDivisor : defaultTaxStrategy.expenseDivisor,
+      salesGrossProfitRatePercent: Number.isFinite(salesGrossProfitRatePercent) && salesGrossProfitRatePercent > 0 ? salesGrossProfitRatePercent : defaultTaxStrategy.salesGrossProfitRatePercent,
+      openingCapitalMultiplier: Number.isFinite(openingCapitalMultiplier) && openingCapitalMultiplier > 0 ? openingCapitalMultiplier : defaultTaxStrategy.openingCapitalMultiplier,
+    };
+  }
+
   if (!raw.trim()) return defaultTaxStrategy;
 
-  const parsed = JSON.parse(raw);
-
-  return {
-    ...defaultTaxStrategy,
-    ...parsed,
-    assetFields: Array.isArray(parsed.assetFields) ? parsed.assetFields : defaultTaxStrategy.assetFields,
-    liabilityFields: Array.isArray(parsed.liabilityFields)
-      ? parsed.liabilityFields
-      : defaultTaxStrategy.liabilityFields,
-  };
+  try {
+    const parsed = JSON.parse(raw);
+    return {
+      ...defaultTaxStrategy,
+      ...parsed,
+      assetFields: Array.isArray(parsed.assetFields) ? parsed.assetFields : defaultTaxStrategy.assetFields,
+      liabilityFields: Array.isArray(parsed.liabilityFields)
+        ? parsed.liabilityFields
+        : defaultTaxStrategy.liabilityFields,
+    };
+  } catch {
+    return defaultTaxStrategy;
+  }
 }
 
 export async function createTaxFiscalYear(formData: FormData) {
@@ -171,7 +206,26 @@ export async function createTaxFiscalYear(formData: FormData) {
     const label = String(formData.get('label') || '').trim();
     const description = String(formData.get('description') || '').trim();
     const slabs = parseSlabs(formData);
-    const strategy = parseStrategy(String(formData.get('strategy') || ''));
+    const strategy = parseStrategy(formData);
+
+    const femaleSeniorThreshold = formData.get('femaleSeniorThreshold')
+      ? Number(formData.get('femaleSeniorThreshold'))
+      : null;
+    const thirdGenderDisabledThreshold = formData.get('thirdGenderDisabledThreshold')
+      ? Number(formData.get('thirdGenderDisabledThreshold'))
+      : null;
+    const freedomJulyFighterThreshold = formData.get('freedomJulyFighterThreshold')
+      ? Number(formData.get('freedomJulyFighterThreshold'))
+      : null;
+    const disabledChildAllowance = formData.get('disabledChildAllowance')
+      ? Number(formData.get('disabledChildAllowance'))
+      : 50000;
+    const minTaxStandard = formData.get('minTaxStandard')
+      ? Number(formData.get('minTaxStandard'))
+      : 5000;
+    const minTaxNewTaxpayer = formData.get('minTaxNewTaxpayer')
+      ? Number(formData.get('minTaxNewTaxpayer'))
+      : 1000;
 
     if (!year || !label) {
       return { success: false, error: 'Fiscal year and label are required.' };
@@ -183,6 +237,12 @@ export async function createTaxFiscalYear(formData: FormData) {
         label,
         description: description || null,
         strategy,
+        femaleSeniorThreshold,
+        thirdGenderDisabledThreshold,
+        freedomJulyFighterThreshold,
+        disabledChildAllowance,
+        minTaxStandard,
+        minTaxNewTaxpayer,
         isActive: formData.get('isActive') !== 'false',
         slabs: { create: slabs },
       },
@@ -219,7 +279,26 @@ export async function updateTaxFiscalYear(id: string, formData: FormData) {
     const label = String(formData.get('label') || '').trim();
     const description = String(formData.get('description') || '').trim();
     const slabs = parseSlabs(formData);
-    const strategy = parseStrategy(String(formData.get('strategy') || ''));
+    const strategy = parseStrategy(formData);
+
+    const femaleSeniorThreshold = formData.get('femaleSeniorThreshold')
+      ? Number(formData.get('femaleSeniorThreshold'))
+      : null;
+    const thirdGenderDisabledThreshold = formData.get('thirdGenderDisabledThreshold')
+      ? Number(formData.get('thirdGenderDisabledThreshold'))
+      : null;
+    const freedomJulyFighterThreshold = formData.get('freedomJulyFighterThreshold')
+      ? Number(formData.get('freedomJulyFighterThreshold'))
+      : null;
+    const disabledChildAllowance = formData.get('disabledChildAllowance')
+      ? Number(formData.get('disabledChildAllowance'))
+      : 50000;
+    const minTaxStandard = formData.get('minTaxStandard')
+      ? Number(formData.get('minTaxStandard'))
+      : 5000;
+    const minTaxNewTaxpayer = formData.get('minTaxNewTaxpayer')
+      ? Number(formData.get('minTaxNewTaxpayer'))
+      : 1000;
 
     if (!year || !label) {
       return { success: false, error: 'Fiscal year and label are required.' };
@@ -235,6 +314,12 @@ export async function updateTaxFiscalYear(id: string, formData: FormData) {
           label,
           description: description || null,
           strategy,
+          femaleSeniorThreshold,
+          thirdGenderDisabledThreshold,
+          freedomJulyFighterThreshold,
+          disabledChildAllowance,
+          minTaxStandard,
+          minTaxNewTaxpayer,
           isActive: formData.get('isActive') === 'true',
           slabs: { create: slabs },
         },

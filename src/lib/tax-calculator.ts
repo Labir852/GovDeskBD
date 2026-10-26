@@ -12,12 +12,48 @@ export type TaxStrategy = {
   liabilityFields: string[];
 };
 
+export type TaxpayerCategory =
+  | 'general'
+  | 'female_senior'
+  | 'third_gender_disabled'
+  | 'freedom_july_fighter';
+
+export type TaxpayerStatus = 'regular' | 'new';
+
+export type TaxFiscalYearRule = {
+  id?: string;
+  year: string;
+  label: string;
+  description?: string | null;
+  isActive?: boolean;
+  strategy?: Partial<TaxStrategy> | null;
+  femaleSeniorThreshold?: number | null;
+  thirdGenderDisabledThreshold?: number | null;
+  freedomJulyFighterThreshold?: number | null;
+  disabledChildAllowance?: number | null;
+  minTaxStandard?: number | null;
+  minTaxNewTaxpayer?: number | null;
+  slabs: Array<{
+    id?: string;
+    sequence?: number;
+    limitAmount: number | null;
+    rate: number;
+    label?: string | null;
+  }>;
+};
+
 export type CalculatorInput = {
   mode: 'profit' | 'tax';
   taxInput?: string | number;
   profitInput?: string | number;
   slabs: TaxSlabInput[];
   strategy?: Partial<TaxStrategy> | null;
+  taxpayerCategory?: TaxpayerCategory;
+  hasDisabledChild?: boolean;
+  disabledChildCount?: number;
+  taxpayerStatus?: TaxpayerStatus;
+  taxRebate?: string | number;
+  fiscalYear?: Partial<TaxFiscalYearRule>;
   assets: Record<string, string | number | undefined>;
   liabilities: Record<string, string | number | undefined>;
   prevYearNetWealth?: string | number;
@@ -41,12 +77,18 @@ export const defaultTaxStrategy: TaxStrategy = {
   liabilityFields: ['assetMortgage', 'borrow', 'loan'],
 };
 
-export const defaultTaxFiscalYears = [
+export const defaultTaxFiscalYears: TaxFiscalYearRule[] = [
   {
     year: '2025-2026',
     label: 'FY 2025-26',
     description: 'Bangladesh business income tax slabs for assessment year 2025-26.',
     strategy: defaultTaxStrategy,
+    femaleSeniorThreshold: 400000,
+    thirdGenderDisabledThreshold: 475000,
+    freedomJulyFighterThreshold: 500000,
+    disabledChildAllowance: 50000,
+    minTaxStandard: 5000,
+    minTaxNewTaxpayer: 1000,
     slabs: [
       { limitAmount: 350000, rate: 0, label: 'First 350,000' },
       { limitAmount: 100000, rate: 0.05, label: 'Next 100,000' },
@@ -60,8 +102,14 @@ export const defaultTaxFiscalYears = [
   {
     year: '2026-2027',
     label: 'FY 2026-27',
-    description: 'Bangladesh business income tax slabs for assessment year 2026-27.',
+    description: 'Bangladesh business income tax slabs for assessment year 2026-27 (Circular 2026-2027).',
     strategy: defaultTaxStrategy,
+    femaleSeniorThreshold: 425000,
+    thirdGenderDisabledThreshold: 500000,
+    freedomJulyFighterThreshold: 525000,
+    disabledChildAllowance: 50000,
+    minTaxStandard: 5000,
+    minTaxNewTaxpayer: 1000,
     slabs: [
       { limitAmount: 375000, rate: 0, label: 'First 375,000' },
       { limitAmount: 300000, rate: 0.1, label: 'Next 300,000' },
@@ -75,7 +123,7 @@ export const defaultTaxFiscalYears = [
 
 const n = (value: string | number | undefined) => Number.parseFloat(String(value ?? '')) || 0;
 
-const normalizeStrategy = (strategy?: Partial<TaxStrategy> | null): TaxStrategy => ({
+export const normalizeStrategy = (strategy?: Partial<TaxStrategy> | null): TaxStrategy => ({
   ...defaultTaxStrategy,
   ...(strategy || {}),
   assetFields: Array.isArray(strategy?.assetFields) ? strategy.assetFields : defaultTaxStrategy.assetFields,
@@ -83,6 +131,58 @@ const normalizeStrategy = (strategy?: Partial<TaxStrategy> | null): TaxStrategy 
     ? strategy.liabilityFields
     : defaultTaxStrategy.liabilityFields,
 });
+
+export function getTaxFreeThreshold(
+  fiscalYear?: Partial<TaxFiscalYearRule> | null,
+  category: TaxpayerCategory = 'general',
+  hasDisabledChild = false,
+  disabledChildCount = 0
+): number {
+  const baseSlabLimit = fiscalYear?.slabs?.[0]?.limitAmount ?? 375000;
+
+  let threshold = baseSlabLimit;
+  if (category === 'female_senior') {
+    threshold = fiscalYear?.femaleSeniorThreshold ?? 425000;
+  } else if (category === 'third_gender_disabled') {
+    threshold = fiscalYear?.thirdGenderDisabledThreshold ?? 500000;
+  } else if (category === 'freedom_july_fighter') {
+    threshold = fiscalYear?.freedomJulyFighterThreshold ?? 525000;
+  }
+
+  if (hasDisabledChild && disabledChildCount > 0) {
+    const allowancePerChild = fiscalYear?.disabledChildAllowance ?? 50000;
+    threshold += disabledChildCount * allowancePerChild;
+  }
+
+  return threshold;
+}
+
+export function getEffectiveSlabs(
+  fiscalYear?: Partial<TaxFiscalYearRule> | null,
+  category: TaxpayerCategory = 'general',
+  hasDisabledChild = false,
+  disabledChildCount = 0
+): TaxSlabInput[] {
+  const originalSlabs = fiscalYear?.slabs || [];
+  if (originalSlabs.length === 0) return [];
+
+  const threshold = getTaxFreeThreshold(fiscalYear, category, hasDisabledChild, disabledChildCount);
+
+  return originalSlabs.map((slab, idx) => {
+    if (idx === 0) {
+      return {
+        limitAmount: threshold,
+        rate: 0,
+        label: `Tax-free up to ৳${threshold.toLocaleString('en-IN')}`,
+      };
+    }
+    return {
+      limitAmount: slab.limitAmount,
+      rate: slab.rate,
+      label: slab.label,
+    };
+  });
+}
 
 export function calcTax(income: number, slabs: TaxSlabInput[]) {
   let tax = 0;
@@ -148,12 +248,65 @@ export function taxBreakdown(income: number, slabs: TaxSlabInput[]) {
 }
 
 export function calculateBusinessTax(input: CalculatorInput) {
-  const strategy = normalizeStrategy(input.strategy);
+  const strategy = normalizeStrategy(input.strategy || input.fiscalYear?.strategy);
+  const taxpayerCategory: TaxpayerCategory = input.taxpayerCategory || 'general';
+  const taxpayerStatus: TaxpayerStatus = input.taxpayerStatus || 'regular';
+  const hasDisabledChild = Boolean(input.hasDisabledChild);
+  const disabledChildCount = hasDisabledChild ? Math.max(1, Number(input.disabledChildCount) || 1) : 0;
+
+  const fiscalYearRule: Partial<TaxFiscalYearRule> = input.fiscalYear || {
+    slabs: input.slabs,
+    strategy: input.strategy,
+  };
+
+  const effectiveSlabs = input.fiscalYear
+    ? getEffectiveSlabs(input.fiscalYear, taxpayerCategory, hasDisabledChild, disabledChildCount)
+    : input.slabs;
+
+  const taxFreeThreshold = getTaxFreeThreshold(
+    fiscalYearRule,
+    taxpayerCategory,
+    hasDisabledChild,
+    disabledChildCount
+  );
+
+  const minTaxStandard = fiscalYearRule.minTaxStandard ?? 5000;
+  const minTaxNewTaxpayer = fiscalYearRule.minTaxNewTaxpayer ?? 1000;
+  const applicableMinTax = taxpayerStatus === 'new' ? minTaxNewTaxpayer : minTaxStandard;
+
   const netProfit =
     input.mode === 'tax'
-      ? incomeFromTax(n(input.taxInput), input.slabs)
+      ? incomeFromTax(n(input.taxInput), effectiveSlabs)
       : n(input.profitInput);
-  const taxAmount = input.mode === 'tax' ? n(input.taxInput) : calcTax(netProfit, input.slabs);
+
+  const grossTax = input.mode === 'tax' ? n(input.taxInput) : calcTax(netProfit, effectiveSlabs);
+  const taxRebate = n(input.taxRebate);
+  const netTaxAfterRebate = Math.max(0, grossTax - taxRebate);
+
+  // Income Tax Circular 2026-2027 Rule:
+  // If income > tax-free threshold, minimum tax applies (5,000 standard, 1,000 for new taxpayers)
+  // Even if calculated tax after rebate is lower, zero, or negative.
+  const exceedsThreshold = netProfit > taxFreeThreshold;
+  let taxAmount = 0;
+  let minTaxApplied = false;
+
+  if (input.mode === 'tax') {
+    taxAmount = n(input.taxInput);
+    minTaxApplied = taxAmount === applicableMinTax && exceedsThreshold;
+  } else {
+    if (!exceedsThreshold) {
+      taxAmount = 0;
+      minTaxApplied = false;
+    } else {
+      if (netTaxAfterRebate < applicableMinTax) {
+        taxAmount = applicableMinTax;
+        minTaxApplied = true;
+      } else {
+        taxAmount = netTaxAfterRebate;
+        minTaxApplied = false;
+      }
+    }
+  }
 
   const expense = netProfit / strategy.expenseDivisor;
   const grossProfit = netProfit + expense;
@@ -172,6 +325,15 @@ export function calculateBusinessTax(input: CalculatorInput) {
   return {
     netProfit,
     taxAmount,
+    grossTax,
+    taxRebate,
+    taxFreeThreshold,
+    applicableMinTax,
+    minTaxApplied,
+    exceedsThreshold,
+    taxpayerCategory,
+    taxpayerStatus,
+    disabledChildAllowanceApplied: hasDisabledChild ? disabledChildCount * (fiscalYearRule.disabledChildAllowance ?? 50000) : 0,
     expense,
     grossProfit,
     sale,
@@ -182,7 +344,8 @@ export function calculateBusinessTax(input: CalculatorInput) {
     changeInNetWealth,
     withdrawal,
     cashInHand,
-    breakdown: taxBreakdown(netProfit, input.slabs),
+    breakdown: taxBreakdown(netProfit, effectiveSlabs),
+    effectiveSlabs,
   };
 }
 

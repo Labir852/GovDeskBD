@@ -20,12 +20,13 @@ export const metadata = {
   title: 'Dashboard | GovDesk Admin',
 };
 
+export const revalidate = 15;
+
 async function getDashboardData() {
   const currentMonth = new Date().toISOString().slice(0, 7);
 
   const [
-    totalClients,
-    activeClients,
+    clientStats,
     totalOrganizations,
     totalCategories,
     totalServiceProfiles,
@@ -34,12 +35,9 @@ async function getDashboardData() {
     recentPeriods,
     recentClients,
     categoryMix,
-    totalRevenueExpected,
-    totalRevenueCollected,
-    totalRevenueOutstanding,
+    revenueStats,
   ] = await Promise.all([
-    prisma.client.count(),
-    prisma.client.count({ where: { isActive: true } }),
+    prisma.client.groupBy({ by: ['isActive'], _count: { id: true } }),
     prisma.organization.count(),
     prisma.category.count(),
     prisma.serviceProfile.count(),
@@ -80,16 +78,18 @@ async function getDashboardData() {
       orderBy: { name: 'asc' },
       include: { _count: { select: { serviceProfiles: true } } },
     }),
-    prisma.servicePeriod.aggregate({ _sum: { paymentAmount: true } }),
-    prisma.servicePeriod.aggregate({
-      where: { isPaid: true },
-      _sum: { paymentAmount: true },
-    }),
-    prisma.servicePeriod.aggregate({
-      where: { isPaid: false },
+    prisma.servicePeriod.groupBy({
+      by: ['isPaid'],
       _sum: { paymentAmount: true },
     }),
   ]);
+
+  const totalClients = clientStats.reduce((sum, item) => sum + item._count.id, 0);
+  const activeClients = clientStats.find((item) => item.isActive)?._count.id ?? 0;
+
+  const totalRevenueCollected = revenueStats.find((r) => r.isPaid)?._sum.paymentAmount ?? 0;
+  const totalRevenueOutstanding = revenueStats.find((r) => !r.isPaid)?._sum.paymentAmount ?? 0;
+  const totalRevenueExpected = totalRevenueCollected + totalRevenueOutstanding;
 
   return {
     activeClients,
@@ -103,9 +103,9 @@ async function getDashboardData() {
     totalOrganizations,
     totalServiceProfiles,
     unpaidThisMonth,
-    totalRevenueExpected: totalRevenueExpected._sum.paymentAmount ?? 0,
-    totalRevenueCollected: totalRevenueCollected._sum.paymentAmount ?? 0,
-    totalRevenueOutstanding: totalRevenueOutstanding._sum.paymentAmount ?? 0,
+    totalRevenueExpected,
+    totalRevenueCollected,
+    totalRevenueOutstanding,
   };
 }
 
@@ -178,121 +178,121 @@ export default async function DashboardPage() {
       value: formatAmount(data.totalRevenueOutstanding),
       helper: 'Pending payments across all terms',
       icon: AlertCircle,
-      tone: 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/20 dark:text-amber-400 dark:border-amber-900/40',
+      tone: 'bg-rose-50 text-rose-700 border-rose-200 dark:bg-rose-950/20 dark:text-rose-400 dark:border-rose-900/40',
     },
   ];
 
   return (
     <div className="space-y-8">
-      <section className="animate-fade-in-up overflow-hidden rounded-[2rem] border border-border bg-card/90 p-8 shadow-sm backdrop-blur-xl transition-all duration-300">
-        <div className="grid gap-6 lg:grid-cols-[1.4fr_0.9fr] lg:items-center">
-          <div className="space-y-4">
-            <Badge variant="secondary" className="rounded-full bg-muted px-3 py-1 text-xs uppercase tracking-[0.32em] text-muted-foreground">
-              {data.currentMonth} snapshot
-            </Badge>
-            <div>
-              <h1 className="text-4xl font-semibold tracking-tight text-foreground">A cleaner command center for GovDesk</h1>
-              <p className="mt-3 max-w-2xl text-sm leading-7 text-muted-foreground">
-                Surface your client pipeline, service profile activity, and revenue outlook in a calm, modern dashboard.
-              </p>
-            </div>
-            <div className="flex flex-wrap gap-3">
-              <Button asChild>
-                <Link href="/dashboard/clients/new">
-                  Add client <ArrowRight className="ml-2 h-4 w-4" />
-                </Link>
-              </Button>
-              <Button variant="outline" asChild>
-                <Link href="/dashboard/services/new">New service profile</Link>
-              </Button>
-            </div>
-          </div>
-
-          <div className="rounded-[1.75rem] border border-white/10 bg-slate-950/95 p-6 text-white shadow-lg shadow-slate-950/20">
-            <div className="flex items-center justify-between text-sm uppercase tracking-[0.3em] text-slate-300">
-              <span>Active clients</span>
-              <span>{data.activeClients}</span>
-            </div>
-            <div className="mt-4 h-2 overflow-hidden rounded-full bg-white/10">
-              <div className="h-full w-3/5 rounded-full bg-gradient-to-r from-sky-400 via-fuchsia-400 to-emerald-400 animate-[pulse_3s_ease-in-out_infinite]" />
-            </div>
-            <p className="mt-5 text-sm leading-6 text-slate-400">
-              Focus on the most important metrics without clutter. Your latest revenue targets and pending items are just ahead.
+      <section className="relative overflow-hidden rounded-[2rem] border border-border bg-card/90 p-6 shadow-sm backdrop-blur-xl md:p-8">
+        <div className="pointer-events-none absolute -right-16 -top-16 h-56 w-56 rounded-full bg-primary/10 blur-3xl" />
+        <div className="relative flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+          <div className="space-y-3">
+            <Badge className="w-fit border-primary/20 bg-primary/10 text-primary">Overview</Badge>
+            <h1 className="text-3xl font-bold tracking-tight text-foreground md:text-4xl">Dashboard</h1>
+            <p className="max-w-2xl text-sm leading-6 text-muted-foreground">
+              Monitor customer accounts, recurring services, revenue, and active periods across GovDesk BD.
             </p>
+          </div>
+          <div className="flex flex-wrap gap-3">
+            <Button asChild>
+              <Link href="/dashboard/services/new" prefetch={true}>
+                New Service Profile
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Link>
+            </Button>
+            <Button variant="outline" asChild>
+              <Link href="/dashboard/clients/new" prefetch={true}>New Client</Link>
+            </Button>
           </div>
         </div>
       </section>
 
-      <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-        {statCards.map((stat) => (
-          <Card key={stat.label} className="animate-fade-in-up transition-all duration-300 hover:-translate-y-1 hover:shadow-xl border-border bg-card">
-            <CardContent className="flex items-center justify-between gap-4 p-5">
-              <div>
-                <p className="text-sm text-muted-foreground">{stat.label}</p>
-                <p className="mt-1 text-3xl font-bold tracking-tight text-foreground">{stat.value}</p>
-                <p className="mt-1 text-xs text-muted-foreground">{stat.helper}</p>
-              </div>
-              <div className={`rounded-2xl border p-3 ${stat.tone}`}>
-                <stat.icon className="h-5 w-5" />
-              </div>
+      <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        {statCards.map((card) => (
+          <Card key={card.label} className="animate-fade-in-up transition-all duration-300 hover:shadow-xl border-border bg-card">
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <CardTitle className="text-sm font-medium text-muted-foreground">{card.label}</CardTitle>
+              <span className={`rounded-xl border p-2.5 ${card.tone}`}>
+                <card.icon className="h-4 w-4" />
+              </span>
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-bold text-foreground">{card.value}</div>
+              <p className="mt-2 text-xs text-muted-foreground">{card.helper}</p>
             </CardContent>
           </Card>
         ))}
       </section>
 
-      <section className="space-y-4">
-        <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <p className="text-sm font-medium text-muted-foreground">Revenue overview</p>
-            <h2 className="text-2xl font-bold tracking-tight text-foreground">Expected vs. collected</h2>
-          </div>
-          <p className="max-w-xl text-sm text-muted-foreground">
-            Review total projected revenue, collected amounts, and outstanding payment terms for your service portfolio.
-          </p>
-        </div>
-        <div className="grid gap-4 xl:grid-cols-3">
-          {revenueCards.map((card) => (
-            <Card key={card.label} className="animate-fade-in-up transition-all duration-300 hover:-translate-y-1 hover:shadow-xl border-border bg-card">
-              <CardContent className="flex items-center justify-between gap-4 p-5">
-                <div>
-                  <p className="text-sm text-muted-foreground">{card.label}</p>
-                  <p className="mt-1 text-3xl font-bold tracking-tight text-foreground">{card.value}</p>
-                  <p className="mt-1 text-xs text-muted-foreground">{card.helper}</p>
-                </div>
-                <div className={`rounded-2xl border p-3 ${card.tone}`}>
-                  <card.icon className="h-5 w-5" />
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+      <section className="grid gap-4 md:grid-cols-3">
+        {revenueCards.map((card) => (
+          <Card key={card.label} className="animate-fade-in-up transition-all duration-300 hover:shadow-xl border-border bg-card">
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <CardTitle className="text-sm font-medium text-muted-foreground">{card.label}</CardTitle>
+              <span className={`rounded-xl border p-2.5 ${card.tone}`}>
+                <card.icon className="h-4 w-4" />
+              </span>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold text-foreground">{card.value}</div>
+              <p className="mt-2 text-xs text-muted-foreground">{card.helper}</p>
+            </CardContent>
+          </Card>
+        ))}
       </section>
 
-      <section className="grid gap-6 xl:grid-cols-[1fr_360px]">
-        <Card className="animate-fade-in-up transition-all duration-300 hover:shadow-xl border-border bg-card">
+      <section className="grid gap-6 lg:grid-cols-3">
+        <Card className="animate-fade-in-up transition-all duration-300 hover:shadow-xl lg:col-span-2 border-border bg-card">
           <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle>Recent service activity</CardTitle>
+            <div>
+              <CardTitle>Recent Service Periods</CardTitle>
+              <p className="text-sm text-muted-foreground">Latest period submissions, fees, and payments</p>
+            </div>
             <Button variant="ghost" size="sm" asChild>
-              <Link href="/dashboard/services">View all</Link>
+              <Link href="/dashboard/services" prefetch={true}>
+                View all
+                <ArrowRight className="ml-1 h-4 w-4" />
+              </Link>
             </Button>
           </CardHeader>
           <CardContent>
             <div className="divide-y divide-border">
               {data.recentPeriods.length === 0 ? (
-                <p className="py-8 text-center text-sm text-muted-foreground">No service periods have been recorded yet.</p>
+                <div className="py-8 text-center text-sm text-muted-foreground">
+                  No service periods generated yet.
+                </div>
               ) : (
                 data.recentPeriods.map((period) => {
                   const content = (
                     <>
                       <div>
-                        <p className="font-medium text-foreground">{getProfileName(period)}</p>
-                        <p className="text-sm text-muted-foreground">
-                          {getClientName(period)} · {period.serviceProfile.category.name} · {period.period}
+                        <div className="flex items-center gap-2">
+                          <p className="font-semibold text-foreground">{getProfileName(period)}</p>
+                          <Badge variant="outline" className="text-xs">
+                            {period.period}
+                          </Badge>
+                        </div>
+                        <p className="mt-1 text-xs text-muted-foreground">
+                          {getClientName(period)} · {period.serviceProfile.category.name}
                         </p>
                       </div>
-                      <div className="flex items-center gap-2 sm:justify-end">
-                        <Badge variant={period.isPaid ? 'default' : 'outline'}>{period.isPaid ? 'Paid' : 'Unpaid'}</Badge>
-                        <span className="text-sm font-medium text-foreground">{formatAmount(period.paymentAmount)}</span>
+                      <div className="flex items-center gap-3 sm:justify-end">
+                        <div className="text-right">
+                          <p className="font-semibold text-foreground">{formatAmount(period.paymentAmount)}</p>
+                          <p className="text-xs text-muted-foreground">
+                            {period.isPaid ? 'Paid' : 'Unpaid'}
+                          </p>
+                        </div>
+                        <span
+                          className={`rounded-full p-1.5 ${
+                            period.isPaid
+                              ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-300'
+                              : 'bg-amber-100 text-amber-800 dark:bg-amber-950/40 dark:text-amber-300'
+                          }`}
+                        >
+                          {period.isPaid ? <CheckCircle2 className="h-4 w-4" /> : <Clock3 className="h-4 w-4" />}
+                        </span>
                       </div>
                     </>
                   );
@@ -301,6 +301,7 @@ export default async function DashboardPage() {
                     <Link
                       key={period.id}
                       href={`/dashboard/services/${period.serviceProfileId}`}
+                      prefetch={true}
                       className="grid gap-2 py-4 transition-colors hover:bg-muted/50 sm:grid-cols-[1fr_auto]"
                     >
                       {content}
@@ -353,6 +354,7 @@ export default async function DashboardPage() {
                   <Link
                       key={client.id}
                       href={`/dashboard/clients/${client.id}`}
+                      prefetch={true}
                       className="flex items-center justify-between rounded-3xl border border-border p-4 transition-all duration-200 hover:-translate-y-0.5 hover:bg-muted/50"
                   >
                     <span className="text-sm font-medium text-foreground">{client.name}</span>

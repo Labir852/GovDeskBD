@@ -37,13 +37,25 @@ export const columns: ColumnDef<OrgData>[] = [
   {
     accessorKey: 'name',
     header: 'Organization Name',
-    cell: ({ row }) => <div className="font-bold">{row.getValue('name')}</div>,
+    cell: ({ row }) => (
+      <Link
+        href={`/dashboard/organizations/${row.original.id}`}
+        prefetch={true}
+        className="font-bold hover:text-primary transition-colors hover:underline"
+      >
+        {row.getValue('name')}
+      </Link>
+    ),
   },
   {
     id: 'client',
     header: 'Owner (Client)',
     cell: ({ row }) => (
-      <Link href={`/dashboard/clients/${row.original.client.id}`} className="text-primary hover:underline">
+      <Link
+        href={`/dashboard/clients/${row.original.client.id}`}
+        prefetch={true}
+        className="text-primary hover:underline"
+      >
         {row.original.client.name}
       </Link>
     ),
@@ -100,12 +112,16 @@ export const columns: ColumnDef<OrgData>[] = [
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem>
-              <Link href={`/dashboard/organizations/${org.id}/edit`}>Edit Organization</Link>
+            <DropdownMenuItem asChild>
+              <Link href={`/dashboard/organizations/${org.id}/edit`} prefetch={true} className="cursor-pointer w-full">
+                Edit Organization
+              </Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
-              <Link href={`/dashboard/services/new?orgId=${org.id}`}>Add Service</Link>
+              <Link href={`/dashboard/services/new?orgId=${org.id}`} prefetch={true} className="cursor-pointer w-full">
+                Add Service
+              </Link>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

@@ -17,6 +17,12 @@ export default async function TaxCalculatorPage() {
     label: fiscalYear.label,
     description: fiscalYear.description,
     strategy: fiscalYear.strategy as Partial<TaxStrategy> | null,
+    femaleSeniorThreshold: fiscalYear.femaleSeniorThreshold,
+    thirdGenderDisabledThreshold: fiscalYear.thirdGenderDisabledThreshold,
+    freedomJulyFighterThreshold: fiscalYear.freedomJulyFighterThreshold,
+    disabledChildAllowance: fiscalYear.disabledChildAllowance,
+    minTaxStandard: fiscalYear.minTaxStandard,
+    minTaxNewTaxpayer: fiscalYear.minTaxNewTaxpayer,
     slabs: fiscalYear.slabs.map((slab) => ({
       id: slab.id,
       sequence: slab.sequence,
@@ -34,11 +40,11 @@ export default async function TaxCalculatorPage() {
             <p className="text-sm uppercase tracking-[0.32em] text-muted-foreground">Tax calculator</p>
             <h1 className="text-3xl font-semibold tracking-tight text-foreground">Business Tax Calculator</h1>
             <p className="max-w-2xl text-sm leading-6 text-muted-foreground">
-              Calculate Bangladesh business return values with dynamic fiscal-year slabs and formulas.
+              Calculate Bangladesh business return values with dynamic fiscal-year slabs, taxpayer categories, and minimum tax rules.
             </p>
           </div>
           <Button variant="outline" asChild>
-            <Link href="/dashboard/tax-calculator/rules">
+            <Link href="/dashboard/tax-calculator/rules" prefetch={true}>
               <Settings2 className="mr-2 h-4 w-4" />
               Fiscal Year Rules
             </Link>

@@ -18,6 +18,12 @@ export default async function TaxRulesPage() {
     description: fiscalYear.description,
     isActive: fiscalYear.isActive,
     strategy: fiscalYear.strategy as Partial<TaxStrategy> | null,
+    femaleSeniorThreshold: fiscalYear.femaleSeniorThreshold,
+    thirdGenderDisabledThreshold: fiscalYear.thirdGenderDisabledThreshold,
+    freedomJulyFighterThreshold: fiscalYear.freedomJulyFighterThreshold,
+    disabledChildAllowance: fiscalYear.disabledChildAllowance,
+    minTaxStandard: fiscalYear.minTaxStandard,
+    minTaxNewTaxpayer: fiscalYear.minTaxNewTaxpayer,
     slabs: fiscalYear.slabs.map((slab) => ({
       sequence: slab.sequence,
       limitAmount: slab.limitAmount,
@@ -32,11 +38,11 @@ export default async function TaxRulesPage() {
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Fiscal Year Tax Rules</h1>
           <p className="text-muted-foreground">
-            Maintain slabs and calculation strategies used by the business tax calculator.
+            Maintain slabs, taxpayer category thresholds, minimum tax, and calculation strategies used by the business tax calculator.
           </p>
         </div>
         <Button variant="outline" asChild>
-          <Link href="/dashboard/tax-calculator">
+          <Link href="/dashboard/tax-calculator" prefetch={true}>
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back to Calculator
           </Link>

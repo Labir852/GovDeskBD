@@ -1,8 +1,9 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardTitle } from '@/components/ui/card';
 import { Check } from 'lucide-react';
+import { AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 
 const combos = [
   {
@@ -69,75 +70,73 @@ export function ThemeComboSelector() {
     }
   };
 
-  if (!mounted) {
-    return (
-      <Card>
-        <CardHeader>
-          <CardTitle>Color Theme Combination</CardTitle>
-          <CardDescription>Select a standard color scheme to customize the look of the admin panel.</CardDescription>
-        </CardHeader>
-        <CardContent className="h-48 animate-pulse bg-muted/20 rounded-md" />
-      </Card>
-    );
-  }
-
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Color Theme Combination</CardTitle>
-        <CardDescription>
-          Choose from standard professional color presets. Changes apply instantly across the entire interface.
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <div className="grid gap-4 md:grid-cols-2">
-          {combos.map((combo) => {
-            const isSelected = activeCombo === combo.id;
-            return (
-              <button
-                key={combo.id}
-                type="button"
-                onClick={() => handleSelect(combo.id)}
-                className={`relative flex flex-col justify-between rounded-xl border-2 p-4 text-left transition-all hover:border-primary/50 focus:outline-none ${
-                  isSelected ? 'border-primary bg-primary/5 shadow-md' : 'border-border bg-card'
-                }`}
-              >
-                <div className="flex w-full items-start justify-between">
-                  <div className="space-y-1">
-                    <p className="font-semibold text-foreground">{combo.name}</p>
-                    <p className="text-xs text-muted-foreground pr-4">{combo.desc}</p>
-                  </div>
-                  {isSelected && (
-                    <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground">
-                      <Check className="h-3 w-3" />
-                    </span>
-                  )}
-                </div>
+    <AccordionItem value="theme" className="border-0">
+      <Card>
+        <AccordionTrigger className="px-6 text-left hover:no-underline">
+          <span className="space-y-1">
+            <CardTitle>Color Theme Combination</CardTitle>
+            <CardDescription>
+              Choose from standard professional color presets. Changes apply instantly across the entire interface.
+            </CardDescription>
+          </span>
+        </AccordionTrigger>
+        <AccordionContent>
+          <CardContent>
+            {mounted ? (
+              <div className="grid gap-4 md:grid-cols-2">
+                {combos.map((combo) => {
+                  const isSelected = activeCombo === combo.id;
+                  return (
+                    <button
+                      key={combo.id}
+                      type="button"
+                      onClick={() => handleSelect(combo.id)}
+                      className={`relative flex flex-col justify-between rounded-xl border-2 p-4 text-left transition-all hover:border-primary/50 focus:outline-none ${
+                        isSelected ? 'border-primary bg-primary/5 shadow-md' : 'border-border bg-card'
+                      }`}
+                    >
+                      <div className="flex w-full items-start justify-between">
+                        <div className="space-y-1">
+                          <p className="font-semibold text-foreground">{combo.name}</p>
+                          <p className="pr-4 text-xs text-muted-foreground">{combo.desc}</p>
+                        </div>
+                        {isSelected && (
+                          <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground">
+                            <Check className="h-3 w-3" />
+                          </span>
+                        )}
+                      </div>
 
-                <div className="mt-4 flex items-center gap-2 rounded-lg border bg-muted/10 p-2 w-full">
-                  <div className="flex -space-x-1">
-                    <span
-                      className="h-4 w-4 rounded-full border border-background shadow-sm"
-                      style={{ backgroundColor: combo.primary }}
-                    />
-                    <span
-                      className="h-4 w-4 rounded-full border border-background shadow-sm"
-                      style={{ backgroundColor: combo.accent }}
-                    />
-                    <span
-                      className="h-4 w-4 rounded-full border border-background shadow-sm"
-                      style={{ backgroundColor: combo.bg }}
-                    />
-                  </div>
-                  <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">
-                    {combo.id} palette
-                  </span>
-                </div>
-              </button>
-            );
-          })}
-        </div>
-      </CardContent>
-    </Card>
+                      <div className="mt-4 flex w-full items-center gap-2 rounded-lg border bg-muted/10 p-2">
+                        <div className="flex -space-x-1">
+                          <span
+                            className="h-4 w-4 rounded-full border border-background shadow-sm"
+                            style={{ backgroundColor: combo.primary }}
+                          />
+                          <span
+                            className="h-4 w-4 rounded-full border border-background shadow-sm"
+                            style={{ backgroundColor: combo.accent }}
+                          />
+                          <span
+                            className="h-4 w-4 rounded-full border border-background shadow-sm"
+                            style={{ backgroundColor: combo.bg }}
+                          />
+                        </div>
+                        <span className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
+                          {combo.id} palette
+                        </span>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            ) : (
+              <div className="h-48 animate-pulse rounded-md bg-muted/20" />
+            )}
+          </CardContent>
+        </AccordionContent>
+      </Card>
+    </AccordionItem>
   );
 }

@@ -4,7 +4,7 @@ import { revalidatePath } from 'next/cache';
 import { getCurrentUser } from '@/auth';
 import { prisma } from '@/lib/db';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
@@ -13,6 +13,7 @@ import TaxSlabEditor from '@/components/TaxSlabEditor';
 import { Key, ReactElement, JSXElementConstructor, ReactNode, ReactPortal, AwaitedReactNode } from 'react';
 import { Select } from '@/components/ui/select';
 import { ThemeComboSelector } from '@/components/theme-combo-selector';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 
 export const metadata = {
   title: 'Settings | GovDesk Admin',
@@ -444,13 +445,16 @@ export async function SettingsContent({ basePath, searchParams }: SettingsConten
         </div>
       )}
 
-      <ThemeComboSelector />
+      <Accordion type="single" collapsible className="space-y-4">
+        <ThemeComboSelector />
 
-      <Card className="transition-all duration-300 hover:shadow-xl border-border bg-card rounded-[1.25rem]">
-        <CardHeader>
-          <CardTitle>Profile details</CardTitle>
-        </CardHeader>
-        <CardContent>
+        <AccordionItem value="profile" className="border-0">
+          <Card className="transition-all duration-300 hover:shadow-xl border-border bg-card rounded-[1.25rem]">
+            <AccordionTrigger className="px-6 hover:no-underline">
+              <CardTitle>Profile details</CardTitle>
+            </AccordionTrigger>
+            <AccordionContent>
+              <CardContent>
           <form action={updateSettings} className="space-y-6">
             <input type="hidden" name="redirectPath" value={basePath} />
             <div className="grid gap-4 sm:grid-cols-2">
@@ -479,14 +483,18 @@ export async function SettingsContent({ basePath, searchParams }: SettingsConten
               <Button type="submit">Save changes</Button>
             </div>
           </form>
-        </CardContent>
-      </Card>
+              </CardContent>
+            </AccordionContent>
+          </Card>
+        </AccordionItem>
 
-      <Card className="transition-all duration-300 hover:shadow-xl border-border bg-card rounded-[1.25rem]">
-        <CardHeader>
-          <CardTitle>Portal accounts</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-6">
+        <AccordionItem value="accounts" className="border-0">
+          <Card className="transition-all duration-300 hover:shadow-xl border-border bg-card rounded-[1.25rem]">
+            <AccordionTrigger className="px-6 hover:no-underline">
+              <CardTitle>Portal accounts</CardTitle>
+            </AccordionTrigger>
+            <AccordionContent>
+              <CardContent className="space-y-6">
           {user.role === 'ADMIN' ? (
             <form action={createUserAccount} className="space-y-6">
               <input type="hidden" name="redirectPath" value={basePath} />
@@ -558,14 +566,18 @@ export async function SettingsContent({ basePath, searchParams }: SettingsConten
               </tbody>
             </table>
           </div>
-        </CardContent>
-      </Card>
+              </CardContent>
+            </AccordionContent>
+          </Card>
+        </AccordionItem>
 
-      <Card className="transition-all duration-300 hover:shadow-xl border-border bg-card rounded-[1.25rem]">
-        <CardHeader>
-          <CardTitle>Fiscal year & tax slab rules</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-6">
+        <AccordionItem value="fiscal-years" className="border-0">
+          <Card className="transition-all duration-300 hover:shadow-xl border-border bg-card rounded-[1.25rem]">
+            <AccordionTrigger className="px-6 hover:no-underline">
+              <CardTitle>Fiscal year & tax slab rules</CardTitle>
+            </AccordionTrigger>
+            <AccordionContent>
+              <CardContent className="space-y-6">
           <div className="overflow-x-auto rounded-lg border">
             <table className="min-w-full divide-y divide-border text-sm">
               <thead className="bg-muted">
@@ -609,6 +621,46 @@ export async function SettingsContent({ basePath, searchParams }: SettingsConten
               </div>
             </div>
 
+            <div className="rounded-xl border border-primary/20 bg-primary/5 p-4 space-y-4">
+              <h4 className="text-sm font-semibold text-foreground">
+                Tax-Free Income Thresholds by Category (করমুক্ত আয়ের সীমা)
+              </h4>
+              <div className="grid gap-4 sm:grid-cols-3">
+                <div className="space-y-2">
+                  <Label htmlFor="femaleSeniorThreshold" className="text-xs font-medium">1. Female & 65+ Years (BDT)</Label>
+                  <Input id="femaleSeniorThreshold" name="femaleSeniorThreshold" type="number" defaultValue="425000" required />
+                  <p className="text-[11px] text-muted-foreground">মহিলা ও ৬৫+ বছর করদাতা</p>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="thirdGenderDisabledThreshold" className="text-xs font-medium">2. Third Gender & Disabled (BDT)</Label>
+                  <Input id="thirdGenderDisabledThreshold" name="thirdGenderDisabledThreshold" type="number" defaultValue="500000" required />
+                  <p className="text-[11px] text-muted-foreground">তৃতীয় লিঙ্গ ও প্রতিবন্ধী করদাতা</p>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="freedomJulyFighterThreshold" className="text-xs font-medium">3. Freedom & July Fighters (BDT)</Label>
+                  <Input id="freedomJulyFighterThreshold" name="freedomJulyFighterThreshold" type="number" defaultValue="525000" required />
+                  <p className="text-[11px] text-muted-foreground">যুদ্ধাহত মুক্তিযোদ্ধা ও জুলাই যোদ্ধা</p>
+                </div>
+              </div>
+              <div className="grid gap-4 sm:grid-cols-3 pt-2 border-t border-border/50">
+                <div className="space-y-2">
+                  <Label htmlFor="disabledChildAllowance" className="text-xs font-medium">Disabled Child Allowance (BDT)</Label>
+                  <Input id="disabledChildAllowance" name="disabledChildAllowance" type="number" defaultValue="50000" required />
+                  <p className="text-[11px] text-muted-foreground">প্রতি প্রতিবন্ধী সন্তানে সীমা বৃদ্ধি</p>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="minTaxStandard" className="text-xs font-medium">Standard Minimum Tax (BDT)</Label>
+                  <Input id="minTaxStandard" name="minTaxStandard" type="number" defaultValue="5000" required />
+                  <p className="text-[11px] text-muted-foreground">সাধারণ ন্যূনতম কর (BDT 5,000)</p>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="minTaxNewTaxpayer" className="text-xs font-medium">New Taxpayer Minimum Tax (BDT)</Label>
+                  <Input id="minTaxNewTaxpayer" name="minTaxNewTaxpayer" type="number" defaultValue="1000" required />
+                  <p className="text-[11px] text-muted-foreground">নতুন করদাতার ন্যূনতম কর (BDT 1,000)</p>
+                </div>
+              </div>
+            </div>
+
             <TaxSlabEditor />
 
             <div className="flex flex-wrap items-center gap-3">
@@ -616,14 +668,18 @@ export async function SettingsContent({ basePath, searchParams }: SettingsConten
               <Badge variant="outline">আপনার কর নীতিকে নতুন অর্থবছর অনুযায়ী অ্যাড করুন</Badge>
             </div>
           </form>
-        </CardContent>
-      </Card>
+              </CardContent>
+            </AccordionContent>
+          </Card>
+        </AccordionItem>
 
-      <Card className="transition-all duration-300 hover:shadow-xl border-border bg-card rounded-[1.25rem]">
-        <CardHeader>
-          <CardTitle>Portal utilities</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
+        <AccordionItem value="utilities" className="border-0">
+          <Card className="transition-all duration-300 hover:shadow-xl border-border bg-card rounded-[1.25rem]">
+            <AccordionTrigger className="px-6 hover:no-underline">
+              <CardTitle>Portal utilities</CardTitle>
+            </AccordionTrigger>
+            <AccordionContent>
+              <CardContent className="space-y-4">
           {user.role === 'ADMIN' ? (
             <div className="grid gap-4 sm:grid-cols-3">
               <form action={seedDefaultAdmin}>
@@ -677,8 +733,11 @@ export async function SettingsContent({ basePath, searchParams }: SettingsConten
               </div>
             </div>
           </div>
-        </CardContent>
-      </Card>
+              </CardContent>
+            </AccordionContent>
+          </Card>
+        </AccordionItem>
+      </Accordion>
     </div>
   );
 }

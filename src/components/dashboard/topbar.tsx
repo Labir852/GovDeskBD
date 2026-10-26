@@ -2,7 +2,6 @@
 
 import { Bell, Menu, Search, Sun, Moon, LogOut } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -60,7 +59,6 @@ function ThemeToggle() {
 }
 
 export function Topbar({ onMenuClick, user }: TopbarProps) {
-  const router = useRouter();
   const initials = useMemo(
     () =>
       user.name
@@ -74,8 +72,12 @@ export function Topbar({ onMenuClick, user }: TopbarProps) {
   );
 
   async function handleLogout() {
-    await fetch('/api/auth/logout', { method: 'POST' });
-    router.push('/login');
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' });
+    } catch (e) {
+      console.error('Logout error', e);
+    }
+    window.location.href = '/login';
   }
 
   return (
@@ -86,7 +88,7 @@ export function Topbar({ onMenuClick, user }: TopbarProps) {
       </Button>
 
       <div className="flex flex-1 items-center gap-4 md:ml-auto md:gap-2 lg:gap-4">
-        <form className="ml-auto flex-1 sm:flex-initial">
+        <form className="ml-auto flex-1 sm:flex-initial" onSubmit={(e) => e.preventDefault()}>
           <div className="relative">
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input

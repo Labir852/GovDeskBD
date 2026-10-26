@@ -1,7 +1,15 @@
 import type {Metadata} from 'next';
-import type {ReactNode} from 'react';
+import {ReactNode, Suspense} from 'react';
+import { Inter } from 'next/font/google';
 import './globals.css';
 import {Toaster} from '@/components/ui/toaster';
+import {NavigationProgress} from '@/components/navigation-progress';
+
+const inter = Inter({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-inter',
+});
 
 export const metadata: Metadata = {
   title: {
@@ -14,11 +22,11 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'GovDesk BD - Easy Government Services in Bangladesh',
     description: 'Effortlessly manage your e-trade license, TIN, BIN, and tax returns with GovDesk BD.',
-    url: 'https://govdeskbd.com', // Replace with your actual domain
+    url: 'https://govdeskbd.com',
     siteName: 'GovDesk BD',
     images: [
       {
-        url: '/govdesk-banner.png', // Path to your OG image
+        url: '/govdesk-banner.png',
         width: 1200,
         height: 630,
         alt: 'GovDesk BD - Government Service Assistant',
@@ -31,7 +39,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'GovDesk BD - Your Partner for BD Govt Services',
     description: 'Simplify your trade license, TIN, BIN, and tax filings with GovDesk BD.',
-    images: ['/govdesk-banner.png'], // Path to your Twitter image
+    images: ['/govdesk-banner.png'],
   },
   robots: {
     index: true,
@@ -44,7 +52,6 @@ export const metadata: Metadata = {
       'max-snippet': -1,
     },
   },
-  manifest: '/manifest.json', // Optional: if you have a manifest file
   icons: {
     icon: '/govdesk-bd-logo-transparent crop.png',
     shortcut: '/govdesk-bd-logo-transparent crop.png',
@@ -52,18 +59,14 @@ export const metadata: Metadata = {
   },
 };
 
-
 export default function RootLayout({
   children,
 }: Readonly<{
   children: ReactNode;
 }>) {
   return (
-    <html lang="bn">
+    <html lang="bn" className={inter.variable}>
       <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet" />
         <script
           dangerouslySetInnerHTML={{
             __html: `
@@ -86,6 +89,9 @@ export default function RootLayout({
         />
       </head>
       <body className="font-body antialiased">
+        <Suspense fallback={null}>
+          <NavigationProgress />
+        </Suspense>
         <main className="flex-1 p-6">{children}</main>
         <Toaster />
       </body>
