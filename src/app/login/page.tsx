@@ -19,7 +19,7 @@ export default function LoginPage() {
 
     try {
       const formData = new FormData(e.currentTarget);
-      const email = (formData.get('email') as string)?.trim();
+      const username = (formData.get('username') as string)?.trim();
       const password = formData.get('password') as string;
       const searchParams = new URLSearchParams(window.location.search);
       const callbackUrl = searchParams.get('callbackUrl') || '/dashboard';
@@ -27,13 +27,13 @@ export default function LoginPage() {
       const response = await fetch("/api/auth/login", {
         method: "POST",
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password, callbackUrl }),
+        body: JSON.stringify({ username, password, callbackUrl }),
       });
 
       const data = await response.json().catch(() => ({}));
 
       if (!response.ok) {
-        setError(data.error?.message || data.error || "Invalid email or password");
+        setError(data.error?.message || data.error || "Invalid username or password");
         setLoading(false);
         return;
       }
@@ -119,14 +119,15 @@ export default function LoginPage() {
 
           <form onSubmit={handleSubmit} className="mt-6 space-y-5">
             <div className="space-y-2">
-              <Label htmlFor="email" className="text-sm font-medium text-foreground">Email address</Label>
+              <Label htmlFor="username" className="text-sm font-medium text-foreground">Username</Label>
               <Input
-                id="email"
-                name="email"
-                type="email"
-                placeholder="you@example.com"
+                id="username"
+                name="username"
+                type="text"
+                placeholder="Enter your username"
                 required
                 disabled={loading}
+                autoComplete="username"
                 autoFocus
                 className="min-h-[3rem] rounded-2xl border border-border bg-input px-4 py-3 text-foreground shadow-sm transition focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 disabled:cursor-not-allowed disabled:bg-muted"
               />

@@ -38,21 +38,27 @@ async function updateSettings(formData: FormData) {
   }
 
   const name = String(formData.get('name') || '').trim();
+  const username = String(formData.get('username') || '').trim().toLowerCase();
   const email = String(formData.get('email') || '').trim();
   const password = String(formData.get('password') || '');
   const confirmPassword = String(formData.get('confirmPassword') || '');
   const redirectPath = getRedirectPath(formData);
 
-  if (!name || !email) {
-    throw new Error('Name and email are required.');
+  if (!name || !username || !email) {
+    throw new Error('Name, username, and email are required.');
+  }
+
+  if (!/^[a-z0-9._-]{1,32}$/.test(username)) {
+    throw new Error('Username must be 1-32 characters and contain only letters, numbers, dots, underscores, or hyphens.');
   }
 
   if (password && password !== confirmPassword) {
     throw new Error('Passwords do not match.');
   }
 
-  const updateData: { name: string; email: string; password?: string } = {
+  const updateData: { name: string; username: string; email: string; password?: string } = {
     name,
+    username,
     email,
   };
 
@@ -82,14 +88,19 @@ async function createUserAccount(formData: FormData) {
   }
 
   const name = String(formData.get('newName') || '').trim();
+  const username = String(formData.get('newUsername') || '').trim().toLowerCase();
   const email = String(formData.get('newEmail') || '').trim();
   const role = String(formData.get('newRole') || 'STAFF');
   const password = String(formData.get('newPassword') || '');
   const confirmPassword = String(formData.get('newConfirmPassword') || '');
   const redirectPath = getRedirectPath(formData);
 
-  if (!name || !email || !password) {
-    throw new Error('Name, email, and password are required for new accounts.');
+  if (!name || !username || !email || !password) {
+    throw new Error('Name, username, email, and password are required for new accounts.');
+  }
+
+  if (!/^[a-z0-9._-]{1,32}$/.test(username)) {
+    throw new Error('Username must be 1-32 characters and contain only letters, numbers, dots, underscores, or hyphens.');
   }
 
   if (password !== confirmPassword) {
@@ -101,6 +112,7 @@ async function createUserAccount(formData: FormData) {
   await prisma.user.create({
     data: {
       name,
+      username,
       email,
       password: hashedPassword,
       role: role === 'ADMIN' ? 'ADMIN' : 'STAFF',
@@ -130,12 +142,14 @@ async function seedDefaultAdmin(formData: FormData) {
     where: { email: 'admin@govdeskbd.com' },
     update: {
       name: 'Super Admin',
+      username: 'admin',
       password: hashedPassword,
       role: 'ADMIN',
     },
     create: {
       name: 'Super Admin',
       email: 'admin@govdeskbd.com',
+      username: 'admin',
       password: hashedPassword,
       role: 'ADMIN',
     },
@@ -281,12 +295,14 @@ async function clearDatabaseAndSeed(formData: FormData) {
     where: { email: 'admin@govdeskbd.com' },
     update: {
       name: 'Super Admin',
+      username: 'admin',
       password: hashedPassword,
       role: 'ADMIN',
     },
     create: {
       name: 'Super Admin',
       email: 'admin@govdeskbd.com',
+      username: 'admin',
       password: hashedPassword,
       role: 'ADMIN',
     },
@@ -362,6 +378,7 @@ async function getPortalUsers() {
     select: {
       id: true,
       name: true,
+      username: true,
       email: true,
       role: true,
       createdAt: true,
@@ -391,6 +408,10 @@ export async function SettingsContent({ basePath, searchParams }: SettingsConten
   }
 
   const users = await getPortalUsers();
+  const currentUser = await prisma.user.findUniqueOrThrow({
+    where: { id: user.sub },
+    select: { username: true },
+  });
   const fiscalYears = await getFiscalYears();
   const updated = searchParams?.updated === '1';
   const created = searchParams?.created === '1';
@@ -429,7 +450,7 @@ export async function SettingsContent({ basePath, searchParams }: SettingsConten
           ) : null}
           {seededDefault ? (
             <div className="rounded-lg border border-amber-200 bg-amber-50/90 p-4 text-amber-700 dark:border-amber-600/40 dark:bg-amber-500/10 dark:text-amber-100">
-              Default admin account was seeded. Use admin@govdeskbd.com / Admin@123.
+              Default admin account was seeded. Sign in with username admin / password Admin@123.
             </div>
           ) : null}
           {seededDemo ? (
@@ -461,6 +482,10 @@ export async function SettingsContent({ basePath, searchParams }: SettingsConten
               <div className="space-y-2">
                 <Label htmlFor="name">Full name</Label>
                 <Input id="name" name="name" defaultValue={user.name} required />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="username">Username</Label>
+                <Input id="username" name="username" defaultValue={currentUser.username} autoComplete="username" required />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="email">Email address</Label>
@@ -505,6 +530,10 @@ export async function SettingsContent({ basePath, searchParams }: SettingsConten
                   <Input id="newName" name="newName" placeholder="New user name" required />
                 </div>
                 <div className="space-y-2">
+                  <Label htmlFor="newUsername">Username</Label>
+                  <Input id="newUsername" name="newUsername" placeholder="Choose a username" autoComplete="username" required />
+                </div>
+                <div className="space-y-2">
                   <Label htmlFor="newEmail">Email</Label>
                   <Input id="newEmail" name="newEmail" type="email" placeholder="user@example.com" required />
                 </div>
@@ -545,6 +574,7 @@ export async function SettingsContent({ basePath, searchParams }: SettingsConten
               <thead className="bg-muted">
                 <tr>
                   <th className="px-4 py-3 text-left font-semibold">Name</th>
+                  <th className="px-4 py-3 text-left font-semibold">Username</th>
                   <th className="px-4 py-3 text-left font-semibold">Email</th>
                   <th className="px-4 py-3 text-left font-semibold">Role</th>
                   <th className="px-4 py-3 text-left font-semibold">Created</th>
@@ -554,6 +584,7 @@ export async function SettingsContent({ basePath, searchParams }: SettingsConten
                 {users.map((portalUser) => (
                   <tr key={portalUser.id} className="hover:bg-muted/50">
                     <td className="px-4 py-3">{portalUser.name}</td>
+                    <td className="px-4 py-3">{portalUser.username}</td>
                     <td className="px-4 py-3">{portalUser.email}</td>
                     <td className="px-4 py-3">
                       <Badge variant={portalUser.role === 'ADMIN' ? 'default' : 'secondary'}>

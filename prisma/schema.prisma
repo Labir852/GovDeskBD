@@ -9,11 +9,12 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(uuid())
+  id        String   @id(map: "User_new_pkey") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   name      String
+  username  String   @unique
   email     String   @unique
   password  String
-  role      Role     @default(STAFF)
+  role      String   @default("STAFF")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   logs      AuditLog[]
@@ -25,7 +26,7 @@ enum Role {
 }
 
 model Client {
-  id                     String   @id @default(uuid())
+  id                     String   @id(map: "Client_new_pkey") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   name                   String
   nid                    String?
   phone                  String?
@@ -41,9 +42,9 @@ model Client {
 }
 
 model Organization {
-  id              String   @id @default(uuid())
-  clientId        String
-  client          Client   @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  id              String   @id(map: "Organization_new_pkey") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  clientId        String   @db.Uuid
+  client          Client   @relation(fields: [clientId], references: [id], onDelete: Cascade, map: "Organization_new_clientId_fkey")
   name            String
   address         String?
   tradeLicenseNo  String?
@@ -54,7 +55,7 @@ model Organization {
 }
 
 model Category {
-  id        String   @id @default(uuid())
+  id        String   @id(map: "Category_new_pkey") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   name      String   @unique // e.g., "VAT", "eReturn", "IRC", "ERC", "Trade License"
   frequency String   // e.g., "Monthly", "Yearly"
   portalUrl String?  // Portal login URL for services in this category
@@ -65,13 +66,13 @@ model Category {
 }
 
 model ServiceProfile {
-  id                           String   @id @default(uuid())
-  clientId                     String?
-  client                       Client?  @relation(fields: [clientId], references: [id], onDelete: Cascade)
-  organizationId               String?
-  organization                 Organization? @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  categoryId                   String
-  category                     Category @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  id                           String   @id(map: "ServiceProfile_new_pkey") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  clientId                     String?  @db.Uuid
+  client                       Client?  @relation(fields: [clientId], references: [id], onDelete: Cascade, map: "ServiceProfile_new_clientId_fkey")
+  organizationId               String?  @db.Uuid
+  organization                 Organization? @relation(fields: [organizationId], references: [id], onDelete: Cascade, map: "ServiceProfile_new_organizationId_fkey")
+  categoryId                   String   @db.Uuid
+  category                     Category @relation(fields: [categoryId], references: [id], onDelete: Restrict, map: "ServiceProfile_new_categoryId_fkey")
   
   portalUserId                 String?
   portalEncryptedPassword      String?
@@ -87,9 +88,9 @@ model ServiceProfile {
 }
 
 model ServicePeriod {
-  id               String   @id @default(uuid())
-  serviceProfileId String
-  serviceProfile   ServiceProfile @relation(fields: [serviceProfileId], references: [id], onDelete: Cascade)
+  id               String   @id(map: "ServicePeriod_new_pkey") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  serviceProfileId String   @db.Uuid
+  serviceProfile   ServiceProfile @relation(fields: [serviceProfileId], references: [id], onDelete: Cascade, map: "ServicePeriod_new_serviceProfileId_fkey")
   
   period           String   // e.g., "2023-10" or "2023-2024"
   paymentAmount    Float?   @default(0)
@@ -138,9 +139,9 @@ model TaxSlab {
 }
 
 model AuditLog {
-  id        String   @id @default(uuid())
-  userId    String?
-  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  id        String   @id(map: "AuditLog_new_pkey") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  userId    String?  @db.Uuid
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull, map: "AuditLog_new_userId_fkey")
   action    String   // e.g., "CREATE", "UPDATE", "DELETE"
   entity    String   // e.g., "Client", "ServicePeriod"
   entityId  String

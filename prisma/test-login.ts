@@ -3,14 +3,15 @@ import bcrypt from 'bcryptjs'
 
 const prisma = new PrismaClient()
 
-async function testLogin(email: string, password: string) {
-  console.log(`\n🔍 Testing login with email: "${email}" and password: "${password}"`)
+async function testLogin(username: string, password: string) {
+  console.log(`\n🔍 Testing login with username: "${username}"`)
   
   const user = await prisma.user.findUnique({
-    where: { email },
+    where: { username },
     select: {
       id: true,
       email: true,
+      username: true,
       name: true,
       role: true,
       password: true,
@@ -27,6 +28,7 @@ async function testLogin(email: string, password: string) {
   console.log('User data:', {
     id: user.id,
     email: user.email,
+    username: user.username,
     name: user.name,
     role: user.role,
     passwordLength: user.password.length,
@@ -49,11 +51,11 @@ async function testLogin(email: string, password: string) {
 }
 
 async function main() {
-  // Test with the exact credentials the user is trying
-  await testLogin('admin@govdeskbd.com', 'Admin@123')
+  // Test the seeded default admin account.
+  await testLogin('admin', 'Admin@123')
   
   // Also test with lowercase
-  await testLogin('admin@govdeskbd.com', 'Admin@123')
+  await testLogin('admin', 'Admin@123')
 }
 
 main()

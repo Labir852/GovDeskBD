@@ -22,7 +22,7 @@ export type AuthUser = {
 };
 
 const credentialSchema = z.object({
-  email: z.string().email(),
+  username: z.string().trim().min(1).max(64),
   password: z.string().min(6),
   callbackUrl: z.string().optional(),
 });
@@ -79,38 +79,28 @@ export function getUserFromRequest(req: Request) {
   return decodeJwt(match[1]);
 }
 
-export async function validateUserCredentials(email: string, password: string) {
-  console.log('🔐 Validating credentials for:', email);
-  
+export async function validateUserCredentials(username: string, password: string) {
   const user = await prisma.user.findUnique({
-    where: { email },
+    where: { username: username.trim().toLowerCase() },
     select: {
       id: true,
       email: true,
+      username: true,
       name: true,
       role: true,
       password: true,
     },
   });
   
-  if (!user) {
-    console.log('❌ User not found:', email);
-    return null;
-  }
-  
-  console.log('✅ User found:', user.email);
-  const passwordsMatch = await bcrypt.compare(password, user.password);
-  console.log('🔍 Password match result:', passwordsMatch);
-  
-  if (!passwordsMatch) {
-    console.log('❌ Password mismatch for user:', email);
-    return null;
-  }
+  if (!user) return null;
 
-  console.log('✅ Credentials valid for:', email);
+  const passwordsMatch = await bcrypt.compare(password, user.password);
+  if (!passwordsMatch) return null;
+
   return {
     id: user.id,
     email: user.email,
+    username: user.username,
     name: user.name,
     role: user.role,
   };
