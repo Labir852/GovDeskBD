@@ -57,6 +57,9 @@ export type CalculatorInput = {
   assets: Record<string, string | number | undefined>;
   liabilities: Record<string, string | number | undefined>;
   prevYearNetWealth?: string | number;
+  prevYearOpeningCapital?: string | number;
+  prevYearAssets?: Record<string, string | number | undefined>;
+  increaseOpeningCapital?: string | number;
   furnitureOfOffice?: string | number;
 };
 
@@ -76,6 +79,15 @@ export const defaultTaxStrategy: TaxStrategy = {
   ],
   liabilityFields: ['assetMortgage', 'borrow', 'loan'],
 };
+
+const previousYearWealthFields = [
+  'furniture',
+  'electronics',
+  'ornaments',
+  'land',
+  'motorVehicle',
+  'bankSavings',
+];
 
 export const defaultTaxFiscalYears: TaxFiscalYearRule[] = [
   {
@@ -311,14 +323,25 @@ export function calculateBusinessTax(input: CalculatorInput) {
   const expense = netProfit / strategy.expenseDivisor;
   const grossProfit = netProfit + expense;
   const sale = (grossProfit * 100) / strategy.salesGrossProfitRatePercent;
-  const openingCapital = netProfit * strategy.openingCapitalMultiplier;
+  const isExistingTaxpayer = taxpayerStatus === 'regular';
+  const previousOpeningCapital = n(input.prevYearOpeningCapital);
+  const openingCapital = isExistingTaxpayer
+    ? previousOpeningCapital + n(input.increaseOpeningCapital)
+    : netProfit * strategy.openingCapitalMultiplier;
 
   const assetTotal = strategy.assetFields.reduce((sum, key) => sum + n(input.assets[key]), 0);
   const liabilityTotal = strategy.liabilityFields.reduce((sum, key) => sum + n(input.liabilities[key]), 0);
-
-  const grossWealth = openingCapital + assetTotal;
-  const thisYearNetWealth = grossWealth + liabilityTotal;
-  const changeInNetWealth = thisYearNetWealth - n(input.prevYearNetWealth);
+  const previousAssetTotal = isExistingTaxpayer
+    ? previousYearWealthFields.reduce((sum, key) => sum + n(input.prevYearAssets?.[key]), 0)
+    : 0;
+  const previousYearNetWealth = isExistingTaxpayer
+    ? previousOpeningCapital + previousAssetTotal
+    : n(input.prevYearNetWealth);
+  const grossWealth = isExistingTaxpayer
+    ? openingCapital + previousAssetTotal
+    : openingCapital + assetTotal;
+  const thisYearNetWealth = isExistingTaxpayer ? grossWealth : grossWealth + liabilityTotal;
+  const changeInNetWealth = thisYearNetWealth - previousYearNetWealth;
   const withdrawal = netProfit - changeInNetWealth;
   const cashInHand = openingCapital + netProfit - withdrawal - n(input.furnitureOfOffice);
 
@@ -340,6 +363,7 @@ export function calculateBusinessTax(input: CalculatorInput) {
     openingCapital,
     grossWealth,
     totalLiabilities: liabilityTotal,
+    previousYearNetWealth,
     thisYearNetWealth,
     changeInNetWealth,
     withdrawal,

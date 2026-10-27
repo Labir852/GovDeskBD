@@ -60,6 +60,15 @@ const assetFields = [
   ['bankSavings', 'Bank Savings'],
 ] as const;
 
+const previousYearAssetFields = [
+  ['furniture', 'Furniture'],
+  ['electronics', 'Electronics & Misc'],
+  ['ornaments', 'Ornaments Value'],
+  ['land', 'Land Value'],
+  ['motorVehicle', 'Motor Vehicle Value'],
+  ['bankSavings', 'Bank Savings / Cash in Hand'],
+] as const;
+
 const liabilityFields = [
   ['assetMortgage', 'Asset Mortgage'],
   ['borrow', 'Borrow'],
@@ -116,6 +125,9 @@ export function TaxCalculatorClient({ fiscalYears }: TaxCalculatorClientProps) {
   const [taxpayerStatus, setTaxpayerStatus] = useState<TaxpayerStatus>('regular');
 
   const [prevYearNetWealth, setPrevYearNetWealth] = useState('');
+  const [prevYearOpeningCapital, setPrevYearOpeningCapital] = useState('');
+  const [increaseOpeningCapital, setIncreaseOpeningCapital] = useState('');
+  const [prevYearAssets, setPrevYearAssets] = useState<Record<string, string>>({});
   const [furnitureOfOffice, setFurnitureOfOffice] = useState('');
   const [assets, setAssets] = useState<Record<string, string>>({});
   const [liabilities, setLiabilities] = useState<Record<string, string>>({});
@@ -160,6 +172,9 @@ export function TaxCalculatorClient({ fiscalYears }: TaxCalculatorClientProps) {
       assets,
       liabilities,
       prevYearNetWealth,
+      prevYearOpeningCapital,
+      prevYearAssets,
+      increaseOpeningCapital,
       furnitureOfOffice,
     });
   }, [
@@ -172,6 +187,9 @@ export function TaxCalculatorClient({ fiscalYears }: TaxCalculatorClientProps) {
     liabilities,
     mode,
     prevYearNetWealth,
+    prevYearOpeningCapital,
+    prevYearAssets,
+    increaseOpeningCapital,
     profitInput,
     strategy,
     taxInput,
@@ -190,6 +208,9 @@ export function TaxCalculatorClient({ fiscalYears }: TaxCalculatorClientProps) {
     setAssets({});
     setLiabilities({});
     setPrevYearNetWealth('');
+    setPrevYearOpeningCapital('');
+    setIncreaseOpeningCapital('');
+    setPrevYearAssets({});
     setFurnitureOfOffice('');
   };
 
@@ -419,28 +440,60 @@ export function TaxCalculatorClient({ fiscalYears }: TaxCalculatorClientProps) {
               </AccordionTrigger>
               <AccordionContent>
                 <CardContent className="space-y-5">
-                  <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-1">
-                    {assetFields.map(([key, label]) => (
-                      <Field key={key} label={label} value={assets[key] || ''} onChange={(value) => updateAsset(key, value)} />
-                    ))}
-                  </div>
+                  {taxpayerStatus === 'regular' ? (
+                    <>
+                      <p className="text-sm text-muted-foreground">
+                        Enter the previous income year values. The previous and current net wealth are calculated automatically.
+                      </p>
+                      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-1">
+                        <Field
+                          label="Previous Year Opening Capital"
+                          value={prevYearOpeningCapital}
+                          onChange={setPrevYearOpeningCapital}
+                        />
+                        {previousYearAssetFields.map(([key, label]) => (
+                          <Field
+                            key={key}
+                            label={`Previous Year ${label}`}
+                            value={prevYearAssets[key] || ''}
+                            onChange={(value) => setPrevYearAssets((current) => ({ ...current, [key]: value }))}
+                          />
+                        ))}
+                        <Field
+                          label="Increase in Opening Capital"
+                          value={increaseOpeningCapital}
+                          onChange={setIncreaseOpeningCapital}
+                        />
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-1">
+                        {assetFields.map(([key, label]) => (
+                          <Field key={key} label={label} value={assets[key] || ''} onChange={(value) => updateAsset(key, value)} />
+                        ))}
+                      </div>
+                      <div className="grid gap-4 border-t pt-5 md:grid-cols-2 xl:grid-cols-1">
+                        {liabilityFields.map(([key, label]) => (
+                          <Field
+                            key={key}
+                            label={label}
+                            value={liabilities[key] || ''}
+                            onChange={(value) => updateLiability(key, value)}
+                          />
+                        ))}
+                      </div>
+                      <div className="grid gap-4 border-t pt-5 md:grid-cols-2 xl:grid-cols-1">
+                        <Field
+                          label="Previous Year Net Wealth"
+                          value={prevYearNetWealth}
+                          onChange={setPrevYearNetWealth}
+                        />
+                      </div>
+                    </>
+                  )}
                   <div className="grid gap-4 border-t pt-5 md:grid-cols-2 xl:grid-cols-1">
-                    {liabilityFields.map(([key, label]) => (
-                      <Field
-                        key={key}
-                        label={label}
-                        value={liabilities[key] || ''}
-                        onChange={(value) => updateLiability(key, value)}
-                      />
-                    ))}
-                  </div>
-                  <div className="grid gap-4 border-t pt-5 md:grid-cols-2 xl:grid-cols-1">
-                    <Field
-                      label="Previous Year Net Wealth"
-                      value={prevYearNetWealth}
-                      onChange={setPrevYearNetWealth}
-                    />
-                    <Field label="Furniture of Office" value={furnitureOfOffice} onChange={setFurnitureOfOffice} />
+                    <Field label="Furniture in Office" value={furnitureOfOffice} onChange={setFurnitureOfOffice} />
                   </div>
                 </CardContent>
               </AccordionContent>
@@ -591,7 +644,13 @@ export function TaxCalculatorClient({ fiscalYears }: TaxCalculatorClientProps) {
                     ['Expense', result.expense, `Net Profit / ${strategy.expenseDivisor}`],
                     ['Gross Profit', result.grossProfit, 'Net Profit + Expense'],
                     ['Sale', result.sale, `Gross Profit x 100 / ${strategy.salesGrossProfitRatePercent}`],
-                    ['Opening Capital', result.openingCapital, `Net Profit x ${strategy.openingCapitalMultiplier}`],
+                    [
+                      'Opening Capital',
+                      result.openingCapital,
+                      taxpayerStatus === 'regular'
+                        ? 'Previous Year Opening Capital + Increase in Opening Capital'
+                        : `Net Profit x ${strategy.openingCapitalMultiplier}`,
+                    ],
                   ].map(([label, value, hint]) => (
                     <div key={label as string} className="flex items-center justify-between gap-4 rounded-lg border p-3">
                       <div>
@@ -611,9 +670,10 @@ export function TaxCalculatorClient({ fiscalYears }: TaxCalculatorClientProps) {
                 <CardContent className="space-y-3">
                   {[
                     ['Gross Wealth', result.grossWealth],
-                    ['Liabilities', result.totalLiabilities],
+                    ...(taxpayerStatus === 'new' ? [['Liabilities', result.totalLiabilities] as const] : []),
+                    ['Previous Year Net Wealth', result.previousYearNetWealth],
                     ['This Year Net Wealth', result.thisYearNetWealth],
-                    ['Change in Net Wealth', result.changeInNetWealth],
+                    [taxpayerStatus === 'regular' ? 'Increased Value' : 'Change in Net Wealth', result.changeInNetWealth],
                     ['Withdrawal', result.withdrawal],
                     ['Cash In Hand', result.cashInHand],
                   ].map(([label, value]) => (
