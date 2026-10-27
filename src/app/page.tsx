@@ -57,7 +57,7 @@ const services = [
     whatsappLabel: 'RJSC Registration & Filing',
     description: 'RJSC-এ কোম্পানি নিবন্ধন, বার্ষিক রিটার্ন ফাইলিং এবং অন্যান্য সংশ্লিষ্ট সেবা।',
     icon: Hotel,
-    image: '/trade.png',
+    image: '/RJSC.png',
     accent: 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/20 dark:text-amber-400 dark:border-amber-900/40',
     requirements: [
       'NID কপি',
@@ -78,7 +78,7 @@ const services = [
     whatsappLabel: 'Memorandum & Articles of Association',
     description: 'কোম্পানির Memorandum ও Articles of Association প্রস্তুত ও সংশোধন।',
     icon: IdCard,
-    image: '/trade.png',
+    image: '/Memorandum.jpeg',
     accent: 'bg-indigo-50 text-indigo-700 border-indigo-200 dark:bg-indigo-950/20 dark:text-indigo-400 dark:border-indigo-900/40',
     requirements: [
       'NID কপি',
@@ -99,7 +99,7 @@ const services = [
     whatsappLabel: 'Form XII',
     description: 'কোম্পানির বার্ষিক রিটার্ন ফাইলিংয়ের জন্য Form XII প্রস্তুত ও জমা।',
     icon: ClipboardList,
-    image: '/trade.png',
+    image: '/formxii.webp',
     accent: 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/20 dark:text-amber-400 dark:border-amber-900/40',
     requirements: [
       'NID কপি',
