@@ -71,17 +71,30 @@ export async function getServiceProfileById(id: string) {
 }
 
 export async function createServiceProfile(formData: FormData) {
-  const organizationId = formData.get('organizationId') as string;
+  const organizationId = (formData.get('organizationId') as string) || null;
+  const clientId = (formData.get('clientId') as string) || null;
   const categoryId = formData.get('categoryId') as string;
   const portalUserId = formData.get('portalUserId') as string | null;
   const portalPassword = formData.get('portalPassword') as string | null;
 
   try {
+    const category = await prisma.category.findUnique({
+      where: { id: categoryId },
+      select: { name: true },
+    });
+    if (!category) {
+      return { success: false, error: 'Service category not found' };
+    }
+    if (category.name.trim().toUpperCase() === 'TAX RETURN SUBMISSION' && !clientId) {
+      return { success: false, error: 'A client is required for tax return submission profiles' };
+    }
+
     const encryptedPassword = portalPassword ? encrypt(portalPassword) : null;
 
     const newProfile = await prisma.serviceProfile.create({
       data: {
         organizationId,
+        clientId,
         categoryId,
         portalUserId,
         portalEncryptedPassword: encryptedPassword,
@@ -97,11 +110,11 @@ export async function createServiceProfile(formData: FormData) {
         action: 'CREATE',
         entity: 'ServiceProfile',
         entityId: newProfile.id,
-        details: { organizationId, categoryId, portalUserId },
+        details: { organizationId, clientId, categoryId, portalUserId },
       },
     });
 
-    logger.info('Service profile created', { id: newProfile.id, organizationId, categoryId });
+    logger.info('Service profile created', { id: newProfile.id, organizationId, clientId, categoryId });
     revalidatePath('/dashboard/services');
     return { success: true, profileId: newProfile.id };
   } catch (error) {

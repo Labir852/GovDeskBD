@@ -11,9 +11,11 @@ import { useEffect, useState } from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ArrowLeft, Loader2 } from 'lucide-react';
 import Link from 'next/link';
+import { getClientsForSelect } from '../../clients/actions';
 
 type Organization = { id: string; name: string };
 type Category = { id: string; name: string; frequency: string };
+type Client = { id: string; name: string };
 
 export default function NewServiceProfilePage() {
   const { toast } = useToast();
@@ -24,28 +26,41 @@ export default function NewServiceProfilePage() {
   const [loading, setLoading] = useState(false);
   const [organizations, setOrganizations] = useState<Organization[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
+  const [clients, setClients] = useState<Client[]>([]);
   const [selectedOrgId, setSelectedOrgId] = useState(orgId);
+  const [selectedClientId, setSelectedClientId] = useState(clientId);
   const [selectedCategoryId, setSelectedCategoryId] = useState('');
 
   useEffect(() => {
     async function load() {
-      const orgs = await getOrganizationsForSelect(clientId || undefined);
-      const cats = await getCategoriesForSelect();
+      const [orgs, cats, availableClients] = await Promise.all([
+        getOrganizationsForSelect(clientId || undefined),
+        getCategoriesForSelect(),
+        getClientsForSelect(),
+      ]);
       setOrganizations(orgs);
       setCategories(cats);
+      setClients(availableClients);
       if (!orgId && orgs.length === 1) {
-        setSelectedOrgId(orgs[0].id);
+        setSelectedOrgId((current) => current || orgs[0].id);
       }
-      if (!selectedCategoryId && cats.length === 1) {
-        setSelectedCategoryId(cats[0].id);
+      if (!clientId && availableClients.length === 1) {
+        setSelectedClientId((current) => current || availableClients[0].id);
+      }
+      if (cats.length === 1) {
+        setSelectedCategoryId((current) => current || cats[0].id);
       }
     }
     load();
   }, [clientId, orgId]);
 
+  const selectedCategory = categories.find((category) => category.id === selectedCategoryId);
+  const isTaxReturnSubmission =
+    selectedCategory?.name.trim().toUpperCase() === 'TAX RETURN SUBMISSION';
+
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    if (!selectedOrgId) {
+    if (!selectedOrgId && !isTaxReturnSubmission) {
       toast({
         variant: 'destructive',
         title: 'Error',
@@ -53,10 +68,19 @@ export default function NewServiceProfilePage() {
       });
       return;
     }
+    if (isTaxReturnSubmission && !selectedClientId) {
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: 'Please select a client',
+      });
+      return;
+    }
     setLoading(true);
 
     const formData = new FormData(e.currentTarget);
     formData.set('organizationId', selectedOrgId);
+    formData.set('clientId', isTaxReturnSubmission ? selectedClientId : '');
     const result = await createServiceProfile(formData);
 
     if (result.success) {
@@ -100,21 +124,7 @@ export default function NewServiceProfilePage() {
           <form onSubmit={handleSubmit} className="space-y-4">
             <input type="hidden" name="organizationId" value={selectedOrgId} />
             <div className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="organizationId">Organization *</Label>
-                <Select value={selectedOrgId} onValueChange={setSelectedOrgId} required>
-                  <SelectTrigger id="organizationId">
-                    <SelectValue placeholder="Select an organization" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {organizations.map((org) => (
-                      <SelectItem key={org.id} value={org.id}>
-                        {org.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
+              
 
               <div className="space-y-2">
                 <Label htmlFor="categoryId">Service Category *</Label>
@@ -127,6 +137,46 @@ export default function NewServiceProfilePage() {
                     {categories.map((cat) => (
                       <SelectItem key={cat.id} value={cat.id}>
                         {cat.name} ({cat.frequency})
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {isTaxReturnSubmission && (
+                <div className="space-y-2">
+                  <Label htmlFor="clientId">Client *</Label>
+                  <Select value={selectedClientId} onValueChange={setSelectedClientId} required>
+                    <SelectTrigger id="clientId">
+                      <SelectValue placeholder="Select a client" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {clients.map((client) => (
+                        <SelectItem key={client.id} value={client.id}>
+                          {client.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
+
+              <div className="space-y-2">
+                <Label htmlFor="organizationId">
+                  Organization {isTaxReturnSubmission ? '(Optional)' : '*'}
+                </Label>
+                <Select
+                  value={selectedOrgId}
+                  onValueChange={setSelectedOrgId}
+                  required={!isTaxReturnSubmission}
+                >
+                  <SelectTrigger id="organizationId">
+                    <SelectValue placeholder="Select an organization" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {organizations.map((org) => (
+                      <SelectItem key={org.id} value={org.id}>
+                        {org.name}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -155,7 +205,15 @@ export default function NewServiceProfilePage() {
               </div>
             </div>
 
-            <Button type="submit" className="w-full" disabled={loading || !selectedOrgId || !selectedCategoryId}>
+            <Button
+              type="submit"
+              className="w-full"
+              disabled={
+                loading ||
+                !selectedCategoryId ||
+                (isTaxReturnSubmission ? !selectedClientId : !selectedOrgId)
+              }
+            >
               {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Create Service Profile
             </Button>

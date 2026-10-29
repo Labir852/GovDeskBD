@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-export default function middleware(req: NextRequest) {
+export default function proxy(req: NextRequest) {
   const { nextUrl } = req;
   const COOKIE_NAME = "govdesk_jwt";
   const isLoggedIn = !!req.cookies.get(COOKIE_NAME)?.value;

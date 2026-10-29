@@ -2,7 +2,7 @@ import { getServiceProfileById } from '../actions';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Plus } from 'lucide-react';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { decrypt } from '@/lib/encryption';
@@ -125,17 +125,21 @@ export default async function ServiceProfileDetailPage({ params }: { params: Pro
         </Card>
 
         <Card className="rounded-[1.75rem] border-border bg-card shadow-sm">
-          <CardHeader>
-            <CardTitle>Billing Periods</CardTitle>
-            <CardDescription>Track payment status and service periods</CardDescription>
+          <CardHeader className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <CardTitle>Billing Periods</CardTitle>
+              <CardDescription>Track payment status and service periods</CardDescription>
+            </div>
+            <Button asChild size="sm">
+              <Link href={`/dashboard/services/${profile.id}/periods/new`}>
+                <Plus className="mr-2 h-4 w-4" /> Add Period
+              </Link>
+            </Button>
           </CardHeader>
           <CardContent>
             {profile.servicePeriods.length === 0 ? (
               <div className="space-y-4 rounded-3xl border border-border bg-muted/50 p-8 text-center text-muted-foreground">
                 <p>No billing periods recorded yet.</p>
-                <Button asChild variant="link" className="mt-2">
-                  <Link href={`/dashboard/services/${profile.id}/periods/new`}>Add Period</Link>
-                </Button>
               </div>
             ) : (
               <div className="space-y-3">
