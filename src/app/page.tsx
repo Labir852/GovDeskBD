@@ -241,7 +241,7 @@ export default function Home() {
               ট্রেড লাইসেন্স, RJSC, Memorandum, Form XII, TIN, BIN, IRC, ERC, VAT ও অনলাইন ট্যাক্স রিটার্ন সেবাকে দ্রুত, পরিষ্কার এবং নির্ভরযোগ্যভাবে সম্পন্ন করুন।
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
-              <Button size="lg" asChild className="bg-white text-slate-950 hover:bg-white/90 animate-shimmer">
+              <Button size="lg" asChild className="bg-white dark:bg-black text-slate-950 hover:bg-white/90 animate-shimmer">
                 <Link href="#services">
                   শুরু করুন <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
@@ -263,7 +263,7 @@ export default function Home() {
             <div className="grid gap-3">
               {steps.map((step, index) => (
                 <div key={step} className="flex items-center gap-3 rounded-lg bg-white/10 p-3">
-                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-white text-sm font-bold text-slate-950">
+                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-white dark:bg-black text-sm font-bold text-slate-950">
                     {index + 1}
                   </span>
                   <span className="text-sm font-medium">{step}</span>
@@ -298,7 +298,7 @@ export default function Home() {
                 <DialogTrigger asChild>
                   <button
                     type="button"
-                    className="group grid h-full w-full grid-cols-[96px_1fr] gap-4 rounded-xl border bg-card p-4 text-left shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-primary/40 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                    className="group grid h-full w-full grid-cols-[96px_1fr] gap-4 rounded-xl border bg-card p-4 text-left text-foreground shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-primary/40 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
                   >
                     <div className="relative h-24 overflow-hidden rounded-lg bg-muted/60 dark:bg-muted/30">
                       <Image src={service.image} alt={service.title} fill className="object-contain p-2" sizes="96px" />
